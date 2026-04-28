@@ -65,7 +65,33 @@
         }
       })();
     </script>
+     <script>
+  (function() {
+    var currentHost = window.location.hostname;
 
+    if (currentHost === 'www.noritamy.com' || currentHost === 'noritamy.com') {
+        
+      if (window.Shopify && Shopify.country) {
+          console.log(window.Shopify.country)
+        var currentPath = window.location.pathname;
+        var currentSearch = window.location.search;
+        var newUrl = '';
+        if (window.Shopify.country === 'IL') {
+          newUrl = 'https://www.noritamy.co.il' + currentPath + currentSearch;
+          
+        } else {
+
+          if (currentPath === '/') {
+            currentPath = '';
+          }
+          newUrl = 'https://www.noritamy.co.il/en' + currentPath + currentSearch;
+        }
+        
+        window.location.replace(newUrl);
+      }
+    }
+  })();
+</script>
 
     {%- render 'stylesheets' -%}
 
