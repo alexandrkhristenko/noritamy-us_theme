@@ -82,7 +82,7 @@
             "text_label_case": "default",
             "show_swatch_label": false,
             "show_filter_label": false,
-            "enable_sorting": false,
+            "enable_sorting": true,
             "enable_grid_density": true,
             "inherit_color_scheme": true,
             "color_scheme": "",
