@@ -113,6 +113,14 @@
   href="{{ canonical_url }}"
 >
 
+{%- comment -%}
+  Hreflang tags for cross-store setup
+{%- endcomment -%}
+<link rel="alternate" hreflang="en-US" href="{{ canonical_url }}" />
+<link rel="alternate" hreflang="he-IL" href="{{ canonical_url | replace: request.host, 'www.noritamy.co.il' }}" />
+<link rel="alternate" hreflang="en-IL" href="{{ canonical_url | replace: request.host, 'www.noritamy.co.il/en' }}" />
+<link rel="alternate" hreflang="x-default" href="{{ canonical_url }}" />
+
 {% if page_description %}
   <meta
     name="description"

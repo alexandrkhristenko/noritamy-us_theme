@@ -99,25 +99,6 @@
     display: grid;
     grid-template-columns: subgrid;
     grid-column: 1 / -1;
-    direction: ltr;
-  }
-
-  .product-information__media,
-  .product-details {
-    direction: rtl;
-  }
-
-  /* Force right alignment for all text blocks inside product details */
-  .product-information__grid .product-details,
-  .product-information__grid .product-details *,
-  .product-information__grid .product-details .text-block > * {
-    text-align: right !important;
-  }
-
-  .product-information__grid .product-details {
-    --text-align: right !important;
-    --text-align-default: right !important;
-    --horizontal-alignment: flex-end !important;
   }
 
   /* Default column positions */
