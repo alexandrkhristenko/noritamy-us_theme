@@ -121,7 +121,7 @@
     {% endif %}
 
     {{ content_for_header }}
-
+{% comment %}  
     <!-- Google Tag Manager -->
     <script>
       (function (w, d, s, l, i) {
@@ -136,6 +136,7 @@
       })(window, document, 'script', 'dataLayer', 'GTM-NFXS7F5F');
     </script>
     <!-- End Google Tag Manager -->
+    {% endcomment %}
   </head>
 
   <body class="page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }}">
@@ -143,6 +144,7 @@
     <div id="header-group">
       {% sections 'header-group' %}
     </div>
+    {% comment %}  
     <!-- Google Tag Manager (noscript) -->
     <noscript
       ><iframe
@@ -153,6 +155,7 @@
       ></iframe
     ></noscript>
     <!-- End Google Tag Manager (noscript) -->
+    {% endcomment %}
     <main
       id="MainContent"
       class="content-for-layout"
