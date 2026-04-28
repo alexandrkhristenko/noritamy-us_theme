@@ -77,6 +77,41 @@
                         <a class="breadcrumbs__link" href="{{ product.url }}"
                            aria-current="page">{{ product.title }}</a>
                     </li>
+                    <script type="application/ld+json">
+                    {
+                      "@context": "https://schema.org",
+                      "@type": "BreadcrumbList",
+                      "itemListElement": [
+                        {
+                          "@type": "ListItem",
+                          "position": 1,
+                          "name": "Home",
+                          "item": "{{ shop.url }}"
+                        }
+                        {%- if collection.url -%}
+                        ,{
+                          "@type": "ListItem",
+                          "position": 2,
+                          "name": {{ collection.title | json }},
+                          "item": "{{ shop.url }}{{ collection.url }}"
+                        },
+                        {
+                          "@type": "ListItem",
+                          "position": 3,
+                          "name": {{ product.title | json }},
+                          "item": "{{ shop.url }}{{ product.url }}"
+                        }
+                        {%- else -%}
+                        ,{
+                          "@type": "ListItem",
+                          "position": 2,
+                          "name": {{ product.title | json }},
+                          "item": "{{ shop.url }}{{ product.url }}"
+                        }
+                        {%- endif -%}
+                      ]
+                    }
+                    </script>
                 {%- when 'collection' and collection.handle -%}
                     {%- if current_tags -%}
                         <li class="breadcrumbs__item">
