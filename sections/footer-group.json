@@ -550,7 +550,7 @@
                           "type": "text",
                           "name": "t:names.heading",
                           "settings": {
-                            "text": "<p><a href=\"mailto:info@noritamy.com\">info@noritamy.com</a></p>",
+                            "text": "<p><a href=\"mailto:hey@noritamy.com\" title=\"mailto:hey@noritamy.com\">hey@noritamy.com</a></p>",
                             "width": "fit-content",
                             "max_width": "normal",
                             "alignment": "left",
