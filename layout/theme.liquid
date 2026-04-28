@@ -92,7 +92,22 @@
     }
   })();
 </script>
-
+<script>
+  (function() {
+    var path = window.location.pathname;
+    var search = window.location.search;
+    
+    // Ищем префиксы /he-il или /en-il в начале пути
+    var match = path.match(/^\/(he-il|en-il)(\/.*)?$/i);
+    
+    if (match) {
+      // Формируем новый путь без префикса (или корень, если префикс был один)
+      var newPath = match[2] || '/';
+      // Перенаправляем, сохраняя параметры (например, UTM-метки)
+      window.location.replace(newPath + search);
+    }
+  })();
+</script>
     {%- render 'stylesheets' -%}
 
     {%- if settings.favicon != blank -%}
