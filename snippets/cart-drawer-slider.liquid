@@ -1,0 +1,272 @@
+{%- if cart.empty? == false and settings.cart_drawer_slider_collection != blank -%}
+  <div class="cart-drawer-slider">
+    <div class="cart-drawer-slider__header">
+      {%- if settings.cart_drawer_slider_title != blank -%}
+        <div class="cart-drawer-slider__title">{{ settings.cart_drawer_slider_title }}</div>
+      {%- endif -%}
+    </div>
+
+    <div class="cart-drawer-slider__items">
+      {% capture slides %}
+        {% for product in settings.cart_drawer_slider_collection.products limit: 4 %}
+          <div class="cart-drawer-slider__slide">
+            <div class="cart-drawer-slider__card">
+              <a href="{{ product.url }}" class="cart-drawer-slider__image">
+                {{ product.featured_image | image_url: width: 120 | image_tag: loading: 'lazy' }}
+              </a>
+              <div class="cart-drawer-slider__info-wrapper">
+                <div class="cart-drawer-slider__info">
+                  {%- if product.vendor != blank -%}
+                    <div class="cart-drawer-slider__vendor">{{ product.vendor }}</div>
+                  {%- endif -%}
+                  <a href="{{ product.url }}" class="cart-drawer-slider__product-title">{{ product.title }}</a>
+                  {%- if product.compare_at_price > product.price -%}
+                    <div class="cart-drawer-slider__price">
+                      <span class="cart-drawer-slider__sale-price">{{ product.price | money }}</span>
+                      <s class="cart-drawer-slider__compare-price">{{ product.compare_at_price | money }}</s>
+                    </div>
+                  {%- else -%}
+                    <div class="cart-drawer-slider__price">{{ product.price | money }}</div>
+                  {%- endif -%}
+                </div>
+                
+                <div class="cart-drawer-slider__action">
+                  <product-form-component
+                    data-section-id="{{ section.id }}"
+                    data-product-id="{{ product.id }}"
+                    data-product-url="{{ product.url }}"
+                    on:submit="/handleSubmit"
+                    data-quantity-default="1"
+                  >
+                    {%- assign product_form_id = 'product-form-cart-slider-' | append: product.id -%}
+                    {%- form 'product', product, id: product_form_id, class: 'cart-drawer-slider__form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+                      <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                      <button type="submit" name="add" class="button button--primary cart-drawer-slider__add">
+                        {%- if request.locale.iso_code == 'he' -%}
+                          הוסף
+                        {%- else -%}
+                          Add
+                        {%- endif -%}
+                      </button>
+                    {%- endform -%}
+                  </product-form-component>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% unless forloop.last %}<!--@list/split-->{% endunless %}
+        {% endfor %}
+      {% endcapture %}
+
+      {% assign slides_array = slides | strip | split: '<!--@list/split-->' %}
+
+      {%- if slides_array.size > 1 -%}
+        {% render 'resource-list-carousel',
+          ref: 'cartDrawerSlider',
+          slides: slides_array,
+          slide_count: slides_array.size,
+          settings: settings,
+          autoplay: settings.cart_drawer_slider_autoplay,
+          autoplay_speed: settings.cart_drawer_slider_autoplay_speed,
+          slide_width_max: '100%'
+        %}
+      {%- else -%}
+        {{ slides | remove: '<!--@list/split-->' }}
+      {%- endif -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .cart-drawer-slider {
+    padding: 15px var(--cart-drawer-padding, 15px);
+    border-top: 1px solid var(--color-border);
+    margin: 0;
+    width: 100%;
+    position: relative;
+  }
+  @media screen and (min-width: 750px) {
+    .cart-drawer-slider {
+      padding-left: var(--cart-drawer-padding-desktop, 30px);
+      padding-right: var(--cart-drawer-padding-desktop, 30px);
+    }
+  }
+  .cart-drawer-slider slideshow-slide {
+    width: 100% !important;
+    --slide-width: 100% !important;
+    flex: 0 0 100% !important;
+  }
+  .cart-drawer-slider__slide {
+    width: 100%;
+    height: 100%;
+  }
+  .cart-drawer-slider__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-right: 70px;
+  }
+  .cart-drawer-slider__title {
+    font-size: 16px;
+    font-weight: 400;
+  }
+  .cart-drawer-slider__card {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    gap: 15px;
+    height: 100%;
+    padding: 15px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--style-border-radius-buttons-primary, 0px);
+    background: var(--color-background);
+  }
+  .cart-drawer-slider__image {
+    width: 60px;
+    flex-shrink: 0;
+    display: block;
+  }
+  .cart-drawer-slider__image img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+  .cart-drawer-slider__info-wrapper {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: space-between;
+    flex-grow: 1;
+    gap: 10px;
+  }
+  .cart-drawer-slider .resource-list__carousel slideshow-arrows {
+    position: absolute;
+    top: 10px;
+    right: var(--cart-drawer-padding, 15px);
+    left: auto;
+    bottom: auto;
+    width: auto;
+    transform: none;
+    flex-direction: row;
+    padding: 0;
+    gap: 8px;
+    pointer-events: auto;
+  }
+  .cart-drawer-slider .resource-list__carousel .slideshow-control {
+    min-height: 28px;
+    height: 28px;
+    width: 28px;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+  }
+  .cart-drawer-slider .resource-list__carousel .slideshow-control--next {
+    margin: 0;
+  }
+  .cart-drawer-slider__info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: left;
+    flex-grow: 1;
+  }
+  .cart-drawer-slider__vendor {
+    font-size: 10px;
+    color: var(--color-foreground-50);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: right;
+  }
+  .cart-drawer-slider__product-title {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--color-foreground);
+    text-decoration: none;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-align: right;
+  }
+  .cart-drawer-slider__price {
+    font-size: 12px;
+    font-weight: 400;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+  .cart-drawer-slider__compare-price {
+    color: var(--color-foreground-50);
+    font-size: 11px;
+    text-decoration: line-through;
+  }
+  .cart-drawer-slider__sale-price {
+    color: var(--color-error);
+  }
+  .cart-drawer-slider__action {
+    flex-shrink: 0;
+  }
+  .cart-drawer-slider__add {
+    min-height: 36px;
+    font-size: 12px;
+    padding: 8px 20px;
+    margin: 0;
+  }
+  .cart-drawer-slider__add.is-loading {
+    color: transparent !important;
+    pointer-events: none;
+    position: relative;
+  }
+  .cart-drawer-slider__add.is-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin-top: -8px;
+    margin-left: -8px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: cart-drawer-slider-spin 0.6s linear infinite;
+  }
+  @keyframes cart-drawer-slider-spin {
+    to { transform: rotate(360deg); }
+  }
+{% endstylesheet %}
+
+<script>
+  if (!window.cartDrawerSliderLoaderInitialized) {
+    document.addEventListener('submit', (event) => {
+      if (event.target.matches('.cart-drawer-slider__form')) {
+        const button = event.target.querySelector('.cart-drawer-slider__add');
+        if (button) {
+          button.classList.add('is-loading');
+          button.setAttribute('disabled', 'disabled');
+        }
+      }
+    });
+
+    const removeLoaders = () => {
+      document.querySelectorAll('.cart-drawer-slider__add.is-loading').forEach((button) => {
+        button.classList.remove('is-loading');
+        button.removeAttribute('disabled');
+      });
+    };
+
+    window.addEventListener('cart:update', removeLoaders);
+    window.addEventListener('cart:error', removeLoaders);
+
+    window.cartDrawerSliderLoaderInitialized = true;
+  }
+</script>

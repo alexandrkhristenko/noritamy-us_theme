@@ -1,0 +1,35 @@
+{%- doc -%}
+  Overrides hardcoded Latin font-family declarations (Montserrat, Inter) in
+  base.css for the Hebrew locale using the [lang="he"] CSS attribute selector,
+  which Shopify sets automatically on the <html> element.
+
+  Font mapping (Hebrew locale):
+    • Noto Sans Hebrew — all headings (h1–h6, .hX classes)
+    • Rubik            — body text, prices, UI labels, buttons
+
+  No parameters required.
+
+  @example
+  {% render 'fonts-he-override' %}
+{%- enddoc -%}
+
+{%- if request.locale.iso_code == 'he' -%}
+<style>
+  /* Headings — Noto Sans Hebrew */
+  [lang="he"] .prod-rec h5 {
+    font-family: 'Noto Sans Hebrew', sans-serif;
+  }
+
+  /* Body text, prices, UI labels, buttons — Rubik */
+  [lang="he"] .add-to-cart-text,
+  [lang="he"] .se-option-name,
+  [lang="he"] .se-selected-value,
+  [lang="he"] .group-block-content .price,
+  [lang="he"] .prod-rec product-price.text-block .price,
+  [lang="he"] .prod-rec .product-price,
+  [lang="he"] .product-card__content .price,
+  [lang="he"] .product-card__content .compare-at-price {
+    font-family: 'Rubik', sans-serif;
+  }
+</style>
+{%- endif -%}

@@ -1,0 +1,90 @@
+{%- unless settings.type_body_font.system?
+  and settings.type_subheading_font.system?
+  and settings.type_heading_font.system?
+-%}
+  <link
+    rel="preconnect"
+    href="https://fonts.shopifycdn.com"
+    crossorigin
+  >
+{%- endunless -%}
+
+{% if request.locale.iso_code == 'he' %}
+  {% # Preload the most important font files %}
+  {{ 'noto-sans-hebrew-v50-latin-regular.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+  {{ 'noto-sans-hebrew-v50-latin-500.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+  {{ 'noto-sans-hebrew-v50-latin-700.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+  {{ 'rubik-v31-latin-regular.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+
+  <style>
+    @font-face {
+      font-family: 'Noto Sans Hebrew';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url('{{ "noto-sans-hebrew-v50-latin-regular.woff2" | asset_url }}') format('woff2');
+    }
+    @font-face {
+      font-family: 'Noto Sans Hebrew';
+      font-style: normal;
+      font-weight: 500;
+      font-display: swap;
+      src: url('{{ "noto-sans-hebrew-v50-latin-500.woff2" | asset_url }}') format('woff2');
+    }
+    @font-face {
+      font-family: 'Noto Sans Hebrew';
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+      src: url('{{ "noto-sans-hebrew-v50-latin-700.woff2" | asset_url }}') format('woff2');
+    }
+    @font-face {
+      font-family: 'Rubik';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url('{{ "rubik-v31-latin-regular.woff2" | asset_url }}') format('woff2');
+    }
+  </style>
+{% endif %}
+
+{% # theme-check-disable %}
+{%- unless settings.type_body_font.system? -%}
+  <link
+    rel="preload"
+    as="font"
+    href="{{ settings.type_body_font | font_url }}"
+    type="font/woff2"
+    crossorigin
+  >
+{%- endunless -%}
+{%- unless settings.type_subheading_font.system? -%}
+  <link
+    rel="preload"
+    as="font"
+    href="{{ settings.type_subheading_font | font_url }}"
+    type="font/woff2"
+    crossorigin
+  >
+{%- endunless -%}
+{%- unless settings.type_heading_font.system? -%}
+  <link
+    rel="preload"
+    as="font"
+    href="{{ settings.type_heading_font | font_url }}"
+    type="font/woff2"
+    crossorigin
+  >
+{%- endunless -%}
+{%- unless settings.type_accent_font.system? -%}
+  <link
+    rel="preload"
+    as="font"
+    href="{{ settings.type_accent_font | font_url }}"
+    type="font/woff2"
+    crossorigin
+  >
+{%- endunless -%}
+{% # theme-check-enable %}
+
+{%- render 'fonts-he-override' -%}

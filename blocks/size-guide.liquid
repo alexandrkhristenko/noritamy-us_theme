@@ -1,0 +1,51 @@
+{% assign show_size_guide = false %}
+{% assign lower_type = product.type | downcase %}
+
+{% if lower_type == 'ring' or lower_type == 'rings' or lower_type == 'кольцо' or lower_type == 'кольца' %}
+  {% assign show_size_guide = true %}
+{% endif %}
+
+{% for tag in product.tags %}
+  {% assign lower_tag = tag | downcase %}
+  {% if lower_tag == 'ring' or lower_tag == 'rings' or lower_tag == 'кольцо' or lower_tag == 'кольца' %}
+    {% assign show_size_guide = true %}
+  {% endif %}
+{% endfor %}
+
+{% if show_size_guide %}
+  {%- assign btn_text = block.settings.button_text -%}
+  {%- if btn_text == blank or btn_text == 'Size Guide' -%}
+    {%- assign btn_text = 'size_guide.button_text' | t -%}
+  {%- endif -%}
+  <div class="product-details__block js-size-guide-block" {{ block.shopify_attributes }} style="display: none;">
+    <button class="link link--text underlined-link js-open-size-guide" type="button">
+      {{ btn_text }}
+    </button>
+    {% render 'size-guide-drawer', video: block.settings.video %}
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Size Guide",
+  "settings": [
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Size Guide"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Video"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Size Guide",
+      "category": "t:categories.product"
+    }
+  ]
+}
+{% endschema %}

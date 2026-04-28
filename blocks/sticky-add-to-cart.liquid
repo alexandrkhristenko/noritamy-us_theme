@@ -1,0 +1,189 @@
+{%- doc -%}
+  Sticky Add to Cart block
+{%- enddoc -%}
+{% liquid
+  assign product = closest.product
+  if request.visual_preview_mode and product == blank
+    assign product = collections.all.products.first
+  endif
+  assign variant = product.selected_or_first_available_variant
+  assign inventory_quantity = variant.inventory_quantity
+  assign inventory_policy = variant.inventory_policy
+
+  if variant.inventory_management == 'shopify'
+    assign inventory_managed = true
+  endif
+
+  if variant.quantity_rule.min > variant.inventory_quantity and inventory_managed and inventory_policy == 'deny'
+    assign quantity_rule_soldout = true
+  endif
+
+  if inventory_managed
+    if inventory_quantity <= 0 and inventory_policy == 'deny' or quantity_rule_soldout
+      assign can_add_to_cart = false
+      assign add_to_cart_text = 'products.product.sold_out' | t
+    else
+      assign can_add_to_cart = true
+      assign add_to_cart_text = 'products.product.add_to_cart' | t
+    endif
+  else
+    if product.selected_or_first_available_variant != null
+      assign can_add_to_cart = true
+      assign add_to_cart_text = 'products.product.add_to_cart' | t
+    else
+      assign can_add_to_cart = false
+      assign add_to_cart_text = 'products.product.unavailable' | t
+    endif
+  endif
+
+  assign button_class = 'button--primary sticky-add-to-cart__button'
+%}
+
+{{ 'sticky-add-to-cart.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'sticky-add-to-cart.js' | asset_url }}" type="module" defer="defer"></script>
+
+<sticky-add-to-cart
+  class="sticky-add-to-cart color-{{ block.settings.color_scheme }}"
+  data-product-id="{{ product.id }}"
+  data-section-id="{{ section.id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="sticky-add-to-cart__container page-width">
+    {% if block.settings.show_image and product.featured_media %}
+      <div class="sticky-add-to-cart__image">
+        {{ product.featured_media | image_url: width: 100, height: 100 | image_tag: loading: 'lazy' }}
+      </div>
+    {% endif %}
+
+    <div class="sticky-add-to-cart__info">
+      {% if block.settings.show_title %}
+        <div class="sticky-add-to-cart__title">{{ product.title }}</div>
+      {% endif %}
+      {% if block.settings.show_price %}
+        <product-price class="sticky-add-to-cart__price" data-product-id="{{ product.id }}">
+          {% render 'price', product_resource: product, show_unit_price: false %}
+        </product-price>
+      {% endif %}
+    </div>
+
+    <div class="sticky-add-to-cart__form">
+      {%- assign product_form_id = 'StickyBuyButtons-' | append: block.id -%}
+      <product-form-component
+        data-section-id="{{ section.id }}"
+        data-product-id="{{ product.id }}"
+        data-product-url="{{ product.url }}"
+        on:submit="/handleSubmit"
+        data-quantity-default="{% if product.selected_or_first_available_variant.quantity_rule.min %}{{ product.selected_or_first_available_variant.quantity_rule.min }}{% else %}1{% endif %}"
+      >
+        <div
+          class="visually-hidden"
+          aria-live="assertive"
+          role="status"
+          aria-atomic="true"
+          ref="liveRegion"
+        ></div>
+        {%- form 'product', product, id: product_form_id, novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+          <input
+            type="hidden"
+            name="id"
+            ref="variantId"
+            value="{{ variant.id }}"
+          >
+
+          <div class="sticky-add-to-cart__controls">
+            {% if block.settings.show_variants %}
+              <div class="sticky-add-to-cart__variants">
+                {% unless product.has_only_default_variant %}
+                  <div class="variant-option__select-wrapper">
+                    <select
+                      name="sticky_variant"
+                      class="sticky-add-to-cart__select variant-option__select"
+                      aria-label="{{ 'products.product.variant_picker_label' | t }}"
+                    >
+                      {% for product_variant in product.variants %}
+                        <option
+                          value="{{ product_variant.id }}"
+                          data-option-1="{{ product_variant.option1 | escape }}"
+                          data-option-2="{{ product_variant.option2 | escape }}"
+                          data-option-3="{{ product_variant.option3 | escape }}"
+                          {% if product_variant.id == variant.id %}
+                            selected="selected"
+                          {% endif %}
+                          {% if product_variant.available == false %}
+                            disabled
+                          {% endif %}
+                        >
+                          {{ product_variant.title }}
+                        </option>
+                      {% endfor %}
+                    </select>
+                    <svg aria-hidden="true" focusable="false" class="icon icon-caret" viewBox="0 0 10 6">
+                      {%- render 'icon', icon: 'caret' -%}
+                    </svg>
+                  </div>
+                {% endunless %}
+              </div>
+            {% endif %}
+
+            {% render 'add-to-cart-button',
+              id: 'StickySubmitButton',
+              class: button_class,
+              can_add_to_cart: can_add_to_cart,
+              product: product,
+              add_to_cart_text: add_to_cart_text
+            %}
+
+            <span class="product-form-text__error hidden" ref="addToCartTextError">
+              <span class="svg-wrapper product-form-icon--error">
+                {{- 'icon-error.svg' | inline_asset_content -}}
+              </span>
+            </span>
+          </div>
+        {%- endform -%}
+      </product-form-component>
+    </div>
+  </div>
+</sticky-add-to-cart>
+
+{% schema %}
+{
+  "name": "Sticky Add to Cart",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "label": "Show product image",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "label": "Show product title",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price",
+      "label": "Show price",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_variants",
+      "label": "Show variants selector",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sticky Add to Cart"
+    }
+  ]
+}
+{% endschema %}

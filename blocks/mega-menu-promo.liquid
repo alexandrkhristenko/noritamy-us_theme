@@ -1,0 +1,79 @@
+{% comment %}
+  This block is used to configure promo images for the Mega Menu.
+  It is accessed via section.blocks in snippets/mega-menu.liquid.
+{% endcomment %}
+
+{% schema %}
+{
+  "name": "Mega Menu Promo",
+  "blocks": [{ "type": "@theme" }],
+  "settings": [
+    {
+      "type": "text",
+      "id": "promo_menu_item",
+      "label": "Menu Item Title",
+      "info": "Exact title of the menu item to match"
+    },
+    {
+      "type": "header",
+      "content": "Image 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "promo_image_1",
+      "label": "Image"
+    },
+    {
+      "type": "url",
+      "id": "promo_link_1",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Image 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "promo_image_2",
+      "label": "Image"
+    },
+    {
+      "type": "url",
+      "id": "promo_link_2",
+      "label": "Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Mega Menu Promo"
+    }
+  ]
+}
+{% endschema %}
+
+{% assign promo_menu_item_lower = block.settings.promo_menu_item | downcase | strip %}
+
+<div class="mega-menu-promo-container" data-target-title="{{ promo_menu_item_lower }}">
+  {% if block.settings.promo_image_1 != blank %}
+    <li class="mega-menu__content-list-item mobile:hidden">
+      <a href="{{ block.settings.promo_link_1 }}" class="mega-menu__link">
+        {{
+          block.settings.promo_image_1
+          | image_url: width: 600
+          | image_tag: class: 'mega-menu__link-image', loading: 'lazy'
+        }}
+      </a>
+    </li>
+  {% endif %}
+  {% if block.settings.promo_image_2 != blank %}
+    <li class="mega-menu__content-list-item mobile:hidden">
+      <a href="{{ block.settings.promo_link_2 }}" class="mega-menu__link">
+        {{
+          block.settings.promo_image_2
+          | image_url: width: 600
+          | image_tag: class: 'mega-menu__link-image', loading: 'lazy'
+        }}
+      </a>
+    </li>
+  {% endif %}
+</div>

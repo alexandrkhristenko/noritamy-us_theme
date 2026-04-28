@@ -1,0 +1,203 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "content_direction": "column",
+        "gap": 32,
+        "color_scheme": "",
+        "padding-block-start": 40,
+        "padding-block-end": 80
+      }
+    },
+    "section_WrGycg": {
+      "type": "section",
+      "blocks": {
+        "text_Cx8fT7": {
+          "type": "text",
+          "name": "t:names.heading",
+          "settings": {
+            "text": "<h2>{{ closest.page.title }}</h2>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "rte",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "text_Cx8fT7"
+      ],
+      "name": "t:names.custom_section",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "color_scheme": "",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 60,
+        "padding-block-end": 33
+      }
+    },
+    "media_with_content_ManYXB": {
+      "type": "media-with-content",
+      "blocks": {
+        "media": {
+          "type": "_media-without-appearance",
+          "static": true,
+          "settings": {
+            "media_type": "image",
+            "image": "shopify://shop_images/NORI.webp",
+            "link": "",
+            "video_loop": true,
+            "video_autoplay": false,
+            "image_position": "cover",
+            "video_position": "cover"
+          },
+          "blocks": {}
+        },
+        "content": {
+          "type": "_content-without-appearance",
+          "static": true,
+          "settings": {
+            "horizontal_alignment_flex_direction_column": "flex-start",
+            "vertical_alignment_flex_direction_column": "space-between",
+            "gap": 30
+          },
+          "blocks": {
+            "group_VtnQjF": {
+              "type": "group",
+              "settings": {
+                "link": "",
+                "open_in_new_tab": false,
+                "content_direction": "column",
+                "vertical_on_mobile": true,
+                "horizontal_alignment": "flex-start",
+                "vertical_alignment": "center",
+                "align_baseline": false,
+                "horizontal_alignment_flex_direction_column": "flex-start",
+                "vertical_alignment_flex_direction_column": "center",
+                "gap": 12,
+                "width": "fill",
+                "custom_width": 100,
+                "width_mobile": "fill",
+                "custom_width_mobile": 100,
+                "height": "fit",
+                "custom_height": 100,
+                "inherit_color_scheme": true,
+                "color_scheme": "",
+                "background_media": "none",
+                "video_position": "cover",
+                "background_image_position": "cover",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "toggle_overlay": false,
+                "overlay_color": "#00000026",
+                "overlay_style": "solid",
+                "gradient_direction": "to top",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "text_YGeTr6": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>Noritamy is an award winning brand that creates handcrafted jewelry and accessories , drawing  inspiration from the realms of art, architecture, and sculpture.<br/>This unique blend of inspirations brings a modern twist to classic designs, with collections that embody the eternal debate between these two trades, resulting in dramatic and refined pieces.</p><p>The brand , initially launched 18 years ago as a creative fusion of two accomplished women, Nori and Tamy.<br/>Nori, a former trained interior architect with a <strong>B.des degree</strong> and Tamy, an artist with a background in jewelry making, synergize their knowledge and experience to create timeless luxury pieces with a contemporary and fashionable  feminine flair.</p><p>Originally launched in the Middle East Noritamy rapidly gained global recognition after participating in LFW designer showrooms.<br/>Over the past 5 years, Nori has taken sole lead of the brand, expanding its reach into consulting, fashion design, and the creation of home and art pieces, with an emphasis on collaborations.</p><p>Noritamy’s excellence has been celebrated in high-fashion magazines worldwide, including <strong>UK/Paris/Italian VOGUE, Harper’s Bazaar, BOF, Elle, Marie Claire, Interview</strong>, <strong>WGSN, SWAROVSKI BOOK OF INSPIRATIONS</strong> .</p><p>Nori was recently awarded <strong>“Best sculpture oriented jewelry designer, in the middle east” </strong>by Lux magazine.</p><p>Noritamy is coveted in Europe, Asia, and the Middle East, admired for its wide range of fashion-oriented statement pieces and delicate high-end gold and diamond creations.</p><p>Top stylists and bloggers globally have been captivated by the jewelry, which have graced the likes of celebrities such as</p><p><strong>Marta Pozan,Caylee Cowen,Victor Perez, Nicole Scherzinger</strong>, <strong>Eugen Lee Yang</strong>, <strong>FKA twigs</strong>, <strong>Alesha Dixon</strong>, <strong>Alena Watson</strong>,  <strong>Clara Amfo</strong>, and more.</p><p>Each season, our creative director unveils a new collection,  accompanied by a unique and inspiring story that fuels her creativity.<br/>The ability to blend art, architecture, and fashion continues to enchant the fashion world, and makes Noritamy a prominent and celebrated name in the industry.</p><p>“<em>Our fashion jewelry is hand made in our studio. For that reason no two pieces are exactly alike and in a world of mass market and fast fashion we are very proud of that. All jewelry is dipped in a heavy layer of 24K gold or silver tone, and its all nickel free. We have premium lines and we work with clients to develop custom made pieces upon request.”</em></p><p><em>We welcome you to explore Noritamy’s various collections and visit our studio to get a glimpse on how we create the jewelry”.</em></p><p> </p><p><strong>For any inquiries please contact us at : </strong><a href=\"mailto:info@noritamy.com\"><strong>info@noritamy.com</strong></a></p>",
+                    "width": "100%",
+                    "max_width": "none",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "color": "var(--color-foreground)",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "text_YGeTr6"
+              ]
+            }
+          },
+          "block_order": [
+            "group_VtnQjF"
+          ]
+        }
+      },
+      "name": "t:names.editorial",
+      "settings": {
+        "media_position": "left",
+        "media_width": "medium",
+        "media_height": "60svh",
+        "section_width": "full-width",
+        "extend_media": true,
+        "color_scheme": "scheme-1",
+        "padding-block-start": 0,
+        "padding-block-end": 51
+      }
+    }
+  },
+  "order": [
+    "main",
+    "section_WrGycg",
+    "media_with_content_ManYXB"
+  ]
+}

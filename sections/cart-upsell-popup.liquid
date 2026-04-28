@@ -1,0 +1,201 @@
+{%- doc -%}
+  A popup that displays after an item is added to the cart to promote a specific product.
+{%- enddoc -%}
+
+{%- if section.settings.product != blank -%}
+  <script src="{{ 'cart-upsell-popup.js' | asset_url }}" type="module"></script>
+  {{ 'cart-upsell-popup.css' | asset_url | stylesheet_tag }}
+
+  <cart-upsell-popup data-product-id="{{ section.settings.product.id }}">
+    <dialog
+      class="cart-upsell-popup__dialog dialog-modal color-{{ section.settings.color_scheme }}"
+      ref="dialog"
+      scroll-lock
+    >
+      <div class="cart-upsell-popup__inner">
+        <button
+          ref="closeButton"
+          on:click="/closeDialog"
+          class="button cart-upsell-popup__close button-unstyled"
+          aria-label="{{ 'accessibility.close_dialog' | t }}"
+        >
+          <span class="svg-wrapper">
+            {{- 'icon-close.svg' | inline_asset_content -}}
+          </span>
+        </button>
+
+        <div class="cart-upsell-popup__content">
+          {%- if section.settings.title != blank -%}
+            <h3 class="cart-upsell-popup__title h3">
+              {{ section.settings.title }}
+            </h3>
+          {%- endif -%}
+
+          {%- assign product = section.settings.product -%}
+          {%- assign image = product.featured_media.preview_image -%}
+          
+          <div class="cart-upsell-popup__product">
+            <a href="{{ product.url }}" tabindex="-1" aria-hidden="true" class="cart-upsell-popup__image-link">
+              {%- if image != blank -%}
+                {%- assign image_height = 300 | divided_by: image.aspect_ratio | ceil -%}
+                {{
+                  image
+                  | image_url: width: 300
+                  | image_tag:
+                    loading: 'lazy',
+                    width: 300,
+                    height: image_height,
+                    alt: image.alt,
+                    class: 'cart-upsell-popup__image'
+                }}
+              {%- else -%}
+                {{ 'product-1' | placeholder_svg_tag: 'cart-upsell-popup__image placeholder-svg' }}
+              {%- endif -%}
+            </a>
+
+            <div class="cart-upsell-popup__info">
+              <a href="{{ product.url }}" class="cart-upsell-popup__product-title link link--text">
+                {{ product.title }}
+              </a>
+              <div class="cart-upsell-popup__price">
+                {%- if section.settings.custom_price != blank or section.settings.custom_compare_at_price != blank -%}
+                  <div class="price" style="display: flex; gap: 8px;">
+                    {%- if section.settings.custom_compare_at_price != blank -%}
+                      <span class="compare-at-price">{{ cart.currency.symbol }}{{ section.settings.custom_compare_at_price }}</span>
+                    {%- elsif product.compare_at_price > product.price -%}
+                      <span class="compare-at-price">{{ product.compare_at_price | money }}</span>
+                    {%- endif -%}
+                    <span class="price-item">
+                      {%- if section.settings.custom_price != blank -%}
+                        {{ cart.currency.symbol }}{{ section.settings.custom_price }}
+                      {%- else -%}
+                        {{ product.price | money }}
+                      {%- endif -%}
+                    </span>
+                  </div>
+                {%- else -%}
+                  {% render 'price', product_resource: product %}
+                {%- endif -%}
+              </div>
+            </div>
+
+            <product-form-component class="cart-upsell-popup__form" on:submit="/handleSubmit" data-product-id="{{ product.id }}">
+              {%- form 'product',
+                product,
+                id: 'cart-upsell-popup-form',
+                class: 'form',
+                novalidate: 'novalidate',
+                data-type: 'add-to-cart-form'
+              -%}
+                <input
+                  type="hidden"
+                  name="id"
+                  value="{{ product.selected_or_first_available_variant.id }}"
+                  class="product-variant-id"
+                >
+                {%- liquid
+                  assign add_to_cart_text = section.settings.add_to_cart_text | default: 'ADD TO BAG'
+                  assign is_available = product.selected_or_first_available_variant.available
+                -%}
+                <add-to-cart-component class="cart-upsell-popup__submit-wrapper">
+                  <button
+                    type="submit"
+                    name="add"
+                    class="button button--primary cart-upsell-popup__submit w-full"
+                    ref="addToCartButton"
+                    {% if is_available == false %}
+                      disabled
+                    {% endif %}
+                  >
+                    <span class="add-to-cart-text">
+                      {%- if is_available -%}
+                        {{ add_to_cart_text }}
+                      {%- else -%}
+                        {{ 'products.product.sold_out' | t }}
+                      {%- endif -%}
+                    </span>
+                    <span class="add-to-cart-text--added hidden">{{ 'products.product.added_to_cart' | t }}</span>
+                    <div class="loading-overlay__spinner hidden">
+                      <svg
+                        aria-hidden="true"
+                        focusable="false"
+                        class="spinner"
+                        viewBox="0 0 66 66"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
+                      </svg>
+                    </div>
+                  </button>
+                </add-to-cart-component>
+                <div class="cart-upsell-popup__error-message-wrapper" role="alert" hidden>
+                  <svg
+                    aria-hidden="true"
+                    focusable="false"
+                    class="icon icon-error"
+                    viewBox="0 0 13 13"
+                  >
+                    <circle cx="6.5" cy="6.50049" r="5.5" stroke="white" stroke-width="2"/>
+                    <circle cx="6.5" cy="6.5" r="5.5" fill="#EB001B" stroke="#EB001B" stroke-width="0.7"/>
+                    <path d="M5.87413 3.52832L5.97439 7.57216H7.02713L7.12739 3.52832H5.87413ZM6.50076 9.66091C6.88091 9.66091 7.18169 9.37267 7.18169 9.00504C7.18169 8.63742 6.88091 8.34917 6.50076 8.34917C6.12061 8.34917 5.81982 8.63742 5.81982 9.00504C5.81982 9.37267 6.12061 9.66091 6.50076 9.66091Z" fill="white"/>
+                    <path d="M5.87413 3.17832H5.51535L5.52424 3.537L5.6245 7.58083L5.63296 7.92216H5.97439H7.02713H7.36856L7.37702 7.58083L7.47728 3.537L7.48617 3.17832H7.12739H5.87413ZM6.50076 10.0109C7.06121 10.0109 7.5317 9.57872 7.5317 9.00504C7.5317 8.43137 7.06121 7.99918 6.50076 7.99918C5.94031 7.99918 5.46982 8.43137 5.46982 9.00504C5.46982 9.57872 5.94031 10.0109 6.50076 10.0109Z" fill="white" stroke="#EB001B" stroke-width="0.7">
+                  </svg>
+                  <span class="cart-upsell-popup__error-message"></span>
+                </div>
+              {%- endform -%}
+            </product-form-component>
+          </div>
+        </div>
+      </div>
+    </dialog>
+  </cart-upsell-popup>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Cart Upsell Popup",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Popup Title",
+      "default": "Don't Miss This Month's Special Offer"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Upsell Product"
+    },
+    {
+      "type": "text",
+      "id": "custom_price",
+      "label": "Custom Price",
+      "info": "Leave empty to use the product's regular price"
+    },
+    {
+      "type": "text",
+      "id": "custom_compare_at_price",
+      "label": "Custom Compare-at Price",
+      "info": "Display a crossed-out original price"
+    },
+    {
+      "type": "text",
+      "id": "add_to_cart_text",
+      "label": "Add to cart button text",
+      "default": "ADD TO BAG"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color Scheme",
+      "default": "background-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cart Upsell Popup"
+    }
+  ]
+}
+{% endschema %}

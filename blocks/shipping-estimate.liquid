@@ -1,0 +1,47 @@
+{%- comment -%}
+  Block: Shipping Estimate
+  Displays a calculated shipping date range based on business days.
+{%- endcomment -%}
+
+{{ 'shipping-estimate.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'shipping-estimate.js' | asset_url }}" defer="defer"></script>
+
+<shipping-estimate class="shipping-estimate" data-min-days="{{ block.settings.min_days }}" data-max-days="{{ block.settings.max_days }}">
+  <p class="shipping-estimate__text">
+    {{ block.settings.text_prefix }}
+    <span class="shipping-estimate__date" data-shipping-date></span>
+    –
+    <span class="shipping-estimate__date" data-shipping-date-end></span>
+  </p>
+</shipping-estimate>
+
+{% schema %}
+{
+  "name": "Shipping Estimate",
+  "settings": [
+    {
+      "type": "text",
+      "id": "text_prefix",
+      "label": "Text Prefix",
+      "default": "Handmade to order, Receive by"
+    },
+    {
+      "type": "number",
+      "id": "min_days",
+      "label": "Minimum Business Days",
+      "default": 4
+    },
+    {
+      "type": "number",
+      "id": "max_days",
+      "label": "Maximum Business Days",
+      "default": 8
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shipping Estimate"
+    }
+  ]
+}
+{% endschema %}

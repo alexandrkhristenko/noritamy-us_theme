@@ -1,0 +1,29 @@
+{% doc %}
+  Renders the Size Guide drawer.
+{% enddoc %}
+
+<link rel="stylesheet" href="{{ 'size-guide.css' | asset_url }}">
+<script src="{{ 'size-guide.js' | asset_url }}" defer="defer"></script>
+
+<size-guide-drawer>
+  <div class="size-guide-drawer" aria-hidden="true">
+    <div class="size-guide-drawer__content">
+      <div class="size-guide-drawer__header">
+        <h2 class="size-guide-drawer__title">{{ 'size_guide.title' | t }}</h2>
+        <button class="size-guide-drawer__close" aria-label="{{ 'accessibility.close_dialog' | t }}">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M1 13L13 1M1 1L13 13"/>
+          </svg>
+        </button>
+      </div>
+      <div class="size-guide-drawer__body">
+        {%- if video != blank -%}
+          <div class="size-guide-drawer__video" style="margin-bottom: 24px;">
+            {{ video | video_tag: autoplay: true, loop: true, muted: true, controls: true, image_size: 'master', style: 'width: 100%; height: auto; max-height: 400px; display: block; border-radius: 4px;' }}
+          </div>
+        {%- endif -%}
+        {% render 'size-guide-content' %}
+      </div>
+    </div>
+  </div>
+</size-guide-drawer>

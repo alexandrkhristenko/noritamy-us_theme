@@ -1,0 +1,17 @@
+.shipping-estimate {
+    display: block;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--color-foreground);
+    margin: 0;
+    text-align: center;
+}
+
+.shipping-estimate__text {
+    margin: 0;
+}
+
+.shipping-estimate__date {
+    font-weight: 700;
+    /* Bold date */
+}

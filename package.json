@@ -1,0 +1,27 @@
+{
+  "name": "tecdoc",
+  "description": "",
+  "author": "",
+  "license": "ISC",
+  "version": "1.0.0",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "watch": "npm run shopify:dev:sync",
+    "shopify:dev": "shopify theme dev -e dev",
+    "shopify:dev:reload": "shopify theme dev -e dev --live-reload=full-page",
+    "shopify:dev:sync": "shopify theme dev -e dev --theme-editor-sync",
+    "shopify:pull": "shopify theme pull -e dev",
+    "shopify:push": "shopify theme push -e dev"
+  },
+  "dependencies": {
+    "@shopify/cli": "^3.81.2"
+  },
+  "devDependencies": {
+    "happy-dom": "^20.0.11",
+    "jquery": "^3.7.1",
+    "jsdom": "^27.0.1",
+    "vitest": "^4.0.16"
+  },
+  "keywords": []
+}

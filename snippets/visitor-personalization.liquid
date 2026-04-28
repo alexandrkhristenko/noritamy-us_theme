@@ -1,0 +1,217 @@
+{% comment %}
+  Visitor Personalization — for collection pages.
+  - New visitors: see default scored order
+  - Returning visitors: Recently Viewed row + unseen-first reorder + NEW badges
+{% endcomment %}
+
+<div id="recently-viewed-row" style="display:none;">
+  <div class="recently-viewed__header">Recently Viewed</div>
+  <div class="recently-viewed__scroll" id="recently-viewed-scroll"></div>
+</div>
+
+<script>
+(function() {
+  var CURRENT_VERSION = 'v1_recently_viewed_row';
+  var VISIT_KEY = 'noritamy_last_visit';
+  var VIEWED_KEY = 'noritamy_viewed';
+  var BOOST_THRESHOLD = 0.7;
+
+  try {
+    var lastVisit = localStorage.getItem(VISIT_KEY);
+    var today = new Date().toISOString().split('T')[0];
+    var viewed = [];
+    try { viewed = JSON.parse(localStorage.getItem(VIEWED_KEY)) || []; } catch(e) { viewed = []; }
+    var viewedIds = viewed.map(function(v) { return String(v.id); });
+
+    if (!lastVisit && viewed.length === 0) {
+      localStorage.setItem(VISIT_KEY, today);
+      return;
+    }
+
+    var lastDate = lastVisit ? new Date(lastVisit) : new Date();
+
+    document.addEventListener('DOMContentLoaded', function() {
+      var grid = document.querySelector('.product-grid');
+      if (!grid) return;
+
+      var items = Array.from(grid.querySelectorAll('.product-grid__item[data-product-id]'));
+      if (items.length === 0) return;
+
+      var boostCutoff = Math.floor(items.length * BOOST_THRESHOLD);
+      var collectionProductIds = items.map(function(el) { return el.getAttribute('data-product-id'); });
+
+      // --- Recently Viewed Row ---
+      var rvInCollection = viewed.filter(function(v) {
+        return collectionProductIds.indexOf(String(v.id)) !== -1;
+      });
+
+      if (rvInCollection.length > 0) {
+        var container = document.getElementById('recently-viewed-row');
+        var scroll = document.getElementById('recently-viewed-scroll');
+        var displayedItems = rvInCollection.slice(0, 8);
+        var displayedCount = displayedItems.length;
+
+        displayedItems.forEach(function(v, index) {
+          var card = document.createElement('a');
+          card.href = v.url;
+          card.className = 'recently-viewed__card';
+          card.setAttribute('data-product-id', String(v.id));
+          card.setAttribute('data-product-title', v.title);
+          card.setAttribute('data-items-count', String(displayedCount));
+          card.innerHTML =
+            '<img src="' + v.image + '" alt="' + v.title.replace(/"/g, '') + '" loading="lazy">' +
+            '<div class="recently-viewed__title">' + v.title + '</div>' +
+            '<div class="recently-viewed__price">' + v.price + '</div>';
+          scroll.appendChild(card);
+        });
+
+        // Delegated click handler — survives DOM re-renders, delays navigation for GTM
+        document.getElementById('recently-viewed-row').addEventListener('click', function(e) {
+          // Allow modifier-key clicks and middle-clicks to behave natively
+          if (e.ctrlKey || e.metaKey || e.shiftKey || e.button === 1) return;
+
+          var card = e.target.closest
+            ? e.target.closest('.recently-viewed__card')
+            : (function(el) {
+                while (el && el !== document) {
+                  if (el.classList && el.classList.contains('recently-viewed__card')) return el;
+                  el = el.parentElement;
+                }
+                return null;
+              })(e.target);
+          if (!card) return;
+
+          e.preventDefault();
+          var destinationUrl = card.href;
+
+          window.dataLayer = window.dataLayer || [];
+          window.dataLayer.push({
+            'event': 'click_recently_viewed_item',
+            'feature_version': CURRENT_VERSION,
+            'items_count': Number(card.getAttribute('data-items-count')),
+            'product_id': card.getAttribute('data-product-id'),
+            'product_title': card.getAttribute('data-product-title'),
+            'collection_page': window.location.pathname
+          });
+
+          setTimeout(function() {
+            window.location.href = destinationUrl;
+          }, 150);
+        });
+
+        container.style.display = 'block';
+
+        // Impression event — row successfully rendered
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+          'event': 'view_recently_viewed_section',
+          'feature_version': CURRENT_VERSION,
+          'items_count': displayedCount,
+          'collection_page': window.location.pathname
+        });
+      }
+
+      // --- NEW Badges ---
+      items.forEach(function(item) {
+        var created = item.getAttribute('data-created');
+        if (created && new Date(created) > lastDate) {
+          var badge = document.createElement('div');
+          badge.className = 'visitor-new-badge';
+          badge.textContent = 'NEW';
+          item.style.position = 'relative';
+          item.insertBefore(badge, item.firstChild);
+        }
+      });
+
+      // --- Unseen-First Reorder (top 70% only) ---
+      if (viewedIds.length > 0) {
+        var topItems = items.slice(0, boostCutoff);
+        var bottomItems = items.slice(boostCutoff);
+
+        var unseenTop = [];
+        var seenTop = [];
+        topItems.forEach(function(item) {
+          var pid = item.getAttribute('data-product-id');
+          if (viewedIds.indexOf(pid) === -1) {
+            unseenTop.push(item);
+          } else {
+            seenTop.push(item);
+          }
+        });
+
+        var newOrder = unseenTop.concat(seenTop).concat(bottomItems);
+        newOrder.forEach(function(item) {
+          grid.appendChild(item);
+        });
+      }
+
+      localStorage.setItem(VISIT_KEY, today);
+    });
+  } catch(e) {}
+})();
+</script>
+
+<style>
+  #recently-viewed-row {
+    padding: 16px 0 24px;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    margin-bottom: 16px;
+  }
+  .recently-viewed__header {
+    font-family: var(--font-heading--family, sans-serif);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+    color: var(--color-foreground, #000);
+  }
+  .recently-viewed__scroll {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    padding-bottom: 4px;
+  }
+  .recently-viewed__card {
+    flex: 0 0 120px;
+    scroll-snap-align: start;
+    text-decoration: none;
+    color: var(--color-foreground, #000);
+  }
+  .recently-viewed__card img {
+    width: 120px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 2px;
+  }
+  .recently-viewed__title {
+    font-size: 0.7rem;
+    margin-top: 6px;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .recently-viewed__price {
+    font-size: 0.7rem;
+    opacity: 0.7;
+    margin-top: 2px;
+  }
+  .visitor-new-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 10;
+    background: var(--color-foreground, #000);
+    color: var(--color-background, #fff);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 2px;
+    pointer-events: none;
+  }
+</style>

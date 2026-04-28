@@ -1,0 +1,95 @@
+/* Extracted from assets/base.css */
+
+
+
+.se-swatch-wrapper {
+    width: 20px !important;
+}
+
+.se-type-swatch {
+    width: 20px !important;
+    height: 20px !important;
+}
+
+:not(.se-carousel.se-can-scroll) .se-container {
+    border: none !important;
+}
+
+.se-type-swatch {
+    border-radius: 0 !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+.se-base-option {
+    gap: 7px !important;
+}
+
+.se-type-swatch[aria-checked='true'] {
+    border: 1px solid #000 !important;
+}
+
+.se-option-title {
+    display: flex;
+    column-gap: 4px;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.se-selected-value.se-active {
+    flex-grow: 1;
+}
+
+.se-option-name {
+    font-family: Montserrat;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 13.3px;
+    letter-spacing: -0.1px;
+    vertical-align: middle;
+}
+
+.se-selected-value {
+    font-family: Montserrat;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 13.3px;
+    letter-spacing: -0.1px;
+    vertical-align: middle;
+}
+
+.bss-se-variant {
+    margin-bottom: 0 !important;
+}
+
+product-card .bss-se-variant {
+    padding-left: 11px !important;
+}
+
+
+
+@media (max-width: 576px) {
+    .se-option-name {
+        font-size: 12px;
+        font-family: Montserrat, sans-serif;
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 13px;
+        letter-spacing: -0.1px;
+        vertical-align: middle;
+    }
+
+    .se-type-dropdown {
+        border-top: none !important;
+        border-left: none !important;
+        border-right: none !important;
+        border-radius: 0 !important;
+        font-size: 12px !important;
+        font-weight: 500 !important;
+        border-bottom: 1px solid #EFEAE6 !important;
+    }
+
+    .bss-se-variant {
+        margin-bottom: 0 !important;
+    }
+}
