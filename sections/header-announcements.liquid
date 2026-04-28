@@ -103,20 +103,11 @@
     marquee-component:not([data-disabled]) .marquee__wrapper {
       animation: marquee-motion var(--marquee-speed) linear infinite var(--marquee-direction);
     }
-    html[dir="rtl"] marquee-component:not([data-disabled]) .marquee__wrapper {
-      animation-name: marquee-motion-rtl;
-    }
   }
 
   @keyframes marquee-motion {
     to {
       transform: translate3d(calc(-50% - (var(--marquee-gap) / 2)), 0, 0);
-    }
-  }
-
-  @keyframes marquee-motion-rtl {
-    to {
-      transform: translate3d(calc(50% + (var(--marquee-gap) / 2)), 0, 0);
     }
   }
 

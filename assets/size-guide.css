@@ -46,6 +46,7 @@
   margin: 0;
   font-size: 20px;
   font-weight: 500;
+  opacity: 0;
 }
 
 .size-guide-drawer__close {
@@ -73,23 +74,81 @@
 }
 
 .size-guide-table th {
-  font-weight: 500;
-  text-transform: uppercase;
-  padding: 12px 0;
-  border-bottom: 1px solid #000;
-  font-size: 11px;
-  letter-spacing: 0.5px;
-  vertical-align: bottom;
+  font-weight: 700;
+  padding: 12px 10px;
+  border-top: 1px solid #000;
+  border-bottom: 2px solid #000;
+  font-size: 14px;
+  text-align: center;
+  color: #000;
 }
 
 .size-guide-table td {
-  padding: 8px 0;
-  border-bottom: 1px solid #e5e5e5;
-  color: #333;
+  padding: 12px 10px;
+  border-bottom: 1px solid #000;
+  color: #000;
+  text-align: center;
 }
 
 .size-guide-table tr:last-child td {
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid #000;
+}
+
+.size-guide-container {
+  color: #000;
+}
+
+.size-guide-title {
+  text-align: center;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #000;
+}
+
+.size-guide-instructions {
+  margin-top: 40px;
+  text-align: left;
+}
+
+.size-guide-instructions h4 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: #000;
+}
+
+.size-guide-instructions p {
+  margin-bottom: 20px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #000;
+}
+
+.size-guide-instructions ol {
+  padding-left: 0;
+  list-style-type: none;
+  counter-reset: size-guide-counter;
+}
+
+.size-guide-instructions ol li {
+  margin-bottom: 15px;
+  display: flex;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #000;
+}
+
+.size-guide-instructions ol li::before {
+  content: counter(size-guide-counter) ". ";
+  counter-increment: size-guide-counter;
+  font-weight: 700;
+  margin-right: 8px;
+  white-space: nowrap;
+}
+
+.size-guide-instructions .tip {
+  margin-top: 30px;
 }
 
 /* Footer / Need Help Styles */

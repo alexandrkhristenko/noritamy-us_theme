@@ -159,8 +159,7 @@
               "type": "size-guide",
               "name": "Size Guide",
               "settings": {
-                "button_text": "Size Guide",
-                "video": "shopify://files/videos/WhatsApp Video 2026-04-20 at 19.03.08.mp4"
+                "button_text": "Size Guide"
               },
               "blocks": {}
             },
