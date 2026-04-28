@@ -63,7 +63,7 @@
           "type": "_announcement",
           "name": "t:names.announcement",
           "settings": {
-            "text": "Free Shipping | Up To 12 Payments",
+            "text": "Up To 12 Payments",
             "link": "",
             "font": "var(--font-body--family)",
             "font_size": "1rem",
