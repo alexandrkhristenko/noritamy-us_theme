@@ -871,7 +871,7 @@
                           "type": "text",
                           "name": "t:names.heading",
                           "settings": {
-                            "text": "<p><a href=\"/pages/shipping-returns\" title=\"Shipping & Returns\">Shipping and returns</a></p>",
+                            "text": "<p><a href=\"/policies/refund-policy\" title=\"Refund Policy\">Shipping and returns</a></p>",
                             "width": "fit-content",
                             "max_width": "normal",
                             "alignment": "left",
