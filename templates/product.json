@@ -459,7 +459,7 @@
                       "type": "text",
                       "name": "t:names.text",
                       "settings": {
-                        "text": "<p>Up to 12 Payments</p>",
+                        "text": "<p>Up to 12 Installments</p>",
                         "width": "fit-content",
                         "max_width": "normal",
                         "alignment": "left",
