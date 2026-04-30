@@ -1647,7 +1647,7 @@
                   "type": "text",
                   "name": "t:names.text",
                   "settings": {
-                    "text": "<p>Each Noritamy piece is crafted by hand. From order to delivery, expect to receive your piece within 4-8 business days. For more info see our <a href=\"/pages/shipping-returns\" target=\"_blank\" title=\"Shipping &amp; Returns\">shipping policy</a>.</p>",
+                    "text": "<p>Each Noritamy piece is crafted by hand. From order to delivery, expect to receive your piece within 4-8 business days. For more info see our <a href=\"/policies/shipping-policy\" target=\"_blank\" title=\"Shipping Policy\">shipping policy</a>.</p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
