@@ -110,7 +110,7 @@
     }
 
     .product-badges__badge,
-    .product-grid__item .product-badges::after {
+    .product-grid__item .product-badges::before {
       --badge-font-size: 12px;
       width: fit-content;
       display: flex;
@@ -132,22 +132,12 @@
     }
 
     .product-badges__badge--rectangle,
-    .product-grid__item .product-badges::after {
+    .product-grid__item .product-badges::before {
       padding-block: var(--badge-rectangle-padding-block);
       padding-inline: var(--badge-rectangle-padding-inline);
     }
 
-    /* CSS Counter for Product Grid Items */
-    .product-grid-container,
-    .search-results-container {
-      counter-reset: product-index;
-    }
-    .product-grid__item {
-      counter-increment: product-index;
-    }
-    .product-grid__item .product-badges::after {
-      content: counter(product-index);
-    }
+
 
     .product-badges__strip {
       position: absolute;

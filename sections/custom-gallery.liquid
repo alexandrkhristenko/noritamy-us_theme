@@ -1,0 +1,165 @@
+{% doc %}
+  Custom Gallery section with Masonry/Complex Grid layout.
+  Includes a native HTML dialog modal for full-screen image viewing.
+{% enddoc %}
+
+{{ 'custom-gallery.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'custom-gallery.js' | asset_url }}" defer="defer"></script>
+
+{% if section.settings.enable_container %}
+<div class="section section--page-width page-width-normal">
+{% endif %}
+
+<custom-gallery class="custom-gallery">
+  <div class="custom-gallery__header">
+    {% if section.settings.title != blank %}
+      <h2 class="custom-gallery__title">{{ section.settings.title | escape }}</h2>
+    {% endif %}
+    {% if section.settings.text != blank %}
+      <div class="custom-gallery__text">{{ section.settings.text }}</div>
+    {% endif %}
+  </div>
+
+  <div class="custom-gallery__grid" style="--gallery-cols: {{ section.settings.columns }}; --gallery-gap: {{ section.settings.gap }}px;">
+    {%- assign metafield_images = blank -%}
+    {%- if section.settings.metafield_key != blank -%}
+      {%- assign parts = section.settings.metafield_key | split: '.' -%}
+      {%- assign namespace = parts[0] -%}
+      {%- assign key = parts[1] -%}
+      {%- assign metafield_images = page.metafields[namespace][key].value -%}
+    {%- endif -%}
+
+    {%- if metafield_images != blank -%}
+      {%- for image in metafield_images -%}
+        <button 
+          class="custom-gallery__item" 
+          data-full-url="{{ image | image_url }}" 
+          aria-label="{{ 'accessibility.view_image' | t | default: 'View image' }}"
+        >
+          {{ image | image_url: width: 800 | image_tag: loading: 'lazy' }}
+        </button>
+      {%- endfor -%}
+    {%- else -%}
+      {% for block in section.blocks %}
+        {% if block.settings.image != blank %}
+          <button 
+            class="custom-gallery__item" 
+            data-full-url="{{ block.settings.image | image_url }}" 
+            aria-label="{{ 'accessibility.view_image' | t | default: 'View image' }}"
+            {{ block.shopify_attributes }}
+          >
+            {{ block.settings.image | image_url: width: 800 | image_tag: loading: 'lazy' }}
+          </button>
+        {% endif %}
+      {% endfor %}
+    {%- endif -%}
+  </div>
+
+  <dialog class="custom-gallery__modal">
+    <div class="custom-gallery__modal-content">
+      <button class="custom-gallery__modal-close" aria-label="{{ 'accessibility.close' | t | default: 'Close' }}">&times;</button>
+      <button class="custom-gallery__nav custom-gallery__modal-prev" aria-label="{{ 'accessibility.previous' | t | default: 'Previous' }}">&#10094;</button>
+      <img class="custom-gallery__modal-img" src="" alt="">
+      <button class="custom-gallery__nav custom-gallery__modal-next" aria-label="{{ 'accessibility.next' | t | default: 'Next' }}">&#10095;</button>
+    </div>
+  </dialog>
+</custom-gallery>
+
+{% if section.settings.enable_container %}
+</div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Custom Gallery",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_container",
+      "label": "Enable container",
+      "info": "Constrain the gallery to the page width instead of edge-to-edge.",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Our Gallery"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>A beautiful grid gallery to showcase your images.</p>"
+    },
+    {
+      "type": "text",
+      "id": "metafield_key",
+      "label": "Dynamic Image List Metafield",
+      "info": "Enter the namespace and key (e.g., custom.gallery_images) to automatically load images from a page metafield instead of blocks."
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "label": "Columns on Desktop",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "label": "Gap",
+      "default": 16
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "range",
+          "id": "span_columns",
+          "min": 1,
+          "max": 4,
+          "step": 1,
+          "label": "Column Span",
+          "default": 1
+        },
+        {
+          "type": "range",
+          "id": "span_rows",
+          "min": 1,
+          "max": 4,
+          "step": 1,
+          "label": "Row Span",
+          "default": 1
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Gallery",
+      "blocks": [
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" }
+      ]
+    }
+  ]
+}
+{% endschema %}
