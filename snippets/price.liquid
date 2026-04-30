@@ -25,7 +25,8 @@
 
   # Checks if product handle matches the closest product's handle (i.e. product page)
   # and if the currency code is enabled for product pages
-  if product.handle == closest.product.handle and settings.currency_code_enabled_product_pages
+  # Checks if product handle matches the closest product's handle (i.e. product page)
+  if product.handle == closest.product.handle
     assign price = price | money_with_currency
     assign compare_at_price = compare_at_price | money_with_currency
 

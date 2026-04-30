@@ -48,7 +48,7 @@
   "
   style="{% render 'spacing-style', settings: block.settings %}"
   {{ block.shopify_attributes }}
-  data-product-id="{{ product.id }}"
+  data-product-id="{{ closest.product.id }}"
 >
   <span
     class="product-inventory__status"

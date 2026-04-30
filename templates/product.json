@@ -142,6 +142,19 @@
               },
               "blocks": {}
             },
+            "product_inventory_7bxwGB": {
+              "type": "product-inventory",
+              "name": "t:names.product_inventory",
+              "settings": {
+                "inventory_threshold": 3,
+                "show_inventory_quantity": true,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
             "variant_picker_R3rGDr": {
               "type": "variant-picker",
               "settings": {
@@ -1099,6 +1112,7 @@
             "judge_me_reviews_preview_badge_9hhHMy",
             "reviews",
             "price_a7krng",
+            "product_inventory_7bxwGB",
             "variant_picker_R3rGDr",
             "size_guide_FY9Rkx",
             "buy_buttons_eYQEYi",
