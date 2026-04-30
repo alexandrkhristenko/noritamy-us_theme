@@ -817,7 +817,7 @@
                     "text_Nrxfg8": {
                       "type": "text",
                       "settings": {
-                        "text": "<p>From the moment you place your order, expect to receive your piece within <strong>4-8 business days</strong> — that includes crafting, quality check, and delivery. International orders: <strong>10-14 business days</strong>.</p><p>Shipping in Israel is <strong>free</strong>. International shipping: <strong>$50 USD</strong> via DHL Express.</p><p>Returns are accepted within 14 business days of delivery, provided the item is unworn and in its original condition. For full details, see our <a href=\"/pages/shipping-returns\">shipping &amp; returns policy</a>.</p>",
+                        "text": "<p>From the moment you place your order, expect to receive your piece within <strong>4-8 business days</strong> — that includes crafting, quality check, and delivery. International orders: <strong>10-14 business days</strong>.</p><p>Shipping in Israel is <strong>free</strong>. International shipping: <strong>$50 USD</strong> via DHL Express.</p><p>Returns are accepted within 14 business days of delivery, provided the item is unworn and in its original condition. For full details, see our <a href=\"/policies/refund-policy\" title=\"Refund Policy\">shipping & returns policy</a>.</p>",
                         "width": "100%",
                         "max_width": "normal",
                         "alignment": "left",
