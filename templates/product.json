@@ -1567,7 +1567,7 @@
                 "text_gJHkg3": {
                   "type": "text",
                   "settings": {
-                    "text": "<p>For Return policy please read <a href=\"/pages/shipping-returns\" target=\"_blank\" title=\"Shipping & Returns\">here</a> </p><p></p><p></p>",
+                    "text": "<p>For Return policy please read <a href=\"/policies/refund-policy\" target=\"_blank\" title=\"Refund Policy\">here</a> </p><p></p><p></p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
