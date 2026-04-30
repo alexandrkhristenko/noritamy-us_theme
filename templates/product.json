@@ -1729,7 +1729,7 @@
                   "type": "text",
                   "name": "t:names.text",
                   "settings": {
-                    "text": "<p>Shipping within Israel is free! International shipping is $50 USD via DHL Express.</p>",
+                    "text": "<p>Economy Service (will be delivered in the US using USPS) - 5-14 business days once sent, fully traceable - free shipping <br/>DHL Express - 2-6 business days once sent, fully traceable - $15 <br/></p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
