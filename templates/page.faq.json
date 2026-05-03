@@ -483,6 +483,310 @@
               "block_order": [
                 "text_dC8hDg"
               ]
+            },
+            "accordion_row_eD3kRv": {
+              "type": "_accordion-row",
+              "settings": {
+                "heading": "Can I cancel my order?",
+                "open_by_default": false,
+                "icon": "none",
+                "width": 20
+              },
+              "blocks": {
+                "text_fD3kRw": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>You may cancel your order within <strong>48 hours</strong> of placing it by contacting us at <a href=\"mailto:info@noritamy.com\">info@noritamy.com</a>. After 48 hours, your order may already be in production or shipped, and cancellation may not be possible. In that case, you can return the item once received under our standard return policy.</p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "color": "var(--color-foreground)",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  }
+                }
+              },
+              "block_order": [
+                "text_fD3kRw"
+              ]
+            },
+            "accordion_row_gF5mTx": {
+              "type": "_accordion-row",
+              "settings": {
+                "heading": "Do you ship internationally?",
+                "open_by_default": false,
+                "icon": "none",
+                "width": 20
+              },
+              "blocks": {
+                "text_hF5mTy": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>Our US store is optimized for <strong>domestic US shipping</strong>. For international orders, please visit our main website at <a href=\"https://noritamy.co.il\" target=\"_blank\">noritamy.co.il</a>, where we offer worldwide shipping via DHL Express.</p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "color": "var(--color-foreground)",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  }
+                }
+              },
+              "block_order": [
+                "text_hF5mTy"
+              ]
+            },
+            "accordion_row_iH7oVz": {
+              "type": "_accordion-row",
+              "settings": {
+                "heading": "What if my item arrives damaged or defective?",
+                "open_by_default": false,
+                "icon": "none",
+                "width": 20
+              },
+              "blocks": {
+                "text_jH7oWa": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>Please inspect your order upon delivery. If your item arrives <strong>defective, damaged, or incorrect</strong>, contact us immediately at <a href=\"mailto:info@noritamy.com\">info@noritamy.com</a> with photos of the issue and your order number. We will arrange a replacement or full refund as quickly as possible.</p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "color": "var(--color-foreground)",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  }
+                }
+              },
+              "block_order": [
+                "text_jH7oWa"
+              ]
+            },
+            "accordion_row_kJ9qXb": {
+              "type": "_accordion-row",
+              "settings": {
+                "heading": "Can I exchange an item?",
+                "open_by_default": false,
+                "icon": "none",
+                "width": 20
+              },
+              "blocks": {
+                "text_lJ9qXc": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>We do not offer direct exchanges. To get a different item, please <strong>return the original piece</strong> under our 30-day return policy, and then place a new order for the item you prefer. This ensures the fastest processing for you.</p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "color": "var(--color-foreground)",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  }
+                }
+              },
+              "block_order": [
+                "text_lJ9qXc"
+              ]
+            },
+            "accordion_row_mL1sZd": {
+              "type": "_accordion-row",
+              "settings": {
+                "heading": "How do I measure my ring size at home?",
+                "open_by_default": false,
+                "icon": "none",
+                "width": 20
+              },
+              "blocks": {
+                "text_nL1sZe": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>There are two easy methods:</p><ul><li><strong>Use a ring you already own:</strong> Choose a ring that fits the finger you want to measure. Measure the inner diameter in millimeters and match it to our size chart on the <a href=\"/pages/size-guide\">Size Guide</a> page.</li><li><strong>Use a paper strip or string:</strong> Wrap a thin strip of paper or soft string around the base of your finger. Mark where it overlaps, then measure the length in millimeters to find your circumference.</li></ul><p><strong>Tip:</strong> Measure at the end of the day when fingers are at their largest, and avoid measuring when your hands are cold. If you\u2019re between sizes, we recommend sizing up.</p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "color": "var(--color-foreground)",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  }
+                }
+              },
+              "block_order": [
+                "text_nL1sZe"
+              ]
+            },
+            "accordion_row_oN3uBf": {
+              "type": "_accordion-row",
+              "settings": {
+                "heading": "Do you offer custom or personalized pieces?",
+                "open_by_default": false,
+                "icon": "none",
+                "width": 20
+              },
+              "blocks": {
+                "text_pN3uBg": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>Yes! We work with clients to develop <strong>custom-made pieces</strong> upon request. Whether you have a specific design in mind or want to modify an existing piece, reach out to us at <a href=\"mailto:info@noritamy.com\">info@noritamy.com</a> to discuss your vision. Please note that custom and personalized orders are <strong>final sale</strong> and cannot be returned.</p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "color": "var(--color-foreground)",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  }
+                }
+              },
+              "block_order": [
+                "text_pN3uBg"
+              ]
+            },
+            "accordion_row_qP5wDh": {
+              "type": "_accordion-row",
+              "settings": {
+                "heading": "Are your jewelry pieces nickel-free?",
+                "open_by_default": false,
+                "icon": "none",
+                "width": 20
+              },
+              "blocks": {
+                "text_rP5wDi": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>Yes. All Noritamy jewelry is <strong>100% nickel-free</strong>, making our pieces suitable for those with sensitive skin or nickel allergies.</p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "color": "var(--color-foreground)",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  }
+                }
+              },
+              "block_order": [
+                "text_rP5wDi"
+              ]
+            },
+            "accordion_row_sR7yFj": {
+              "type": "_accordion-row",
+              "settings": {
+                "heading": "Do you offer a re-plating service?",
+                "open_by_default": false,
+                "icon": "none",
+                "width": 20
+              },
+              "blocks": {
+                "text_tR7yFk": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>Yes. Over time, gold plating may naturally fade with regular wear. We offer a <strong>professional re-plating service</strong> to restore your piece to its original luster. Contact us at <a href=\"mailto:info@noritamy.com\">info@noritamy.com</a> for details and pricing.</p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "color": "var(--color-foreground)",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  }
+                }
+              },
+              "block_order": [
+                "text_tR7yFk"
+              ]
             }
           },
           "block_order": [
@@ -495,7 +799,15 @@
             "accordion_row_sT9pLk",
             "accordion_row_vW2nJh",
             "accordion_row_yZ5kGf",
-            "accordion_row_bC8hDe"
+            "accordion_row_bC8hDe",
+            "accordion_row_eD3kRv",
+            "accordion_row_gF5mTx",
+            "accordion_row_iH7oVz",
+            "accordion_row_kJ9qXb",
+            "accordion_row_mL1sZd",
+            "accordion_row_oN3uBf",
+            "accordion_row_qP5wDh",
+            "accordion_row_sR7yFj"
           ]
         }
       },
