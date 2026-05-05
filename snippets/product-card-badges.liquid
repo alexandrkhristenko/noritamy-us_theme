@@ -44,9 +44,11 @@
     {%- endfor -%}
   {%- endif -%}
   {%- if is_new -%}
+{% comment %}
     <div class="product-badges__badge product-badges__badge--rectangle product-badges__badge--new color-{{ settings.badge_sale_color_scheme }}">
       NEW
     </div>
+{% endcomment %}
   {%- endif -%}
 
   {%- if product.compare_at_price_max > product.price -%}
@@ -63,17 +65,21 @@
     {%- endif -%}
   {%- endfor -%}
   {%- if is_best_seller -%}
+{% comment %}
     <div class="product-badges__badge product-badges__badge--rectangle color-{{ settings.badge_sale_color_scheme }}">
       BEST SELLER
     </div>
+{% endcomment %}
   {%- endif -%}
 
   {%- for tag in product.tags -%}
     {%- if tag contains 'label_' -%}
       {%- assign badge_text = tag | split: 'label_' | last -%}
+{% comment %}
       <div class="product-badges__badge product-badges__badge--rectangle color-{{ settings.badge_sale_color_scheme }}">
         {{ badge_text }}
       </div>
+{% endcomment %}
     {%- endif -%}
   {%- endfor -%}
 </div>
