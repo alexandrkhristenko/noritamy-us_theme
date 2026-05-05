@@ -18,7 +18,7 @@
           "type": "text",
           "name": "t:names.heading",
           "settings": {
-            "text": "<h2>Step Into Our World</h2>",
+            "text": "<h2>Step Into Our World<\/h2>",
             "width": "100%",
             "max_width": "normal",
             "alignment": "center",
@@ -43,7 +43,7 @@
         "text_XNPRHy": {
           "type": "text",
           "settings": {
-            "text": "<p>Welcome to Noritamy where bold design meets timeless craftsmanship. </p><p>Join our inner circle and be the first to hear about exclusive drops, private events, and what’s happening behind the scenes. </p><p>As a little something to say hello, enjoy 15% off your first purchase. Because great style begins with a good connection.</p>",
+            "text": "<p>Welcome to Noritamy where bold design meets timeless craftsmanship. <\/p><p>Join our inner circle and be the first to hear about exclusive drops, private events, and whatâ€™s happening behind the scenes. <\/p><p>As a little something to say hello, enjoy 15% off your first purchase. Because great style begins with a good connection.<\/p>",
             "width": "100%",
             "max_width": "none",
             "alignment": "center",
@@ -131,7 +131,7 @@
               "type": "group",
               "name": "t:names.group",
               "settings": {
-                "link": "https://www.instagram.com/noritamy/",
+                "link": "https:\/\/www.instagram.com\/noritamy\/",
                 "open_in_new_tab": false,
                 "content_direction": "row",
                 "vertical_on_mobile": true,
@@ -172,7 +172,7 @@
                   "settings": {
                     "icon": "instagram",
                     "width": 48,
-                    "link": "https://www.instagram.com/noritamy/",
+                    "link": "https:\/\/www.instagram.com\/noritamy\/",
                     "open_in_new_tab": false
                   },
                   "blocks": {}
@@ -213,7 +213,7 @@
               "type": "group",
               "name": "t:names.group",
               "settings": {
-                "link": "https://www.facebook.com/Noritamy",
+                "link": "https:\/\/www.facebook.com\/Noritamy",
                 "open_in_new_tab": false,
                 "content_direction": "row",
                 "vertical_on_mobile": false,
@@ -254,7 +254,7 @@
                   "settings": {
                     "icon": "facebook",
                     "width": 48,
-                    "link": "https://www.facebook.com/Noritamy",
+                    "link": "https:\/\/www.facebook.com\/Noritamy",
                     "open_in_new_tab": false
                   },
                   "blocks": {}
@@ -323,7 +323,7 @@
         "color_scheme": "scheme-4",
         "background_media": "none",
         "video_position": "cover",
-        "background_image": "shopify://shop_images/1-scaled.jpg",
+        "background_image": "shopify:\/\/shop_images\/1-scaled.jpg",
         "background_image_position": "cover",
         "border": "none",
         "border_width": 1,
@@ -473,7 +473,7 @@
                       "type": "text",
                       "name": "t:names.heading",
                       "settings": {
-                        "text": "<h3>Contact us</h3>",
+                        "text": "<h3>Contact us<\/h3>",
                         "width": "fit-content",
                         "max_width": "normal",
                         "alignment": "left",
@@ -539,7 +539,7 @@
                           "name": "t:names.icon",
                           "settings": {
                             "icon": "return",
-                            "image_upload": "shopify://shop_images/mail-account_17821831.svg",
+                            "image_upload": "shopify:\/\/shop_images\/mail-account_17821831.svg",
                             "width": 20,
                             "link": "",
                             "open_in_new_tab": false
@@ -550,7 +550,7 @@
                           "type": "text",
                           "name": "t:names.heading",
                           "settings": {
-                            "text": "<p><a href=\"mailto:hey@noritamy.com\" title=\"mailto:hey@noritamy.com\">hey@noritamy.com</a></p>",
+                            "text": "<p><a href=\"mailto:hey@noritamy.com\" title=\"mailto:hey@noritamy.com\">hey@noritamy.com<\/a><\/p>",
                             "width": "fit-content",
                             "max_width": "normal",
                             "alignment": "left",
@@ -622,7 +622,7 @@
                           "name": "t:names.icon",
                           "settings": {
                             "icon": "whatsapp",
-                            "image_upload": "shopify://shop_images/phone_2874811.svg",
+                            "image_upload": "shopify:\/\/shop_images\/phone_2874811.svg",
                             "width": 20,
                             "link": "",
                             "open_in_new_tab": false
@@ -633,7 +633,7 @@
                           "type": "text",
                           "name": "t:names.heading",
                           "settings": {
-                            "text": "<p><a href=\"tel:077-645-0860\" title=\"tel:077-645-0860\">077-645-0860</a></p>",
+                            "text": "<p><a href=\"tel:+97277645860\" title=\"tel:+97277645860\">+972-77-645-0860<\/a><\/p>",
                             "width": "fit-content",
                             "max_width": "normal",
                             "alignment": "left",
@@ -715,7 +715,7 @@
                           "type": "text",
                           "name": "t:names.heading",
                           "settings": {
-                            "text": "<p><a href=\"https://www.waze.com/en/live-map/directions/il/tel-aviv-district/tel-aviv-yafo/herzl-st-20?place=ChIJr4fWJZxMHRURxIlIZcL8RXc\" target=\"_blank\" title=\"https://www.waze.com/en/live-map/directions/il/tel-aviv-district/tel-aviv-yafo/herzl-st-20?place=ChIJr4fWJZxMHRURxIlIZcL8RXc\">20 Herzl st, Tel Aviv, 1st Floor</a></p>",
+                            "text": "<p><a href=\"https:\/\/www.waze.com\/en\/live-map\/directions\/il\/tel-aviv-district\/tel-aviv-yafo\/herzl-st-20?place=ChIJr4fWJZxMHRURxIlIZcL8RXc\" target=\"_blank\" title=\"https:\/\/www.waze.com\/en\/live-map\/directions\/il\/tel-aviv-district\/tel-aviv-yafo\/herzl-st-20?place=ChIJr4fWJZxMHRURxIlIZcL8RXc\">20 Herzl st, Tel Aviv, 1st Floor<\/a><\/p>",
                             "width": "fit-content",
                             "max_width": "normal",
                             "alignment": "left",
@@ -806,7 +806,7 @@
                       "type": "text",
                       "name": "t:names.heading",
                       "settings": {
-                        "text": "<h3>Support</h3>",
+                        "text": "<h3>Support<\/h3>",
                         "width": "fit-content",
                         "max_width": "normal",
                         "alignment": "left",
@@ -871,7 +871,7 @@
                           "type": "text",
                           "name": "t:names.heading",
                           "settings": {
-                            "text": "<p><a href=\"/policies/refund-policy\" title=\"Refund Policy\">Shipping and returns</a></p>",
+                            "text": "<p><a href=\"\/policies\/refund-policy\" title=\"Refund Policy\">Shipping and returns<\/a><\/p>",
                             "width": "fit-content",
                             "max_width": "normal",
                             "alignment": "left",
@@ -897,7 +897,7 @@
                           "type": "text",
                           "name": "t:names.heading",
                           "settings": {
-                            "text": "<p><a href=\"/pages/how-to-measure-your-fingers\" title=\"How to measure your fingers\">How to measure your fingers</a></p>",
+                            "text": "<p><a href=\"\/pages\/how-to-measure-your-fingers\" title=\"How to measure your fingers\">How to measure your fingers<\/a><\/p>",
                             "width": "fit-content",
                             "max_width": "normal",
                             "alignment": "left",
@@ -923,7 +923,7 @@
                           "type": "text",
                           "name": "t:names.heading",
                           "settings": {
-                            "text": "<p><a href=\"/policies/terms-of-service\" title=\"Terms of Service\">Terms of service</a></p>",
+                            "text": "<p><a href=\"\/policies\/terms-of-service\" title=\"Terms of Service\">Terms of service<\/a><\/p>",
                             "width": "fit-content",
                             "max_width": "normal",
                             "alignment": "left",
@@ -949,7 +949,7 @@
                           "type": "text",
                           "name": "t:names.heading",
                           "settings": {
-                            "text": "<p><a href=\"/pages/ccpa-privacy-notice\" title=\"CCPA PRIVACY NOTICE\">CCPA Privacy Notice</a></p>",
+                            "text": "<p><a href=\"\/pages\/ccpa-privacy-notice\" title=\"CCPA PRIVACY NOTICE\">CCPA Privacy Notice<\/a><\/p>",
                             "width": "fit-content",
                             "max_width": "normal",
                             "alignment": "left",
@@ -1040,7 +1040,7 @@
                       "type": "text",
                       "name": "t:names.heading",
                       "settings": {
-                        "text": "<h3>Company</h3>",
+                        "text": "<h3>Company<\/h3>",
                         "width": "fit-content",
                         "max_width": "normal",
                         "alignment": "left",
@@ -1105,7 +1105,7 @@
                           "type": "text",
                           "name": "t:names.heading",
                           "settings": {
-                            "text": "<p><a href=\"/pages/about-our-materials-and-gold-plating\" title=\"About our materials and gold plating\">About our materials and gold plating</a></p>",
+                            "text": "<p><a href=\"\/pages\/about-our-materials-and-gold-plating\" title=\"About our materials and gold plating\">About our materials and gold plating<\/a><\/p>",
                             "width": "fit-content",
                             "max_width": "normal",
                             "alignment": "left",
@@ -1131,7 +1131,7 @@
                           "type": "text",
                           "name": "t:names.heading",
                           "settings": {
-                            "text": "<p><a href=\"/pages/about-us\" title=\"About us\">About us</a></p>",
+                            "text": "<p><a href=\"\/pages\/about-us\" title=\"About us\">About us<\/a><\/p>",
                             "width": "fit-content",
                             "max_width": "normal",
                             "alignment": "left",
@@ -1157,7 +1157,7 @@
                           "type": "text",
                           "name": "t:names.heading",
                           "settings": {
-                            "text": "<p><a href=\"/pages/press-clips\" title=\"As Seen On\">Spotted in Noritamy</a></p>",
+                            "text": "<p><a href=\"\/pages\/press-clips\" title=\"As Seen On\">Spotted in Noritamy<\/a><\/p>",
                             "width": "fit-content",
                             "max_width": "normal",
                             "alignment": "left",
@@ -1183,7 +1183,7 @@
                           "type": "text",
                           "name": "t:names.heading",
                           "settings": {
-                            "text": "<p><a href=\"/pages/i-love-my-noritamy\" title=\"I Love My Noritamy\">I love my Noritamy</a></p>",
+                            "text": "<p><a href=\"\/pages\/i-love-my-noritamy\" title=\"I Love My Noritamy\">I love my Noritamy<\/a><\/p>",
                             "width": "fit-content",
                             "max_width": "normal",
                             "alignment": "left",
@@ -1209,7 +1209,7 @@
                           "type": "text",
                           "name": "t:names.text",
                           "settings": {
-                            "text": "<p><a href=\"/pages/contact\" title=\"Contact\">Contact Us</a></p>",
+                            "text": "<p><a href=\"\/pages\/contact\" title=\"Contact\">Contact Us<\/a><\/p>",
                             "width": "fit-content",
                             "max_width": "normal",
                             "alignment": "left",
@@ -1301,7 +1301,7 @@
                       "type": "text",
                       "name": "t:names.heading",
                       "settings": {
-                        "text": "<h3>Keep in touch</h3>",
+                        "text": "<h3>Keep in touch<\/h3>",
                         "width": "fit-content",
                         "max_width": "normal",
                         "alignment": "left",
@@ -1405,7 +1405,7 @@
                               "type": "text",
                               "name": "t:names.heading",
                               "settings": {
-                                "text": "<h5>Join our newsletter</h5>",
+                                "text": "<h5>Join our newsletter<\/h5>",
                                 "width": "fit-content",
                                 "max_width": "normal",
                                 "alignment": "left",
@@ -1503,7 +1503,7 @@
                               "settings": {
                                 "icon": "instagram",
                                 "width": 32,
-                                "link": "https://www.instagram.com/noritamy/",
+                                "link": "https:\/\/www.instagram.com\/noritamy\/",
                                 "open_in_new_tab": false
                               },
                               "blocks": {}
@@ -1514,7 +1514,7 @@
                               "settings": {
                                 "icon": "facebook",
                                 "width": 32,
-                                "link": "https://www.facebook.com/Noritamy",
+                                "link": "https:\/\/www.facebook.com\/Noritamy",
                                 "open_in_new_tab": false
                               },
                               "blocks": {}
@@ -1630,7 +1630,7 @@
                       "type": "_social-link",
                       "name": "Facebook",
                       "settings": {
-                        "link": "https://www.facebook.com/shopify"
+                        "link": "https:\/\/www.facebook.com\/shopify"
                       },
                       "blocks": {}
                     },
@@ -1638,7 +1638,7 @@
                       "type": "_social-link",
                       "name": "Instagram",
                       "settings": {
-                        "link": "https://www.instagram.com/shopify/#"
+                        "link": "https:\/\/www.instagram.com\/shopify\/#"
                       },
                       "blocks": {}
                     },
@@ -1647,16 +1647,16 @@
                       "name": "TikTok",
                       "disabled": true,
                       "settings": {
-                        "link": "https://www.tiktok.com/@shopify"
+                        "link": "https:\/\/www.tiktok.com\/@shopify"
                       },
                       "blocks": {}
                     },
                     "social_link_AqGGwy": {
                       "type": "_social-link",
-                      "name": "X / Twitter",
+                      "name": "X \/ Twitter",
                       "disabled": true,
                       "settings": {
-                        "link": "https://twitter.com/shopify"
+                        "link": "https:\/\/twitter.com\/shopify"
                       },
                       "blocks": {}
                     },
@@ -1665,7 +1665,7 @@
                       "name": "YouTube",
                       "disabled": true,
                       "settings": {
-                        "link": "https://www.youtube.com/shopify"
+                        "link": "https:\/\/www.youtube.com\/shopify"
                       },
                       "blocks": {}
                     }
