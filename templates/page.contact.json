@@ -16,7 +16,7 @@
           "type": "text",
           "name": "t:names.title",
           "settings": {
-            "text": "<h2>{{ closest.page.title }}</h2>",
+            "text": "<h2>{{ closest.page.title }}<\/h2>",
             "width": "100%",
             "max_width": "normal",
             "alignment": "center",
@@ -236,7 +236,7 @@
                 "text_RmnE8f": {
                   "type": "text",
                   "settings": {
-                    "text": "<h2>Location</h2>",
+                    "text": "<h2>Location<\/h2>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "center",
@@ -261,7 +261,7 @@
                 "text_VHmda7": {
                   "type": "text",
                   "settings": {
-                    "text": "<p><a href=\"https://www.waze.com/en/live-map/directions/il/tel-aviv-district/tel-aviv-yafo/herzl-st-20?place=ChIJr4fWJZxMHRURxIlIZcL8RXc\" target=\"_blank\" title=\"https://www.waze.com/en/live-map/directions/il/tel-aviv-district/tel-aviv-yafo/herzl-st-20?place=ChIJr4fWJZxMHRURxIlIZcL8RXc\">20 Herzl st, Tel Aviv</a></p>",
+                    "text": "<p><a href=\"https:\/\/www.waze.com\/en\/live-map\/directions\/il\/tel-aviv-district\/tel-aviv-yafo\/herzl-st-20?place=ChIJr4fWJZxMHRURxIlIZcL8RXc\" target=\"_blank\" title=\"https:\/\/www.waze.com\/en\/live-map\/directions\/il\/tel-aviv-district\/tel-aviv-yafo\/herzl-st-20?place=ChIJr4fWJZxMHRURxIlIZcL8RXc\">20 Herzl st, Tel Aviv<\/a><\/p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "center",
@@ -337,7 +337,7 @@
               "type": "icon",
               "settings": {
                 "icon": "whatsapp",
-                "image_upload": "shopify://shop_images/mail-account_17821831.svg",
+                "image_upload": "shopify:\/\/shop_images\/mail-account_17821831.svg",
                 "width": 32,
                 "link": "",
                 "open_in_new_tab": false
@@ -385,7 +385,7 @@
                 "text_4efN9y": {
                   "type": "text",
                   "settings": {
-                    "text": "<h2>Contact</h2>",
+                    "text": "<h2>Contact<\/h2>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "center",
@@ -410,7 +410,7 @@
                 "text_GLc3B9": {
                   "type": "text",
                   "settings": {
-                    "text": "<p><a href=\"mailto:hey@noritamy.com\" title=\"mailto:hey@noritamy.com\">hey@noritamy.com</a></p>",
+                    "text": "<p><a href=\"mailto:hey@noritamy.com\" title=\"mailto:hey@noritamy.com\">hey@noritamy.com<\/a><\/p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "center",
@@ -486,7 +486,7 @@
               "type": "icon",
               "settings": {
                 "icon": "silhouette",
-                "image_upload": "shopify://shop_images/phone_2874811.svg",
+                "image_upload": "shopify:\/\/shop_images\/phone_2874811.svg",
                 "width": 32,
                 "link": "",
                 "open_in_new_tab": false
@@ -534,7 +534,7 @@
                 "text_UBwzRw": {
                   "type": "text",
                   "settings": {
-                    "text": "<h2>Call</h2>",
+                    "text": "<h2>Call<\/h2>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "center",
@@ -559,7 +559,7 @@
                 "text_jHFnUX": {
                   "type": "text",
                   "settings": {
-                    "text": "<p><a href=\"tel:077-645-0860\" title=\"tel:077-645-0860\">077-645-0860</a></p>",
+                    "text": "<p><a href=\"tel:+97277645860\" title=\"tel:+97277645860\">+972-77-645-0860<\/a><\/p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "center",
@@ -682,7 +682,7 @@
                 "text_RfHJ9F": {
                   "type": "text",
                   "settings": {
-                    "text": "<p>Working Hours</p>",
+                    "text": "<p>Working Hours<\/p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "center",
@@ -707,7 +707,7 @@
                 "text_rKpfGe": {
                   "type": "text",
                   "settings": {
-                    "text": "<p>Sunday-Thursday 09:30-17:30</p>",
+                    "text": "<p>Sunday-Thursday 09:30-17:30<\/p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "center",
@@ -784,7 +784,7 @@
           "type": "text",
           "name": "t:names.text",
           "settings": {
-            "text": "<p>For other days/ hours please <a href=\"mailto:info@noritamy.com\" title=\"mailto:info@noritamy.com\"><strong>contact us</strong></a> to schedule.</p>",
+            "text": "<p>For other days\/ hours please <a href=\"mailto:info@noritamy.com\" title=\"mailto:info@noritamy.com\"><strong>contact us<\/strong><\/a> to schedule.<\/p>",
             "width": "100%",
             "max_width": "none",
             "alignment": "center",
@@ -842,11 +842,11 @@
     "custom_liquid_xxJWnT": {
       "type": "custom-liquid",
       "custom_css": [
-        "iframe {width: 100%; aspect-ratio: 16/9; height: 100%;}"
+        "iframe {width: 100%; aspect-ratio: 16\/9; height: 100%;}"
       ],
       "name": "t:names.custom_liquid",
       "settings": {
-        "custom_liquid": "<iframe src=\"https://embed.waze.com/iframe?zoom=16&lat=32.061352&lon=34.770231&ct=livemap\" width=\"600\" height=\"450\" allowfullscreen></iframe>",
+        "custom_liquid": "<iframe src=\"https:\/\/embed.waze.com\/iframe?zoom=16&lat=32.061352&lon=34.770231&ct=livemap\" width=\"600\" height=\"450\" allowfullscreen><\/iframe>",
         "color_scheme": "",
         "section_width": "page-width",
         "padding-block-start": 0,
