@@ -4630,3 +4630,7 @@ div>div.group-block-content.layout-panel-flex.layout-panel-flex--column>div:nth-
 .product-badges::before {
     display:none;
 }
+
+.product-grid__item .product-badges::before {
+    display: none;
+}
