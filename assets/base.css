@@ -4632,5 +4632,5 @@ div>div.group-block-content.layout-panel-flex.layout-panel-flex--column>div:nth-
 }
 
 .product-grid__item .product-badges::before {
-    display: none;
+    display: none !important ;
 }
