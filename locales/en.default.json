@@ -287,5 +287,12 @@
     "book_date": "Book a Design Date",
     "text_us": "Text us",
     "button_text": "Size Guide"
+  },
+  "shopify": {
+    "checkout": {
+      "marketing": {
+        "accept_sms_checkbox_label": "By checking this box, you agree to receive recurring automated marketing messages, including cart reminders from Veridian Flow LLC, at the phone number provided. Consent is not a condition of purchase. Reply STOP to unsubscribe or click the unsubscribe link (where applicable). Reply HELP for help. Message frequency varies. Msg & data rates may apply. View our <a href=\"https://www.noritamy.com/policies/privacy-policy\"> Privacy Policy</a> and <a href=\"https://www.noritamy.com/policies/terms-of-service\">Terms of Service </a>"
+      }
+    }
   }
 }
