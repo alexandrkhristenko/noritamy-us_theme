@@ -1,46 +1,28 @@
-{% doc %}
-  Redirects users from the global domain to the regional IL domain based on their country.
-  Overrides the redirect if the '?no_redirect=true' parameter is in the URL, storing this preference in a cookie.
-{% enddoc %}
 <script>
   (function() {
     var search = window.location.search;
-    
-    // Check if the user has requested no redirection
+
     if (search.indexOf('no_redirect=true') > -1) {
-      document.cookie = "no_redirect=true; path=/; max-age=2592000; SameSite=Lax"; // 30 days
+      document.cookie = "no_redirect=true; path=/; max-age=2592000; SameSite=Lax";
       return;
     }
-    
-    // Check if the no_redirect cookie exists
+
     if (document.cookie.indexOf('no_redirect=true') > -1) {
       return;
     }
 
     var currentHost = window.location.hostname;
-    
-    // Only apply redirect on the global domains
+
     if (currentHost === 'www.noritamy.com' || currentHost === 'noritamy.com') {
-      // Use Liquid to get the country code so it's available instantly,
-      // avoiding the need to wait for Shopify object initialization.
       var country = {{ localization.country.iso_code | json }};
-      
-      if (country) {
+
+      if (country === 'IL') {
         var currentPath = window.location.pathname;
-        var newUrl = '';
-        
-        if (country === 'IL') {
-          newUrl = 'https://www.noritamy.co.il' + currentPath + search;
-        } else {
-          if (currentPath === '/') {
-            currentPath = '';
-          }
-          newUrl = 'https://www.noritamy.co.il/en' + currentPath + search;
-        }
-        
-        // Use replace() to avoid keeping the old URL in the browser history
+        var newUrl = 'https://www.noritamy.co.il' + currentPath + search;
         window.location.replace(newUrl);
       }
+      // Для всех остальных стран скрипт просто завершает работу,
+      // и пользователь/поисковик остается на .com
     }
   })();
 </script>

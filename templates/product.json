@@ -216,7 +216,7 @@
               "name": "Shipping Estimate",
               "settings": {
                 "text_prefix": "Handmade to order, Receive by",
-                "min_days": 4,
+                "min_days": 2,
                 "max_days": 8
               },
               "blocks": {}
@@ -1104,6 +1104,15 @@
                 "group_hLQxMW",
                 "group_pLfRUV"
               ]
+            },
+            "share_buttons_jWxPWP": {
+              "type": "share-buttons",
+              "name": "Share buttons",
+              "settings": {
+                "padding-block-start": 16,
+                "padding-block-end": 16
+              },
+              "blocks": {}
             }
           },
           "block_order": [
@@ -1119,7 +1128,8 @@
             "group_Q4eVWb",
             "product_description_Uxa63K",
             "accordion_Yd4U4w",
-            "group_RF8QBV"
+            "group_RF8QBV",
+            "share_buttons_jWxPWP"
           ]
         }
       },

@@ -50,6 +50,8 @@
     "enable_cart_upsell_popup": false,
     "cart_drawer_slider_title": "You may also like...",
     "cart_drawer_slider_collection": "1500-nis-and-up",
+    "cart_drawer_empty_slider_collection": "necklaces",
+    "cart_drawer_slider_autoplay": true,
     "inputs_border_radius": 0,
     "type_preset": "paragraph",
     "popover_border": "none",
@@ -108,11 +110,6 @@
       "855628211100114053": {
         "type": "shopify://apps/klaviyo-email-marketing-sms/blocks/klaviyo-onsite-embed/2632fe16-c075-4321-a88b-50b567f42507",
         "disabled": false,
-        "settings": {}
-      },
-      "9741741230116411038": {
-        "type": "shopify://apps/optis-color-swatch/blocks/bss-se-script/ad128d8f-5ebd-45ad-954a-7dd4c4226109",
-        "disabled": true,
         "settings": {}
       }
     },
