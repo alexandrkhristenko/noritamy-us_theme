@@ -1819,6 +1819,21 @@
         "label": "Collection"
       },
       {
+        "type": "header",
+        "content": "Empty Cart Drawer Slider"
+      },
+      {
+        "type": "text",
+        "id": "cart_drawer_empty_slider_title",
+        "label": "Empty Cart Title",
+        "default": "RECOMMENDED FOR YOU"
+      },
+      {
+        "type": "collection",
+        "id": "cart_drawer_empty_slider_collection",
+        "label": "Empty Cart Collection"
+      },
+      {
         "type": "checkbox",
         "id": "cart_drawer_slider_autoplay",
         "label": "Autoplay",

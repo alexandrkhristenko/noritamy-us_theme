@@ -1,0 +1,39 @@
+.share-buttons {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+}
+
+.share-buttons__label {
+  font-weight: var(--font-body-weight, 500);
+}
+
+.list-social {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.list-social__link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: currentColor;
+  transition: opacity var(--duration-default) ease;
+  border-radius: 50%;
+}
+
+.list-social__link:hover {
+  opacity: 0.7;
+}
+
+.list-social__link svg {
+  width: 2rem;
+  height: 2rem;
+}
