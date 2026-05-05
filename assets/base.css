@@ -4626,3 +4626,7 @@ div>div.group-block-content.layout-panel-flex.layout-panel-flex--column>div:nth-
         bottom: 60px;
     }
 }
+
+.product-badges::before {
+    display:none;
+}
