@@ -171,23 +171,7 @@
     {% if settings.quick_add or settings.mobile_quick_add %}
       {% render 'quick-add-modal' %}
     {% endif %}
-    <a href="https://api.whatsapp.com/send?phone=972544559091" class="floating__btn" aria-label="{{ 'accessibility.whatsapp' | t | default: 'Contact us on WhatsApp' }}">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 175 176" fill="none">
-        <defs>
-            <linearGradient id="a" x1="86" y1="33" x2="87" y2="137" gradientUnits="userSpaceOnUse">
-                <stop offset="0" stop-color="#57d163"/>
-                <stop offset="1" stop-color="#23b33a"/>
-            </linearGradient>
-            <filter id="b" width="1.2" height="1.2" x="-.1" y="-.1" color-interpolation-filters="sRGB">
-                <feGaussianBlur stdDeviation="3.5"/>
-            </filter>
-        </defs>
-        <path fill="#b3b3b3" filter="url(#b)" d="M54.5 138.5l2.3 1.3a61 61 0 0 0 31.1 8.5h.1c33.7 0 61.1-27.4 61.1-61.1 0-16.4-6.3-31.7-17.9-43.3A60.8 60.8 0 0 0 88 26c-33.7 0-61.2 27.4-61.2 61.1 0 12 3.3 23.3 9.4 32.6l1.4 2.3-6.1 22.5 23.1-6z"/>
-        <path fill="#fff" d="M13 161.2l10.4-38.1a73.4 73.4 0 0 1-9.8-36.8c0-40.5 33-73.5 73.6-73.5 19.7 0 38.1 7.6 52 21.5s21.6 32.4 21.6 52c0 40.6-33 73.6-73.6 73.6h-.1c-12.3 0-24.4-3.1-35.1-9z"/>
-        <path fill="url(#a)" d="M87.2 25.2c-33.7 0-61.2 27.4-61.2 61.1 0 12 3.3 23.3 9.4 32.6l1.4 2.3-6.1 22.5 23.1-6 2.3 1.3a61 61 0 0 0 31.1 8.5h.1c33.7 0 61.1-27.4 61.1-61.1 0-16.4-6.3-31.7-17.9-43.3a60.8 60.8 0 0 0-43.3-17.9z"/>
-        <path fill="#fff" fill-rule="evenodd" d="M68.8 55.6c-1.4-3-2.8-3.1-4.1-3.2l-3.5-.1c-1.2 0-3.2.5-4.9 2.3s-6.4 6.3-6.4 15.3 6.6 17.8 7.5 19 12.7 20.4 31.4 27.8c15.5 6.1 18.7 4.9 22.1 4.6s10.9-4.5 12.4-8.7c1.5-4.3 1.5-8 1.1-8.8s-1.7-1.2-3.5-2.1-10.9-5.4-12.6-6-2.9-.9-4.1.9-4.8 6-5.8 7.2-2.2 1.4-4 .5-7.8-2.9-14.8-9.1c-5.5-4.9-9.2-10.9-10.2-12.7s-.1-2.9.8-3.8c.8-.8 1.8-2.1 2.8-3.2s1.2-1.8 1.8-3 .3-2.3-.1-3.2-4-10-5.7-13.6z"/>
-      </svg>
-    </a>
+
 
     <script>
       // Отключаем нативное восстановление скролла браузером
