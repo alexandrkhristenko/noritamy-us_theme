@@ -987,7 +987,7 @@
                       "type": "text",
                       "name": "t:names.text",
                       "settings": {
-                        "text": "<p><a href=\"https://api.whatsapp.com/send?phone=972544559091\" target=\"_blank\" title=\"https://api.whatsapp.com/send?phone=972544559091\">Contact Us</a></p>",
+                        "text": "<p><a href=\"mailto:hey@noritamy.com\" target=\"_blank\" title=\"mailto:hey@noritamy.com\">Contact Us</a></p>",
                         "width": "fit-content",
                         "max_width": "normal",
                         "alignment": "left",
