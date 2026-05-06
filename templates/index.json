@@ -12,31 +12,6 @@
     "hero_BqcMGp": {
       "type": "hero",
       "blocks": {
-        "text_4Q7VPM": {
-          "type": "text",
-          "settings": {
-            "text": "<p>Welcome to Noritamy</p>",
-            "width": "fit-content",
-            "max_width": "narrow",
-            "alignment": "left",
-            "type_preset": "custom",
-            "font": "var(--font-heading--family)",
-            "font_size": "2.5rem",
-            "line_height": "tight",
-            "letter_spacing": "normal",
-            "case": "uppercase",
-            "wrap": "pretty",
-            "color": "var(--color-foreground)",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        },
         "text_4Qxa9m": {
           "type": "text",
           "settings": {
@@ -105,7 +80,6 @@
         }
       },
       "block_order": [
-        "text_4Q7VPM",
         "text_4Qxa9m",
         "text_XFAAhi",
         "button_b4A4n9"
