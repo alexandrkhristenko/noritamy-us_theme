@@ -830,7 +830,7 @@
                     "text_Nrxfg8": {
                       "type": "text",
                       "settings": {
-                        "text": "<p>From the moment you place your order, please allow <strong>2-8 business days</strong> for our team to craft and quality-check your piece. All orders are shipped from our studio at Herzl 20, Israel. To ensure a seamless experience, we cover all related customs taxes and charges.</p><h2>Shipping Options</h2><p><strong>Economy Service (USPS in the USA):</strong> 5-14 business days once sent - Fully traceable - <strong>Free</strong></p><p><strong>DHL Express:</strong> 2-6 business days once sent - Fully traceable - <strong>$15 USD</strong></p><h2>Returns & Exchanges</h2><p>Returns are accepted within 14 business days of delivery, provided the item is unworn and in its original condition. For your convenience, returns are sent to our US-based address. For full details and instructions, please refer to our <a href=\"/pages/shipping-returns\">complete shipping and returns policy</a>.</p>",
+                        "text": "<p>From the moment you place your order, please allow <strong>2-8 business days</strong> for our team to craft and quality-check your piece. All orders are shipped from our studio at Herzl 20, Israel. To ensure a seamless experience, we cover all related customs taxes and charges.</p><h2>Shipping Options</h2><p><strong>Economy Service (USPS in the USA):</strong> 5-14 business days once sent — Fully traceable — <strong>Free</strong></p><p><strong>DHL Express:</strong> 2-6 business days once sent — Fully traceable — <strong>$15 USD</strong></p><h2>Returns &amp; Exchanges</h2><p>Returns are accepted within 14 business days of delivery, provided the item is unworn and in its original condition. For your convenience, returns are sent to our US-based address. For full details and instructions, please refer to our <a href=\"/pages/shipping-returns\">complete shipping and returns policy</a>.</p>",
                         "width": "100%",
                         "max_width": "normal",
                         "alignment": "left",
@@ -976,7 +976,7 @@
                       "name": "t:names.icon",
                       "settings": {
                         "icon": "price_tag",
-                        "image_upload": "shopify://shop_images/whatsapp_1419525_svg.svg",
+                        "image_upload": "shopify://shop_images/envelope.png",
                         "width": 24,
                         "link": "",
                         "open_in_new_tab": false
