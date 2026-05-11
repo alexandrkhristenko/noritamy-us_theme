@@ -216,8 +216,8 @@
               "name": "Shipping Estimate",
               "settings": {
                 "text_prefix": "Handmade to order, Receive by",
-                "min_days": 2,
-                "max_days": 8
+                "min_days": 5,
+                "max_days": 14
               },
               "blocks": {}
             },
@@ -511,7 +511,7 @@
               "type": "product-description",
               "name": "t:names.product_description",
               "settings": {
-                "text": "<p>{{ closest.product.description }}</p>",
+                "text": "{{ closest.product.description }}",
                 "collapsed_height": 100,
                 "read_more_text": "Read more",
                 "read_less_text": "Read less",
