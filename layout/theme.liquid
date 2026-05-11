@@ -85,6 +85,8 @@
   })();
 </script>
     {%- render 'stylesheets' -%}
+    {{ 'noritamy-overrides.css' | asset_url | stylesheet_tag }}
+    <script src="{{ 'noritamy-quick-add.js' | asset_url }}" defer></script>
 
     {%- if settings.favicon != blank -%}
       <link

@@ -1,0 +1,326 @@
+/* ============================================================
+   Noritamy — Theme CSS Overrides
+   Linked from layout/theme.liquid after the stylesheets snippet.
+   All values sourced from design-tokens.json. See GUARDRAILS.md.
+   ============================================================ */
+
+/* ----------------------------------------------------------
+   P0-6: Hebrew body line-height fix
+   Default 1.0 clips Hebrew ascenders at small sizes.
+   ---------------------------------------------------------- */
+:root {
+  --font-paragraph--line-height: 1.5;
+}
+
+body,
+p,
+li {
+  line-height: 1.5;
+}
+
+.product-information p,
+.rte p,
+[class*='description'] p {
+  line-height: 1.6;
+}
+
+/* ----------------------------------------------------------
+   P0-1: Sale price — bold ink, editorial (Zara approach).
+   Color stays ink (#1E1F21), weight bumped to 600.
+   Compare-at price muted with strikethrough.
+   ---------------------------------------------------------- */
+div:has(.compare-at-price) .price {
+  font-weight: 600;
+}
+
+.compare-at-price {
+  color: rgba(30, 31, 33, 0.4) !important;
+  text-decoration: line-through 1.5px rgba(30, 31, 33, 0.35) !important;
+}
+
+/* ----------------------------------------------------------
+   P0-3: Larger product page title — scoped to PDP only.
+   .product-information wraps only the product detail section.
+   ---------------------------------------------------------- */
+.product-information .product-title-text p {
+  font-size: clamp(26px, 5vw, 38px) !important;
+  line-height: 1.15 !important;
+  letter-spacing: -0.01em;
+  color: #1e1f21 !important;
+  margin-block-end: 0;
+}
+
+/* ----------------------------------------------------------
+   P0-5: Judge.me — rebrand widget to Noritamy palette.
+   ---------------------------------------------------------- */
+:root {
+  --jdgm-primary-color: #1e1f21;
+  --jdgm-paginate-color: #1e1f21;
+  --jdgm-reviewer-name-color: #42544f;
+  --jdgm-secondary-color: rgba(30, 31, 33, 0.08);
+  --jdgm-snippet-star-color: #1e1f21;
+  --jdgm-star-color: #1e1f21;
+  --jdgm-write-review-bg-color: #1e1f21;
+  --jdgm-write-review-text-color: #ffffff;
+  --jdgm-snippet-border-radius: 0px;
+  --jdgm-badge-border-radius: 0px;
+}
+
+.jdgm-rev-widg__title,
+.jdgm-prev-badge__text,
+.jdgm-rev__body,
+.jdgm-rev__author {
+  font-family: 'Rubik', sans-serif !important;
+}
+
+.jdgm-write-rev-link {
+  border-radius: 0 !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.5px;
+}
+
+/* ----------------------------------------------------------
+   P0-8: Save X% savings badge — PDP only.
+   Product card savings is handled by product-card-badges.liquid.
+   ---------------------------------------------------------- */
+.price__savings {
+  display: inline-block;
+  color: #7d5449;
+  font-size: 12px;
+  font-weight: 600;
+  margin-inline-start: 6px;
+  font-family: 'Rubik', sans-serif;
+  vertical-align: middle;
+}
+
+/* ----------------------------------------------------------
+   BADGE POSITION — force physical left on RTL pages.
+   rtl.css sets right:10px !important on top-left class (specificity 0,2,1).
+   We match that specificity here and win by load order (loaded after theme CSS).
+   ---------------------------------------------------------- */
+html[dir="rtl"] .product-badges--top-left,
+html[dir="rtl"] .product-badges--top-right,
+html[dir="rtl"] .product-badges--bottom-left {
+  right: auto !important;
+  left: 6px !important;
+  width: max-content !important;
+  align-items: flex-start;
+}
+
+/* ----------------------------------------------------------
+   COLLECTION GRID — Zara-style
+   Tight gap, full-bleed images, compact minimal info row.
+   ---------------------------------------------------------- */
+
+/* 1. Collapse the gap between grid items */
+.product-grid {
+  gap: 3px !important;
+  --product-grid-gap: 3px;
+}
+
+/* 2. Remove side padding from the card content area
+      so images bleed to the grid edge */
+.product-grid__card,
+.product-card__content {
+  --product-card-gap: 4px;
+  gap: 4px !important;
+  padding-inline: 0 !important;
+  padding-block-start: 8px !important;
+  padding-block-end: 4px !important;
+}
+
+/* 3. Product name in card */
+.product-card .text-block p,
+.product-card .text-block .custom-typography {
+  font-size: 15px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.2px !important;
+  text-transform: none !important;
+  line-height: 1.35 !important;
+  margin: 0 !important;
+}
+
+/* 4. Price in card */
+.product-card .price,
+.product-card [ref="priceContainer"] {
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  line-height: 1.3;
+}
+
+/* Stack compare-at price below sale price, centered */
+.product-card [ref="priceContainer"] {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 1px !important;
+}
+
+/* 5. Compare-at price in card: slightly smaller */
+.product-card .compare-at-price {
+  font-size: 12px !important;
+}
+
+/* Hide "Save X%" text in cards — the image badge already shows it */
+.product-card .price__savings {
+  display: none !important;
+}
+
+/* 6. Tighten up padding inside the page to let the grid
+      feel more edge-to-edge on mobile */
+@media screen and (max-width: 749px) {
+  .main-collection .section--page-width,
+  .main-collection-section .section--page-width {
+    padding-inline: 0;
+  }
+
+  .product-grid {
+    padding-inline: 0 !important;
+  }
+}
+
+/* 7. Quick-add "+" — 3-column grid keeps title truly centered.
+      Column 1 (physical left, 24px): visible "+" via ::before on wrapper.
+      The quick-add component is an opacity:0 absolute overlay for click handling.
+      This bypasses all internal quick-add CSS fighting. */
+
+/* Remove product index counter numbers shown above images */
+.product-grid__item .product-badges::before {
+  content: none !important;
+  display: none !important;
+}
+
+.noritamy-title-row {
+  display: grid;
+  grid-template-columns: 28px 1fr 28px;
+  align-items: start;
+  direction: ltr;
+  width: 100%;
+}
+
+.noritamy-title-row .product-title-text {
+  grid-column: 2;
+  grid-row: 1;
+  text-align: center !important;
+  direction: rtl;
+}
+
+/* Wrapper: visible "+" via ::before; quick-add is an invisible overlay on top */
+.noritamy-quick-add-inline {
+  grid-column: 1;
+  grid-row: 1;
+  display: block;
+  position: relative;
+  padding-block-start: 1px;
+  cursor: pointer;
+}
+
+.noritamy-quick-add-inline::before {
+  content: "+";
+  font-family: 'Rubik', sans-serif;
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: #1e1f21;
+  display: block;
+  text-align: center;
+  pointer-events: none;
+  transition: font-size 0.2s ease, font-weight 0.2s ease;
+}
+
+/* Grow "+" while dragging or after swiping to a non-first image */
+.product-card:has(.card-gallery slideshow-component[dragging]) .noritamy-quick-add-inline::before,
+.product-card:has(.card-gallery slideshow-slide[aria-hidden='false']:not(:first-of-type)) .noritamy-quick-add-inline::before {
+  font-size: 30px;
+  font-weight: 500;
+}
+
+/* Quick-add: covers the "+" area, fully transparent, captures all clicks */
+.noritamy-quick-add-inline .quick-add {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  opacity: 0 !important;
+  pointer-events: all !important;
+  display: flex !important;
+  flex-direction: column !important;
+  z-index: 1;
+}
+
+.noritamy-quick-add-inline .quick-add__product-form-component {
+  display: flex !important;
+  flex: 1 !important;
+  width: 100% !important;
+}
+
+.noritamy-quick-add-inline .quick-add__product-form-component .shopify-product-form {
+  display: flex !important;
+  flex: 1 !important;
+  width: 100% !important;
+  height: 100% !important;
+  align-items: stretch !important;
+  justify-content: stretch !important;
+}
+
+/* For multi-variant products both --add and --choose render.
+   Only --choose opens the variant bottom-sheet; hide --add. */
+.noritamy-quick-add-inline .quick-add__product-form-component--multi-variant .quick-add__button--add {
+  display: none !important;
+}
+
+.noritamy-quick-add-inline .quick-add__button {
+  flex: 1 !important;
+  display: flex !important;
+  width: 100% !important;
+  pointer-events: all !important;
+  cursor: pointer;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* 8. Swatches: force center alignment in collection cards */
+.product-card product-swatches {
+  justify-content: center !important;
+}
+
+.product-card swatches-variant-picker-component {
+  justify-content: center !important;
+}
+
+.product-card .overflow-list {
+  justify-content: center !important;
+}
+
+/* ----------------------------------------------------------
+   QUICK-ADD MODAL: compact bottom sheet
+   - No product image (image is tiny and adds empty space)
+   - Full-width header when image is gone
+   - No dynamic checkout "מעבר לתשלום" button
+   ---------------------------------------------------------- */
+
+/* Remove fixed minimum height so sheet is short */
+.quick-add-modal {
+  min-height: unset !important;
+}
+
+/* Mobile: hide the product image — it creates a tall row and wastes space */
+@media screen and (max-width: 749px) {
+  .quick-add-modal .product-information__media {
+    display: none !important;
+  }
+
+  /* With image gone, stretch title+price to full grid width */
+  .quick-add-modal__content .product-header {
+    grid-column: 1 / -1 !important;
+    padding-inline-end: var(--padding-2xl) !important;
+  }
+}
+
+/* Hide dynamic checkout button (מעבר לתשלום / Buy now) everywhere */
+.quick-add-modal .shopify-payment-button {
+  display: none !important;
+}
