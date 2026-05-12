@@ -18,7 +18,7 @@
           "type": "_announcement",
           "name": "t:names.announcement",
           "settings": {
-            "text": "Join the Noritamy family and get 10% off your first order",
+            "text": "Join Noritamy's Inner Circle And Get 10% Off Your First Order",
             "link": "",
             "font": "var(--font-body--family)",
             "font_size": "1rem",
