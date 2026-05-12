@@ -715,7 +715,7 @@
                           "type": "text",
                           "name": "t:names.heading",
                           "settings": {
-                            "text": "<p>140 Broadway NY, 10005 USA</p>",
+                            "text": "<p><a href=\"https://maps.app.goo.gl/axeC5jvW6Y4wW9Jb9\" title=\"https://maps.app.goo.gl/axeC5jvW6Y4wW9Jb9\">140 Broadway NY, 10005 USA</a></p>",
                             "width": "fit-content",
                             "max_width": "normal",
                             "alignment": "left",
