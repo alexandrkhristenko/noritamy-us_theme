@@ -51,7 +51,7 @@
     "enable_cart_upsell_popup": false,
     "cart_drawer_slider_title": "You may also like...",
     "cart_drawer_slider_collection": "1500-nis-and-up",
-    "cart_drawer_empty_slider_collection": "necklaces",
+    "cart_drawer_empty_slider_collection": "",
     "cart_drawer_slider_autoplay": true,
     "inputs_border_radius": 0,
     "type_preset": "paragraph",
