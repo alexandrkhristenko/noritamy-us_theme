@@ -216,8 +216,8 @@
               "name": "Shipping Estimate",
               "settings": {
                 "text_prefix": "Handmade to order, Receive by",
-                "min_days": 5,
-                "max_days": 14
+                "min_days": 6,
+                "max_days": 22
               },
               "blocks": {}
             },
