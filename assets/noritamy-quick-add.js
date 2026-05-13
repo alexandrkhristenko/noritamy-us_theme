@@ -10,7 +10,10 @@
 document.addEventListener(
   'cart:update',
   (event) => {
-    const fromQuickAdd = event.target?.closest('#quick-add-dialog');
+    const target = event.target instanceof Element ? event.target : null;
+    const fromQuickAdd =
+      target?.closest('#quick-add-dialog') ||
+      target?.closest('.noritamy-quick-add-inline');
     if (!fromQuickAdd) return;
 
     const drawer = document.querySelector('cart-drawer-component');
