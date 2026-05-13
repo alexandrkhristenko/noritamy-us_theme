@@ -116,7 +116,7 @@
         "reflection_opacity": 75,
         "padding-block-start": 40,
         "padding-block-end": 30,
-        "tum_text": "",
+        "tum_text": "<h4><strong>Cannot be combined with other promotions or discounts</strong></h4>",
         "tum_padding_top": 20,
         "tum_padding_bottom": 20,
         "tum_font_size": 16,
