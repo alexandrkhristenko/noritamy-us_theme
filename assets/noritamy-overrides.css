@@ -263,6 +263,14 @@ html[dir="rtl"] .product-badges--bottom-left {
   justify-content: stretch !important;
 }
 
+/* Single-variant products wrap the button in <add-to-cart-component>.
+   Without flex:1 it doesn't fill the form area, making the tap target miss. */
+.noritamy-quick-add-inline add-to-cart-component {
+  display: flex !important;
+  flex: 1 !important;
+  width: 100% !important;
+}
+
 /* For multi-variant products both --add and --choose render.
    Only --choose opens the variant bottom-sheet; hide --add. */
 .noritamy-quick-add-inline .quick-add__product-form-component--multi-variant .quick-add__button--add {
