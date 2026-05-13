@@ -248,19 +248,16 @@ html[dir="rtl"] .product-badges--bottom-left {
   z-index: 1;
 }
 
-.noritamy-quick-add-inline .quick-add__product-form-component {
+/* Full flex chain so the tap target fills the entire "+" area.
+   Each custom element needs explicit flex:1 — they default to inline
+   and won't grow to fill their parent without it. */
+.noritamy-quick-add-inline quick-add-component,
+.noritamy-quick-add-inline .quick-add__product-form-component,
+.noritamy-quick-add-inline .quick-add__product-form-component .shopify-product-form,
+.noritamy-quick-add-inline add-to-cart-component {
   display: flex !important;
   flex: 1 !important;
   width: 100% !important;
-}
-
-.noritamy-quick-add-inline .quick-add__product-form-component .shopify-product-form {
-  display: flex !important;
-  flex: 1 !important;
-  width: 100% !important;
-  height: 100% !important;
-  align-items: stretch !important;
-  justify-content: stretch !important;
 }
 
 /* For multi-variant products both --add and --choose render.
