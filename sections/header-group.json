@@ -32,6 +32,7 @@
         "announcement_DKDV48": {
           "type": "_announcement",
           "name": "t:names.announcement",
+          "disabled": true,
           "settings": {
             "text": "Join the Noritamy family and get 10% off your first order",
             "link": "",
@@ -46,6 +47,7 @@
         "announcement_kL6Uje": {
           "type": "_announcement",
           "name": "t:names.announcement",
+          "disabled": true,
           "settings": {
             "text": "Free Shipping",
             "link": "",
@@ -60,6 +62,7 @@
         "announcement_MnjcKA": {
           "type": "_announcement",
           "name": "t:names.announcement",
+          "disabled": true,
           "settings": {
             "text": "1 Year Warranty",
             "link": "",
@@ -189,7 +192,7 @@
           "settings": {
             "menu": "new-main-menu",
             "target_index": 4,
-            "highlight_color": "#ff0000",
+            "highlight_color": "#7d5448",
             "highlight_bg_color": "rgba(0,0,0,0)",
             "highlight_font_weight": "bold",
             "menu_style": "text",
