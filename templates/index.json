@@ -116,11 +116,11 @@
         "reflection_opacity": 75,
         "padding-block-start": 40,
         "padding-block-end": 30,
-        "tum_text": "<h4><strong>Cannot be combined with other promotions or discounts</strong></h4>",
+        "tum_text": "<h5><strong>Cannot be combined with other promotions or discounts</strong></h5>",
         "tum_padding_top": 20,
         "tum_padding_bottom": 20,
         "tum_font_size": 16,
-        "tum_mobile_font_size": 16,
+        "tum_mobile_font_size": 10,
         "tum_text_color": "#000000",
         "tum_bg_color": "rgba(0,0,0,0)",
         "tum_text_align": "center"
