@@ -17,6 +17,29 @@
   endif
 %}
 
+{%- if block.settings.target_index != blank -%}
+  <style>
+    {%- assign target_index = block.settings.target_index -%}
+    .header overflow-list > .menu-list__list-item:nth-child({{ target_index }}) > .menu-list__link,
+    .header .menu-list__list > li:nth-child({{ target_index }}) > .menu-list__item,
+    .header .menu-drawer__menu.has-submenu > li:nth-child({{ target_index }}) > a.menu-drawer__menu-item,
+    .header .menu-drawer__menu.has-submenu > li:nth-child({{ target_index }}) > accordion-custom > details > summary.menu-drawer__menu-item,
+    .header .menu-drawer__menu.has-submenu > li:nth-child({{ target_index }}) > details > summary.menu-drawer__menu-item {
+      {%- if block.settings.highlight_color != blank and block.settings.highlight_color != 'rgba(0,0,0,0)' -%}
+        color: {{ block.settings.highlight_color }} !important;
+      {%- endif -%}
+      {%- if block.settings.highlight_bg_color != blank and block.settings.highlight_bg_color != 'rgba(0,0,0,0)' -%}
+        background-color: {{ block.settings.highlight_bg_color }} !important;
+        padding-inline: 8px;
+        border-radius: 4px;
+      {%- endif -%}
+      {%- if block.settings.highlight_font_weight != 'inherit' -%}
+        font-weight: {{ block.settings.highlight_font_weight }} !important;
+      {%- endif -%}
+    }
+  </style>
+{%- endif -%}
+
 {% case variant %}
   {% when 'mobile' %}
     <div
@@ -50,6 +73,7 @@
                   href="{{ link.url }}"
                   id="MenuItem-{{ link.handle }}"
                   class="menu-list__item"
+                  data-title="{{ link.title | escape | downcase }}"
                   {% if link.current %}
                     aria-current="page"
                   {% endif %}
@@ -580,6 +604,42 @@
       "id": "menu",
       "label": "t:settings.menu",
       "default": "main-menu"
+    },
+    {
+      "type": "header",
+      "content": "Menu Highlight"
+    },
+    {
+      "type": "number",
+      "id": "target_index",
+      "label": "Menu Item Number",
+      "info": "Enter the number of the 1st level menu item to highlight (e.g. 1 for the first item)"
+    },
+    {
+      "type": "color",
+      "id": "highlight_color",
+      "label": "Text Color",
+      "default": "#ff0000"
+    },
+    {
+      "type": "color",
+      "id": "highlight_bg_color",
+      "label": "Background Color",
+      "default": "rgba(0,0,0,0)"
+    },
+    {
+      "type": "select",
+      "id": "highlight_font_weight",
+      "label": "Font Weight",
+      "options": [
+         {"value": "inherit", "label": "Default"},
+         {"value": "bold", "label": "Bold"}
+      ],
+      "default": "bold"
+    },
+    {
+      "type": "header",
+      "content": "Menu Options"
     },
     {
       "type": "select",

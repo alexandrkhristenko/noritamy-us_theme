@@ -98,6 +98,7 @@
         <a
           href="{{ link.url }}"
           class="mega-menu__link {% if link.links != blank %}mega-menu__link--parent{% endif %}"
+          data-title="{{ link.title | escape | downcase }}"
         >
           {% if menu_content_type == 'collection_images' %}
             {{
@@ -133,6 +134,7 @@
               <a
                 href="{{ childLink.url }}"
                 class="mega-menu__link"
+                data-title="{{ childLink.title | escape | downcase }}"
               >
                 <span class="mega-menu__link-title">{{- childLink.title -}}</span>
               </a>
