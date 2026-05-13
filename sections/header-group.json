@@ -188,6 +188,10 @@
           "static": true,
           "settings": {
             "menu": "new-main-menu",
+            "target_index": 4,
+            "highlight_color": "#ff0000",
+            "highlight_bg_color": "rgba(0,0,0,0)",
+            "highlight_font_weight": "bold",
             "menu_style": "text",
             "featured_products_aspect_ratio": "4 / 5",
             "featured_collections_aspect_ratio": "16 / 9",
