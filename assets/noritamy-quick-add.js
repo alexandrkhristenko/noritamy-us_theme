@@ -1,11 +1,12 @@
 /**
- * After adding to cart via the quick-add modal, close the modal
- * but do NOT open the cart drawer. The user stays on the collection.
+ * After adding to cart via the quick-add "+" (both inline single-variant and
+ * the multi-variant modal), do NOT open the cart drawer. The user stays on
+ * the collection page. The cart icon badge still updates normally.
  *
  * Mechanism: the cart drawer opens when 'cart:update' bubbles to document
  * and the drawer has the 'auto-open' attribute. We intercept in capture phase
  * (before the drawer's bubble listener), temporarily remove 'auto-open',
- * then restore it after the event cycle so future non-quick-add adds still open.
+ * then restore it after the event cycle so non-quick-add adds (e.g. PDP) still open.
  */
 document.addEventListener(
   'cart:update',
