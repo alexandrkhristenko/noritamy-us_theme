@@ -18,7 +18,7 @@
           "type": "_announcement-countdown",
           "name": "Countdown announcement",
           "settings": {
-            "end_date": "",
+            "end_date": "2026-05-15 23:59",
             "text": "Linked Theory sale - 15% OFF",
             "link": "shopify://collections/linked-theory",
             "font": "var(--font-body--family)",
