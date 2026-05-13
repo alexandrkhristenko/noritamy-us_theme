@@ -14,11 +14,26 @@
     "header_announcements_pbXTDf": {
       "type": "header-announcements",
       "blocks": {
+        "announcement_countdown_aTY9VB": {
+          "type": "_announcement-countdown",
+          "name": "Countdown announcement",
+          "settings": {
+            "end_date": "",
+            "text": "Linked Theory sale - 15% OFF",
+            "link": "shopify://collections/linked-theory",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "weight": "",
+            "letter_spacing": "normal",
+            "case": "none"
+          },
+          "blocks": {}
+        },
         "announcement_DKDV48": {
           "type": "_announcement",
           "name": "t:names.announcement",
           "settings": {
-            "text": "Join Noritamy's Inner Circle And Get 10% Off Your First Order",
+            "text": "Join the Noritamy family and get 10% off your first order",
             "link": "",
             "font": "var(--font-body--family)",
             "font_size": "1rem",
@@ -117,6 +132,7 @@
         }
       },
       "block_order": [
+        "announcement_countdown_aTY9VB",
         "announcement_DKDV48",
         "announcement_kL6Uje",
         "announcement_MnjcKA",
