@@ -1156,6 +1156,7 @@
                         "text_JLjadc": {
                           "type": "text",
                           "name": "t:names.heading",
+                          "disabled": true,
                           "settings": {
                             "text": "<p><a href=\"/pages/press-clips\" title=\"As Seen On\">Spotted in Noritamy</a></p>",
                             "width": "fit-content",
@@ -1182,6 +1183,7 @@
                         "text_iYkqte": {
                           "type": "text",
                           "name": "t:names.heading",
+                          "disabled": true,
                           "settings": {
                             "text": "<p><a href=\"/pages/i-love-my-noritamy\" title=\"I Love My Noritamy\">I love my Noritamy</a></p>",
                             "width": "fit-content",
