@@ -17,6 +17,7 @@
         "announcement_countdown_aTY9VB": {
           "type": "_announcement-countdown",
           "name": "Countdown announcement",
+          "disabled": true,
           "settings": {
             "end_date": "2026-05-15 23:59",
             "text": "Linked Theory sale - 15% OFF",
@@ -32,7 +33,6 @@
         "announcement_DKDV48": {
           "type": "_announcement",
           "name": "t:names.announcement",
-          "disabled": true,
           "settings": {
             "text": "Join the Noritamy family and get 10% off your first order",
             "link": "",
@@ -47,7 +47,6 @@
         "announcement_kL6Uje": {
           "type": "_announcement",
           "name": "t:names.announcement",
-          "disabled": true,
           "settings": {
             "text": "Free Shipping",
             "link": "",
