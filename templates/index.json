@@ -68,8 +68,8 @@
           "type": "button",
           "name": "t:names.button",
           "settings": {
-            "label": "Shop Link Theory",
-            "link": "shopify://collections/linked-theory",
+            "label": "Shop Now",
+            "link": "shopify://collections/shop-all",
             "open_in_new_tab": false,
             "style_class": "button",
             "width": "fit-content",
