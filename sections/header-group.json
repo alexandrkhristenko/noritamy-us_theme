@@ -14,6 +14,22 @@
     "header_announcements_pbXTDf": {
       "type": "header-announcements",
       "blocks": {
+        "announcement_countdown_aTY9VB": {
+          "type": "_announcement-countdown",
+          "name": "Countdown announcement",
+          "disabled": true,
+          "settings": {
+            "end_date": "2026-05-15 23:59",
+            "text": "Linked Theory sale - 15% OFF",
+            "link": "shopify://collections/linked-theory",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "weight": "",
+            "letter_spacing": "normal",
+            "case": "none"
+          },
+          "blocks": {}
+        },
         "announcement_DKDV48": {
           "type": "_announcement",
           "name": "t:names.announcement",
@@ -45,6 +61,7 @@
         "announcement_MnjcKA": {
           "type": "_announcement",
           "name": "t:names.announcement",
+          "disabled": true,
           "settings": {
             "text": "1 Year Warranty",
             "link": "",
@@ -117,6 +134,7 @@
         }
       },
       "block_order": [
+        "announcement_countdown_aTY9VB",
         "announcement_DKDV48",
         "announcement_kL6Uje",
         "announcement_MnjcKA",
@@ -172,6 +190,10 @@
           "static": true,
           "settings": {
             "menu": "new-main-menu",
+            "target_index": 4,
+            "highlight_color": "#7d5448",
+            "highlight_bg_color": "rgba(0,0,0,0)",
+            "highlight_font_weight": "bold",
             "menu_style": "text",
             "featured_products_aspect_ratio": "4 / 5",
             "featured_collections_aspect_ratio": "16 / 9",

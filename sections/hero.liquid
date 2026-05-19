@@ -110,17 +110,42 @@
 
   {%- if has_video_1 -%}
     {% assign media_count = media_count | plus: 1 %}
-    {{
-      section.settings.video_1
-      | video_tag:
-        image_size: '3840x',
-        autoplay: true,
-        loop: true,
-        controls: false,
-        muted: true,
-        fetchpriority: 'high',
-        class: 'hero__video'
-    }}
+    {%- if section.settings.mobile_video_1 != blank -%}
+      {{
+        section.settings.video_1
+        | video_tag:
+          image_size: '3840x',
+          autoplay: true,
+          loop: true,
+          controls: false,
+          muted: true,
+          fetchpriority: 'high',
+          class: 'hero__video hero__video--desktop'
+      }}
+      {{
+        section.settings.mobile_video_1
+        | video_tag:
+          image_size: '3840x',
+          autoplay: true,
+          loop: true,
+          controls: false,
+          muted: true,
+          fetchpriority: 'high',
+          class: 'hero__video hero__video--mobile'
+      }}
+    {%- else -%}
+      {{
+        section.settings.video_1
+        | video_tag:
+          image_size: '3840x',
+          autoplay: true,
+          loop: true,
+          controls: false,
+          muted: true,
+          fetchpriority: 'high',
+          class: 'hero__video'
+      }}
+    {%- endif -%}
   {%- endif -%}
 
   {%- if has_image_2 -%}
@@ -283,6 +308,22 @@
   </div>
 </div>
 
+{%- if section.settings.tum_text != blank -%}
+  <div class="hero__text-under-media" style="
+    padding-top: {{ section.settings.tum_padding_top }}px;
+    padding-bottom: {{ section.settings.tum_padding_bottom }}px;
+    color: {{ section.settings.tum_text_color }};
+    background-color: {{ section.settings.tum_bg_color }};
+    text-align: {{ section.settings.tum_text_align }};
+    --font-size: {{ section.settings.tum_font_size }}px;
+    --mobile-font-size: {{ section.settings.tum_mobile_font_size }}px;
+  ">
+    <div class="page-width">
+       {{ section.settings.tum_text }}
+    </div>
+  </div>
+{%- endif -%}
+
 {% stylesheet %}
   .hero-wrapper {
     --hero-height-offset: 0px;
@@ -370,13 +411,15 @@
   }
 
   @media screen and (min-width: 750px) {
-    .hero__image--mobile {
+    .hero__image--mobile,
+    .hero__video--mobile {
       display: none;
     }
   }
 
   @media screen and (max-width: 749px) {
-    .hero__image--desktop {
+    .hero__image--desktop,
+    .hero__video--desktop {
       display: none;
     }
     
@@ -411,6 +454,18 @@
 
   .hero__content-wrapper--design-mode * {
     pointer-events: auto;
+  }
+
+  .hero__text-under-media {
+    font-size: var(--mobile-font-size);
+  }
+  .hero__text-under-media p {
+    margin: 0;
+  }
+  @media screen and (min-width: 750px) {
+    .hero__text-under-media {
+      font-size: var(--font-size);
+    }
   }
 
   .hero[data-blur-shadow='true'] {
@@ -552,6 +607,12 @@
       "type": "video",
       "id": "video_1",
       "label": "t:settings.video",
+      "visible_if": "{{ section.settings.media_type_1 == 'video' }}"
+    },
+    {
+      "type": "video",
+      "id": "mobile_video_1",
+      "label": "Mobile video",
       "visible_if": "{{ section.settings.media_type_1 == 'video' }}"
     },
     {
@@ -879,6 +940,78 @@
       "step": 1,
       "unit": "px",
       "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Text under media"
+    },
+    {
+      "type": "richtext",
+      "id": "tum_text",
+      "label": "Text"
+    },
+    {
+      "type": "range",
+      "id": "tum_padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "tum_padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "tum_font_size",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "tum_mobile_font_size",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Mobile font size",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "tum_text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "tum_bg_color",
+      "label": "Background color",
+      "default": "transparent"
+    },
+    {
+      "type": "select",
+      "id": "tum_text_align",
+      "label": "Text alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
     }
   ],
   "presets": [

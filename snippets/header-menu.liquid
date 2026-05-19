@@ -41,6 +41,7 @@
           aria-expanded="false"
         {%- endif -%}
         ref="menuitem"
+        data-title="{{ link.title | escape | downcase }}"
       >
         <span class="menu-list__link-title">{{- link.title -}}</span>
       </a>
