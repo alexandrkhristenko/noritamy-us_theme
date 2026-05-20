@@ -1,0 +1,216 @@
+{% doc %}
+  Image with Text section.
+  Displays an image alongside formatted text content.
+
+  @param {Object} section - The section object
+{% enddoc %}
+
+{{ 'section-image-with-text.css' | asset_url | stylesheet_tag }}
+
+<div class="image-with-text" id="{{ section.settings.section_id }}">
+  <div class="image-with-text__media">
+    {% if section.settings.image != blank %}
+      {{ section.settings.image | image_url: width: 1000 | image_tag: loading: 'lazy' }}
+    {% else %}
+      {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+    {% endif %}
+  </div>
+  <div class="image-with-text__content">
+    {% for block in section.blocks %}
+      {% case block.type %}
+        {% when 'heading' %}
+          <{{ block.settings.heading_tag }}>{{ block.settings.text }}</{{ block.settings.heading_tag }}>
+        {% when 'richtext' %}
+          <div>{{ block.settings.content }}</div>
+      {% endcase %}
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Image with Text",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section ID"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color Scheme"
+    },
+    {
+      "type": "checkbox",
+      "id": "separate_section_with_border",
+      "label": "Separate section with border",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Background Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "checkbox",
+      "id": "reveal_on_scroll",
+      "label": "Reveal on Scroll",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image Position",
+      "options": [
+        { "value": "start", "label": "Left" },
+        { "value": "end", "label": "Right" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "image_placement",
+      "label": "Image Placement",
+      "options": [
+        { "value": "fill", "label": "Fill" },
+        { "value": "contain", "label": "Contain" }
+      ]
+    },
+    {
+      "type": "number",
+      "id": "image_max_height",
+      "label": "Image Max Height",
+      "default": 600
+    },
+    {
+      "type": "select",
+      "id": "content_position",
+      "label": "Content Position",
+      "options": [
+        { "value": "start", "label": "Start" },
+        { "value": "center", "label": "Center" },
+        { "value": "end", "label": "End" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "content_style",
+      "label": "Content Style",
+      "options": [
+        { "value": "default", "label": "Default" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "content_width",
+      "label": "Content Width",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "remove_vertical_spacing",
+      "label": "Remove Vertical Spacing",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "add_borders",
+      "label": "Add Borders",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "borders_color",
+      "label": "Borders Color",
+      "default": "#dfdeda"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color"
+    },
+    {
+      "type": "checkbox",
+      "id": "boxed_section",
+      "label": "Boxed Section",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "m_bg_color",
+      "label": "Mobile Background Color"
+    },
+    {
+      "type": "checkbox",
+      "id": "title_over_image",
+      "label": "Title Over Image",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_center_text",
+      "label": "Mobile Center Text",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Heading",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Image with Text Heading"
+        },
+        {
+          "type": "select",
+          "id": "heading_tag",
+          "label": "Heading Tag",
+          "options": [
+            { "value": "h1", "label": "H1" },
+            { "value": "h2", "label": "H2" },
+            { "value": "h3", "label": "H3" }
+          ],
+          "default": "h2"
+        }
+      ]
+    },
+    {
+      "type": "richtext",
+      "name": "Rich text",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "default": "<p>Add some descriptive text here.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image with Text",
+      "blocks": [
+        {
+          "type": "heading"
+        },
+        {
+          "type": "richtext"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

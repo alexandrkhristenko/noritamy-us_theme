@@ -1,0 +1,21 @@
+/* Section Image with Text */
+.image-with-text {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 40px 20px;
+  gap: 20px;
+}
+.image-with-text__media,
+.image-with-text__content {
+  flex: 1 1 300px;
+}
+.image-with-text__media img,
+.image-with-text__media svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.image-with-text__content {
+  padding: 20px;
+}

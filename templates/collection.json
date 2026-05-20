@@ -36,10 +36,19 @@
             "padding-inline-end": 0
           },
           "blocks": {}
+        },
+        "metafield_media_cNQYiT": {
+          "type": "metafield-media",
+          "name": "Media (Metafield)",
+          "settings": {
+            "metafield": "custom.collection_media"
+          },
+          "blocks": {}
         }
       },
       "block_order": [
-        "text_tqQTNE"
+        "text_tqQTNE",
+        "metafield_media_cNQYiT"
       ],
       "settings": {
         "content_direction": "row",

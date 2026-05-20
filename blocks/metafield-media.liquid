@@ -1,0 +1,97 @@
+{%- doc -%}
+  Renders a media block from a list.file metafield.
+  Displays 1 file for all screens, or 2 files (desktop then mobile).
+{%- enddoc -%}
+
+{%- assign metafield_key = block.settings.metafield -%}
+{%- assign namespace = metafield_key | split: '.' | first -%}
+{%- assign key = metafield_key | split: '.' | last -%}
+
+{%- assign target = product | default: collection | default: page | default: article -%}
+{%- assign media_list = target.metafields[namespace][key] | reverse | reverse -%}
+{{ media_list }}
+{%- if media_list != blank -%}
+  {%- assign media_count = media_list | size -%}
+{{ media_count }}
+  <div class="metafield-media-block-{{ block.id }}" {{ block.shopify_attributes }}>
+    {%- if media_count == 1 -%}
+      {%- assign media_item = media_list[0] -%}
+        {{ media_item }}
+      <div class="metafield-media-single">
+        {%- if media_item.media_type == 'video' -%}
+
+          {{ media_item | video_tag: autoplay: true, loop: true, muted: true, controls: false, image_size: 'master' }}
+        {%- elsif media_item.media_type == 'image' -%}
+          {{ media_item | image_url: width: 3840 | image_tag }}
+        {%- else -%}
+          <img src="{{ media_item.url }}" alt="{{ media_item.alt | escape }}">
+        {%- endif -%}
+      </div>
+        #shopify-section-template--21432035868887__section > div.section.section--full-width.color-scheme-1 >
+    {%- elsif media_count == 2 -%}
+      {%- assign desktop_media = media_list[0] -%}
+      {%- assign mobile_media = media_list[1] -%}
+      {{ desktop_media }}
+      <div class="metafield-media-desktop">
+        {%- if desktop_media.media_type == 'video' -%}
+          {{ desktop_media | video_tag: autoplay: true, loop: true, muted: true, controls: false, image_size: 'master' }}
+        {%- elsif desktop_media.media_type == 'image' -%}
+          {{ desktop_media | image_url: width: 3840 | image_tag }}
+        {%- else -%}
+          <img src="{{ desktop_media.url }}" alt="{{ desktop_media.alt | escape }}">
+        {%- endif -%}
+      </div>
+      
+      <div class="metafield-media-mobile">
+        {%- if mobile_media.media_type == 'video' -%}
+          {{ mobile_media | video_tag: autoplay: true, loop: true, muted: true, controls: false, image_size: 'master' }}
+        {%- elsif mobile_media.media_type == 'image' -%}
+          {{ mobile_media | image_url: width: 3840 | image_tag }}
+        {%- else -%}
+          <img src="{{ mobile_media.url }}" alt="{{ mobile_media.alt | escape }}">
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+  <style>
+    .metafield-media-block-{{ block.id }} video,
+    .metafield-media-block-{{ block.id }} img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+    }
+    
+    {%- if media_count >= 2 -%}
+      .metafield-media-block-{{ block.id }} .metafield-media-desktop { display: block; }
+      .metafield-media-block-{{ block.id }} .metafield-media-mobile { display: none; }
+      
+      @media screen and (max-width: 749px) {
+        .metafield-media-block-{{ block.id }} .metafield-media-desktop { display: none; }
+        .metafield-media-block-{{ block.id }} .metafield-media-mobile { display: block; }
+      }
+    {%- endif -%}
+  </style>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Media (Metafield)",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "metafield",
+      "label": "Metafield (namespace.key)",
+      "info": "Enter the metafield key (e.g. custom.media_files). It must be a 'list of files' metafield. 1 file = all screens, 2 files = desktop then mobile.",
+      "default": "custom.media"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Media (Metafield)"
+    }
+  ]
+}
+{% endschema %}
