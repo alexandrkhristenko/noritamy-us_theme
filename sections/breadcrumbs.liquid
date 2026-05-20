@@ -1,0 +1,29 @@
+{% doc %}
+  Breadcrumbs section.
+  Displays breadcrumb navigation on the page.
+
+  @param {Object} section - The section object
+{% enddoc %}
+
+{{ 'section-breadcrumbs.css' | asset_url | stylesheet_tag }}
+
+<div class="breadcrumbs">
+  <nav aria-label="breadcrumbs">
+    <ol>
+      <li><a href="/">Home</a></li>
+      <li><span aria-current="page">{{ page.title }}</span></li>
+    </ol>
+  </nav>
+</div>
+
+{% schema %}
+{
+  "name": "Breadcrumbs",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Breadcrumbs"
+    }
+  ]
+}
+{% endschema %}

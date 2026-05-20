@@ -1,0 +1,143 @@
+{% doc %}
+  Image with Text Overlay section.
+  Displays a full-width image with optional text overlay.
+
+  @param {Object} section - The section object
+{% enddoc %}
+
+{{ 'section-image-with-text-overlay.css' | asset_url | stylesheet_tag }}
+
+<div class="image-with-text-overlay">
+  {% if section.settings.image != blank %}
+    {{ section.settings.image | image_url: width: 2000 | image_tag: loading: 'lazy' }}
+  {% else %}
+    {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+  {% endif %}
+
+  <div class="image-with-text-overlay__content">
+    {% for block in section.blocks %}
+      {% case block.type %}
+        {% when 'heading' %}
+          <{{ block.settings.heading_tag }}>
+            {{ block.settings.text }}
+          </{{ block.settings.heading_tag }}>
+      {% endcase %}
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Image with Text Overlay",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color Scheme"
+    },
+    {
+      "type": "select",
+      "id": "image_size",
+      "label": "Image Size",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" }
+      ]
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "checkbox",
+      "id": "allow_transparent_header",
+      "label": "Allow Transparent Header",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "reveal_on_scroll",
+      "label": "Reveal on Scroll",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "remove_vertical_spacing",
+      "label": "Remove Vertical Spacing",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "content_width",
+      "label": "Content Width",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "mobile_text_position",
+      "label": "Mobile Text Position"
+    },
+    {
+      "type": "text",
+      "id": "desktop_text_position",
+      "label": "Desktop Text Position"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay Opacity",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 30
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Heading",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Your Heading"
+        },
+        {
+          "type": "select",
+          "id": "heading_tag",
+          "label": "Heading Tag",
+          "options": [
+            { "value": "h1", "label": "H1" },
+            { "value": "h2", "label": "H2" },
+            { "value": "h3", "label": "H3" }
+          ],
+          "default": "h2"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image with Text Overlay",
+      "blocks": [
+        {
+          "type": "heading"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
