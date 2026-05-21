@@ -1,0 +1,77 @@
+{% doc %}
+  Our Materials Hero section.
+  Displays a full-width background image/video with an overlay containing a main heading and text.
+
+  @param {Object} section - The section object
+{% enddoc %}
+
+{{ 'section-our-materials-hero.css' | asset_url | stylesheet_tag }}
+
+<section class="our-materials-hero color-{{ section.settings.color_scheme }}" id="{{ section.id }}" style="--overlay-color: {{ section.settings.overlay_color }};">
+  <div class="our-materials-hero__media">
+    {% if section.settings.video != blank %}
+      {{ section.settings.video | video_tag: autoplay: true, loop: true, controls: false, muted: true, image_size: 'master' }}
+    {% elsif section.settings.image != blank %}
+      {{ section.settings.image | image_url: width: 2000 | image_tag: loading: 'eager', fetchpriority: 'high' }}
+    {% else %}
+      {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+    {% endif %}
+  </div>
+
+  <div class="our-materials-hero__content">
+    {% if section.settings.title != blank %}
+      <h1 class="our-materials-hero__title">{{ section.settings.title }}</h1>
+    {% endif %}
+    
+    {% if section.settings.subtitle != blank %}
+      <div class="our-materials-hero__subtitle">{{ section.settings.subtitle }}</div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Materials Hero",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background Image"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Background Video"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay Color",
+      "default": "#00000066"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Our Materials"
+    },
+    {
+      "type": "richtext",
+      "id": "subtitle",
+      "label": "Text",
+      "default": "<p>Discover the finest materials we use to craft our exquisite pieces.</p>"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Materials Hero"
+    }
+  ]
+}
+{% endschema %}
