@@ -1,0 +1,57 @@
+.our-materials-hero {
+  position: relative;
+  min-height: calc(100vh - var(--header-group-height, 0px));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.our-materials-hero__media {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.our-materials-hero__media img,
+.our-materials-hero__media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.our-materials-hero__media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: var(--overlay-color, rgba(0, 0, 0, 0.4));
+  z-index: 1;
+}
+
+.our-materials-hero__content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: var(--color-foreground, #ffffff);
+  padding: 2rem;
+  max-width: 800px;
+}
+
+.our-materials-hero__title {
+  font-family: var(--font-heading--family);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.our-materials-hero__subtitle {
+  font-family: var(--font-body--family);
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  line-height: 1.5;
+}

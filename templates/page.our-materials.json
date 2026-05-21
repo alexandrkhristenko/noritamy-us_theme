@@ -1,63 +1,46 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
-    "main": {
-      "type": "main-page",
-      "blocks": {
-        "heading": {
-          "type": "text",
-          "name": "Title",
-          "settings": {
-            "text": "<h1>{{ closest.page.title }}</h1>",
-            "width": "fit-content",
-            "max_width": "none",
-            "alignment": "left",
-            "type_preset": "h2",
-            "font": "var(--font-body--family)",
-            "font_size": "1rem",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "color": "var(--color-foreground)",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        },
-        "page-content": {
-          "type": "page-content",
-          "settings": {},
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "heading",
-        "page-content"
-      ],
+    "hero": {
+      "type": "our-materials-hero",
       "settings": {
-        "content_direction": "column",
-        "gap": 32,
-        "color_scheme": "",
-        "padding-block-start": 40,
-        "padding-block-end": 80
+        "color_scheme": "scheme-1",
+        "overlay_color": "#00000066",
+        "title": "Our Materials",
+        "subtitle": "<p>Discover the finest materials we use to craft our exquisite pieces. Hand-selected for unmatched quality and durability.</p>"
+      }
+    },
+    "feature_1": {
+      "type": "our-materials-feature",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "image_position": "left",
+        "title": "Gold & Silver",
+        "text": "<p>Our metals are sourced responsibly, ensuring each piece shines with brilliance and longevity. We use only the highest grade gold and silver for our collections.</p>"
+      }
+    },
+    "feature_2": {
+      "type": "our-materials-feature",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "image_position": "right",
+        "title": "Fine Leather",
+        "text": "<p>Crafted using traditional techniques, our leather is supple, durable, and develops a beautiful patina over time. Every cut is meticulously inspected.</p>"
+      }
+    },
+    "feature_3": {
+      "type": "our-materials-feature",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "image_position": "left",
+        "title": "Precious Stones",
+        "text": "<p>Each stone is carefully chosen for its clarity, color, and cut. We work with trusted partners to bring you ethically sourced gems that truly mesmerize.</p>"
       }
     }
   },
   "order": [
-    "main"
+    "hero",
+    "feature_1",
+    "feature_2",
+    "feature_3"
   ]
 }
