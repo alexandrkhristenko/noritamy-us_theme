@@ -14,7 +14,6 @@
       "blocks": {
         "text_4Qxa9m": {
           "type": "text",
-          "disabled": true,
           "settings": {
             "text": "<p>Designed With Intention<br/>Worn With Attitude</p>",
             "width": "100%",
@@ -41,7 +40,6 @@
         "text_XFAAhi": {
           "type": "text",
           "name": "t:names.text",
-          "disabled": true,
           "settings": {
             "text": "",
             "width": "fit-content",
@@ -68,7 +66,6 @@
         "button_b4A4n9": {
           "type": "button",
           "name": "t:names.button",
-          "disabled": true,
           "settings": {
             "label": "Shop Now",
             "link": "shopify://collections/shop-all",
@@ -103,7 +100,7 @@
         "vertical_alignment": "center",
         "align_baseline": false,
         "horizontal_alignment_flex_direction_column": "center",
-        "vertical_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "flex-end",
         "gap": 16,
         "section_width": "page-width",
         "section_height": "custom",
