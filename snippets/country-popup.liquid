@@ -5,7 +5,7 @@
   @example
   {% render 'country-popup' %}
 {% enddoc %}
-{{ localization.country }}
+
 {%- if localization.country.iso_code == 'IL' -%}
   <link rel="stylesheet" href="{{ 'country-popup.css' | asset_url }}" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="{{ 'country-popup.css' | asset_url }}"></noscript>
