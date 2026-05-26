@@ -1,0 +1,36 @@
+{% doc %}
+  Displays a location-based popup for Israeli users on the US site.
+  Suggests redirecting to the Israeli site.
+  
+  @example
+  {% render 'country-popup' %}
+{% enddoc %}
+{{ localization.country }}
+{%- if localization.country.iso_code == 'IL' -%}
+  <link rel="stylesheet" href="{{ 'country-popup.css' | asset_url }}" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="{{ 'country-popup.css' | asset_url }}"></noscript>
+  <script src="{{ 'country-popup.js' | asset_url }}" defer="defer"></script>
+
+  <country-popup class="country-popup" data-target-url="https://www.noritamy.co.il{{ request.path }}{{ request.search }}">
+    <div class="country-popup__overlay" id="country-popup-overlay"></div>
+    <div class="country-popup__content" role="dialog" aria-modal="true" aria-labelledby="country-popup-title">
+      <button type="button" class="country-popup__close" aria-label="{{ 'accessibility.close' | t | default: 'Close' }}">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M18 6L6 18M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <div class="country-popup__flag">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1100" height="800"><path d="M 0,0 H 1100 V 800 H 0 Z" fill="#fff"/><path d="M 0,75 H 1100 V 200 H 0 Z" fill="#0038b8"/><path d="M 0,600 H 1100 V 725 H 0 Z" fill="#0038b8"/><path d="M 423.81566,472.85253 H 676.18435 L 550.00001,254.29492 Z m 126.18435,72.85255 126.1843,-218.55765 H 423.81566 Z" fill="none" stroke="#0038b8" stroke-width="27.5"/></svg>
+      </div>
+
+      <h2 id="country-popup-title" class="country-popup__title" dir="rtl">שמנו לב שאת מישראל</h2>
+      <p class="country-popup__text" dir="rtl">בכדי להמשיך ברכישה נא לעבור לאתר הישראלי</p>
+
+      <div class="country-popup__actions">
+        <a href="https://www.noritamy.co.il{{ request.path }}{{ request.search }}" class="country-popup__btn country-popup__btn--primary" id="country-popup-switch" dir="rtl">עברי לאתר הישראלי</a>
+        <button type="button" class="country-popup__btn country-popup__btn--secondary" id="country-popup-dismiss" dir="rtl">לא תודה</button>
+      </div>
+    </div>
+  </country-popup>
+{%- endif -%}
