@@ -338,3 +338,102 @@ html[dir="rtl"] .product-badges--bottom-left {
 .quick-add-modal .shopify-payment-button {
   display: none !important;
 }
+
+/* ----------------------------------------------------------
+   MOBILE BOTTOM NAV
+   Fixed 4-item bar: Home / Collections / Search / Cart
+   Visible only on mobile (≤749px).
+   ---------------------------------------------------------- */
+.noritamy-bottom-nav {
+  display: none;
+}
+
+@media screen and (max-width: 749px) {
+  /* Push page content above the nav bar */
+  body {
+    padding-bottom: calc(58px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .noritamy-bottom-nav {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    position: fixed;
+    bottom: 0;
+    inset-inline: 0;
+    height: calc(58px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background-color: var(--color-background);
+    border-top: 1px solid rgba(30, 31, 33, 0.1);
+    z-index: 200;
+  }
+
+  .noritamy-bottom-nav__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    color: rgba(30, 31, 33, 0.38);
+    text-decoration: none;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: 'Rubik', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 0.15s ease;
+  }
+
+  .noritamy-bottom-nav__item.is-active {
+    color: #1e1f21;
+  }
+
+  .noritamy-bottom-nav__item .svg-wrapper {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .noritamy-bottom-nav__item svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .noritamy-bottom-nav__label {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.2px;
+    line-height: 1;
+  }
+
+  /* Cart icon: scope bubble size/position inside the nav */
+  .noritamy-bottom-nav__cart-wrap {
+    display: flex;
+    position: relative;
+  }
+
+  .noritamy-bottom-nav__cart-wrap .header-actions__cart-icon {
+    --cart-bubble-size: 16px;
+    --cart-bubble-top: 0px;
+    --cart-bubble-right: -3px;
+  }
+
+  .noritamy-bottom-nav__cart-wrap .svg-wrapper {
+    width: 24px;
+    height: 24px;
+  }
+
+  .noritamy-bottom-nav__cart-wrap svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  /* Suppress header action button sizing inside the nav cart button */
+  .noritamy-bottom-nav__cart-btn .header-actions__action {
+    all: unset;
+    display: flex;
+  }
+}
