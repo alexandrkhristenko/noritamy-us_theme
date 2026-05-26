@@ -1,0 +1,61 @@
+{% doc %}
+  Separator section.
+  Displays a separator or spacer.
+
+  @param {Object} section - The section object
+{% enddoc %}
+
+{{ 'section-separator.css' | asset_url | stylesheet_tag }}
+
+<div class="separator" style="height: {{ section.settings.height }}px;">
+  {% if section.settings.style != 'invisible' %}
+    <hr style="border-color: {{ section.settings.line_color }}; border-width: {{ section.settings.line_thickness }}px;" />
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Separator / Spacer",
+  "settings": [
+    {
+      "type": "select",
+      "id": "style",
+      "label": "Style",
+      "options": [
+        { "value": "invisible", "label": "Invisible" },
+        { "value": "line", "label": "Line" }
+      ],
+      "default": "invisible"
+    },
+    {
+      "type": "range",
+      "id": "height",
+      "label": "Height",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "default": 55
+    },
+    {
+      "type": "color",
+      "id": "line_color",
+      "label": "Line Color",
+      "default": "#e1e1e1"
+    },
+    {
+      "type": "range",
+      "id": "line_thickness",
+      "label": "Line Thickness",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "default": 1
+    }
+  ],
+  "presets": [
+    {
+      "name": "Separator / Spacer"
+    }
+  ]
+}
+{% endschema %}

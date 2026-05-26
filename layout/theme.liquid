@@ -8,9 +8,9 @@
     <meta name="google-site-verification" content="fBVd1VmGu47eS2QHok5RD150FV8oHUHTc23QieFma4M">
     <meta name="facebook-domain-verification" content="0s3cs9efgqim3hxqfzufsqbsqa77hn">
     <!-- Указываем версию для Израиля -->
-    <link rel="alternate" hreflang="en-IL" href="https://www.noritamy.co.il{{ request.path }}" />
+    <link rel="alternate" hreflang="en-IL" href="https://www.noritamy.co.il{{ request.path }}">
     <!-- Указываем версию для всего остального мира -->
-    <link rel="alternate" hreflang="x-default" href="https://www.noritamy.com{{ request.path }}" />
+    <link rel="alternate" hreflang="x-default" href="https://www.noritamy.com{{ request.path }}">
     <link rel="preconnect" href="https://fonts.cdnfonts.com" crossorigin>
     <script>
       eval(
@@ -67,23 +67,22 @@
         }
       })();
     </script>
-    {% render 'country-redirect' %}
-<script>
-  (function() {
-    var path = window.location.pathname;
-    var search = window.location.search;
-    
-    // Ищем префиксы /he-il или /en-il в начале пути
-    var match = path.match(/^\/(he-il|en-il)(\/.*)?$/i);
-    
-    if (match) {
-      // Формируем новый путь без префикса (или корень, если префикс был один)
-      var newPath = match[2] || '/';
-      // Перенаправляем, сохраняя параметры (например, UTM-метки)
-      window.location.replace(newPath + search);
-    }
-  })();
-</script>
+    {% render 'country-popup' %}  <script>
+      (function () {
+        var path = window.location.pathname;
+        var search = window.location.search;
+
+        // Ищем префиксы /he-il или /en-il в начале пути
+        var match = path.match(/^\/(he-il|en-il)(\/.*)?$/i);
+
+        if (match) {
+          // Формируем новый путь без префикса (или корень, если префикс был один)
+          var newPath = match[2] || '/';
+          // Перенаправляем, сохраняя параметры (например, UTM-метки)
+          window.location.replace(newPath + search);
+        }
+      })();
+    </script>
     {%- render 'stylesheets' -%}
     {{ 'noritamy-overrides.css' | asset_url | stylesheet_tag }}
     <script src="{{ 'noritamy-quick-add.js' | asset_url }}" defer></script>
@@ -115,21 +114,21 @@
     {% endif %}
 
     {{ content_for_header }}
-{% comment %}  
-    <!-- Google Tag Manager -->
-    <script>
-      (function (w, d, s, l, i) {
-        w[l] = w[l] || [];
-        w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != 'dataLayer' ? '&l=' + l : '';
-        j.async = true;
-        j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-        f.parentNode.insertBefore(j, f);
-      })(window, document, 'script', 'dataLayer', 'GTM-NFXS7F5F');
-    </script>
-    <!-- End Google Tag Manager -->
+    {% comment %}
+      <!-- Google Tag Manager -->
+      <script>
+        (function (w, d, s, l, i) {
+          w[l] = w[l] || [];
+          w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+          var f = d.getElementsByTagName(s)[0],
+            j = d.createElement(s),
+            dl = l != 'dataLayer' ? '&l=' + l : '';
+          j.async = true;
+          j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+          f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-NFXS7F5F');
+      </script>
+      <!-- End Google Tag Manager -->
     {% endcomment %}
   </head>
 
@@ -138,17 +137,17 @@
     <div id="header-group">
       {% sections 'header-group' %}
     </div>
-    {% comment %}  
-    <!-- Google Tag Manager (noscript) -->
-    <noscript
-      ><iframe
-        src="https://www.googletagmanager.com/ns.html?id=GTM-NFXS7F5F"
-        height="0"
-        width="0"
-        style="display:none;visibility:hidden"
-      ></iframe
-    ></noscript>
-    <!-- End Google Tag Manager (noscript) -->
+    {% comment %}
+      <!-- Google Tag Manager (noscript) -->
+      <noscript
+        ><iframe
+          src="https://www.googletagmanager.com/ns.html?id=GTM-NFXS7F5F"
+          height="0"
+          width="0"
+          style="display:none;visibility:hidden"
+        ></iframe
+      ></noscript>
+      <!-- End Google Tag Manager (noscript) -->
     {% endcomment %}
     <main
       id="MainContent"
@@ -188,11 +187,8 @@
       window.scrollTo(0, 0);
     </script>
 
-
-
     {% if settings.enable_cart_upsell_popup %}
       {% section 'cart-upsell-popup' %}
     {% endif %}
-   
   </body>
 </html>

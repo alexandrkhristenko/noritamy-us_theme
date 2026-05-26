@@ -1,0 +1,161 @@
+{% doc %}
+  Featured Collections section.
+  Displays featured collections and their products.
+
+  @param {Object} section - The section object
+{% enddoc %}
+
+{{ 'section-featured-collections.css' | asset_url | stylesheet_tag }}
+
+<div class="featured-collections">
+  {% if section.settings.subheading != blank %}
+    <p class="featured-collections__subheading">{{ section.settings.subheading }}</p>
+  {% endif %}
+  <div class="featured-collections__grid">
+    {% for block in section.blocks %}
+      {% if block.type == 'collection' %}
+        <div class="featured-collections__item" {{ block.shopify_attributes }}>
+          <h2 class="featured-collections__title">{{ block.settings.title }}</h2>
+          {% if block.settings.collection != blank %}
+            {% assign collection = collections[block.settings.collection] %}
+            <div class="featured-collections__products">
+              {% for product in collection.products limit: block.settings.products_count %}
+                <div class="featured-collections__product">
+                  {% render 'resource-card', resource: product, resource_type: 'product', image_aspect_ratio: '1/1' %}
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="featured-collections__products">
+              {% for i in (1..4) %}
+                <div class="featured-collections__product">
+                  <div class="resource-card__image-placeholder" style="aspect-ratio: 1/1; background-color: #f4f4f4; border-radius: var(--card-corner-radius);">
+                    {{ 'product-' | append: i | placeholder_svg_tag: 'placeholder-svg' }}
+                  </div>
+                  <h3 style="margin-top: 10px; margin-bottom: 5px; font-size: 14px;">Example Product</h3>
+                  <p style="margin: 0; font-weight: bold; font-size: 14px;">$19.99</p>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+          {% if block.settings.link_url != blank %}
+            <a href="{{ block.settings.link_url }}">{{ block.settings.link_text }}</a>
+          {% endif %}
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Featured Collections",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color Scheme"
+    },
+    {
+      "type": "checkbox",
+      "id": "separate_section_with_border",
+      "label": "Separate section with border",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_product_information",
+      "label": "Hide product information",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "stack_products",
+      "label": "Stack products",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "products_per_row_mobile",
+      "label": "Products per row (Mobile)",
+      "default": "2"
+    },
+    {
+      "type": "number",
+      "id": "products_per_row_desktop",
+      "label": "Products per row (Desktop)",
+      "default": 4
+    },
+    {
+      "type": "number",
+      "id": "horizontal_spacing_factor",
+      "label": "Horizontal spacing factor",
+      "default": 1
+    },
+    {
+      "type": "number",
+      "id": "vertical_spacing_factor",
+      "label": "Vertical spacing factor",
+      "default": 1
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Featured Collections"
+    },
+    {
+      "type": "text",
+      "id": "subheading_tip",
+      "label": "Subheading tip",
+      "default": "Shop our top picks"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "number",
+          "id": "products_count",
+          "label": "Products Count",
+          "default": 8
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Featured Collection"
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "Link URL"
+        },
+        {
+          "type": "text",
+          "id": "link_text",
+          "label": "Link Text",
+          "default": "View all"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Collections",
+      "blocks": [
+        {
+          "type": "collection"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

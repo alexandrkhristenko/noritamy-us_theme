@@ -1,0 +1,194 @@
+{% doc %}
+  Media Grid section.
+  Displays a grid of images or media.
+
+  @param {Object} section - The section object
+{% enddoc %}
+
+{{ 'section-media-grid.css' | asset_url | stylesheet_tag }}
+
+<div class="media-grid">
+  {% for block in section.blocks %}
+    <div class="media-grid__item" {{ block.shopify_attributes }}>
+      {% if block.settings.image != blank %}
+        {{ block.settings.image | image_url: width: 800 | image_tag: loading: 'lazy' }}
+      {% else %}
+        {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+
+{% schema %}
+{
+  "name": "Media Grid",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color Scheme"
+    },
+    {
+      "type": "checkbox",
+      "id": "separate_section_with_border",
+      "label": "Separate section with border",
+      "default": true
+    },
+    {
+      "type": "number",
+      "id": "desktop_row_height",
+      "label": "Desktop Row Height",
+      "default": 290
+    },
+    {
+      "type": "number",
+      "id": "mobile_row_height",
+      "label": "Mobile Row Height",
+      "default": 180
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section Width",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" }
+      ],
+      "default": "lg"
+    },
+    {
+      "type": "select",
+      "id": "spacing",
+      "label": "Spacing",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" }
+      ],
+      "default": "md"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Subheading"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Media Grid"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Content",
+      "default": "<p>Media grid description.</p>"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "color_scheme",
+          "id": "color_scheme",
+          "label": "Color Scheme"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "column_count",
+          "label": "Column Count",
+          "default": "12"
+        },
+        {
+          "type": "number",
+          "id": "row_count",
+          "label": "Row Count",
+          "default": 2
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Media Grid Item"
+        },
+        {
+          "type": "select",
+          "id": "heading_tag",
+          "label": "Heading Tag",
+          "options": [
+            { "value": "h1", "label": "H1" },
+            { "value": "h2", "label": "H2" },
+            { "value": "h3", "label": "H3" },
+            { "value": "h4", "label": "H4" }
+          ],
+          "default": "h4"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "default": "<p>Content for media grid item.</p>"
+        },
+        {
+          "type": "text",
+          "id": "link_text",
+          "label": "Link Text"
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "Link URL"
+        },
+        {
+          "type": "select",
+          "id": "link_style",
+          "label": "Link Style",
+          "options": [
+            { "value": "link", "label": "Link" },
+            { "value": "button", "label": "Button" }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "text_position",
+          "label": "Text Position"
+        },
+        {
+          "type": "color",
+          "id": "overlay_color",
+          "label": "Overlay Color",
+          "default": "#000000"
+        },
+        {
+          "type": "range",
+          "id": "overlay_opacity",
+          "label": "Overlay Opacity",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 0
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Media Grid",
+      "blocks": [
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
