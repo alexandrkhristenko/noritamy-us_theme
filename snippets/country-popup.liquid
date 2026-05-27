@@ -5,7 +5,7 @@
   @example
   {% comment %} {% render 'country-popup' %} {% endcomment %}
 {% enddoc %}
-{% comment %} 
+
 {%- if localization.country.iso_code == 'IL' -%}
   <link rel="stylesheet" href="{{ 'country-popup.css' | asset_url }}" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="{{ 'country-popup.css' | asset_url }}"></noscript>
@@ -20,7 +20,7 @@
         </svg>
       </button>
 
-      <div class="country-popup__flag">
+      <div style="width: 32px; height: 32px;" class="country-popup__flag">
 <?xml version="1.0" encoding="utf-8"?><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 122.88 85.48" style="enable-background:new 0 0 122.88 85.48" xml:space="preserve"><style type="text/css"><![CDATA[
 	.st0{fill:#0038B8;}
 	.st1{fill-rule:evenodd;clip-rule:evenodd;fill:#FFFFFF;}
@@ -39,4 +39,4 @@
   </country-popup>
   
 {%- endif -%}
-  {% endcomment %}
+
