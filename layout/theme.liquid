@@ -181,6 +181,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       {% render 'quick-add-modal' %}
     {% endif %}
 
+    {% if settings.mobile_bottom_nav and request.page_type != 'product' %}
+      {% render 'noritamy-mobile-nav' %}
+    {% endif %}
+
+
     <script>
       // Отключаем нативное восстановление скролла браузером
       if ('scrollRestoration' in history) {

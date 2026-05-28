@@ -2111,6 +2111,13 @@
         "visible_if": "{{ settings.quick_add == true }}"
       },
       {
+        "type": "checkbox",
+        "id": "mobile_bottom_nav",
+        "label": "Mobile bottom navigation bar",
+        "info": "Shows a fixed 4-item nav bar (Home / Collections / Search / Cart) at the bottom of the screen on mobile. Hidden on product pages.",
+        "default": true
+      },
+      {
         "type": "color_scheme",
         "id": "quick_add_color_scheme",
         "label": "t:settings.quick_add_colors",
