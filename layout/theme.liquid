@@ -7,9 +7,7 @@
   <head>
     <meta name="google-site-verification" content="fBVd1VmGu47eS2QHok5RD150FV8oHUHTc23QieFma4M">
     <meta name="facebook-domain-verification" content="0s3cs9efgqim3hxqfzufsqbsqa77hn">
-    <!-- Указываем версию для Израиля -->
     <link rel="alternate" hreflang="en-IL" href="https://www.noritamy.co.il{{ request.path }}">
-    <!-- Указываем версию для всего остального мира -->
     <link rel="alternate" hreflang="x-default" href="https://www.noritamy.com{{ request.path }}">
     <link rel="preconnect" href="https://fonts.cdnfonts.com" crossorigin>
     <script>
@@ -74,23 +72,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         }
       })();
     </script>
-    {% render 'country-popup' %} 
-     <script>
-      (function () {
-        var path = window.location.pathname;
-        var search = window.location.search;
 
-        // Ищем префиксы /he-il или /en-il в начале пути
-        var match = path.match(/^\/(he-il|en-il)(\/.*)?$/i);
-
-        if (match) {
-          // Формируем новый путь без префикса (или корень, если префикс был один)
-          var newPath = match[2] || '/';
-          // Перенаправляем, сохраняя параметры (например, UTM-метки)
-          window.location.replace(newPath + search);
-        }
-      })();
-    </script>
     {%- render 'stylesheets' -%}
     {{ 'noritamy-overrides.css' | asset_url | stylesheet_tag }}
     <script src="{{ 'noritamy-quick-add.js' | asset_url }}" defer></script>
@@ -139,24 +121,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       <!-- End Google Tag Manager -->
     {% endcomment %}
   </head>
-
+  {% render 'country-popup' %}
   <body class="page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }}">
     {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
     <div id="header-group">
       {% sections 'header-group' %}
     </div>
-    {% comment %}
-      <!-- Google Tag Manager (noscript) -->
-      <noscript
-        ><iframe
-          src="https://www.googletagmanager.com/ns.html?id=GTM-NFXS7F5F"
-          height="0"
-          width="0"
-          style="display:none;visibility:hidden"
-        ></iframe
-      ></noscript>
-      <!-- End Google Tag Manager (noscript) -->
-    {% endcomment %}
+
     <main
       id="MainContent"
       class="content-for-layout"
@@ -176,6 +147,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     {% # theme-check-disable ParserBlockingScript %}
     <script src="{{ 'critical.js' | asset_url }}"></script>
     {% # theme-check-enable ParserBlockingScript %}
+    <script src="{{ 'klaviyo-discount.js' | asset_url }}" defer="defer"></script>
 
     {% if settings.quick_add or settings.mobile_quick_add %}
       {% render 'quick-add-modal' %}
@@ -185,15 +157,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       {% render 'noritamy-mobile-nav' %}
     {% endif %}
 
-
-    <script>
-      // Отключаем нативное восстановление скролла браузером
-      if ('scrollRestoration' in history) {
-        history.scrollRestoration = 'manual';
-      }
-      // Принудительно скроллим вверх при загрузке
-      window.scrollTo(0, 0);
-    </script>
 
     {% if settings.enable_cart_upsell_popup %}
       {% section 'cart-upsell-popup' %}
