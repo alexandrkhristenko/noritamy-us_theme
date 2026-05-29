@@ -10,10 +10,24 @@ class CountryPopup extends HTMLElement {
   }
 
   connectedCallback() {
-    if (!this.#hasCookie()) {
-      this.setAttribute('open', '');
-      this.#pushDataLayer('country_popup_impression');
-    }
+    if (this.#hasCookie()) return;
+
+    const targetCountry = this.getAttribute('data-target-country');
+    if (!targetCountry) return;
+
+    fetch('https://get.geojs.io/v1/ip/country.json')
+        .then(response => response.json())
+        .then(data => {
+          if (data.country === targetCountry) {
+            this.setAttribute('open', '');
+            this.#pushDataLayer({
+              event: 'country_popup_impression',
+              detected_country: targetCountry,
+              current_domain: window.location.hostname.replace('www.', '')
+            });
+          }
+        })
+        .catch(err => console.warn('GeoIP fetch failed:', err));
 
     this.#setupListeners();
   }
@@ -22,7 +36,7 @@ class CountryPopup extends HTMLElement {
     if (this.closeBtn) {
       this.closeBtn.addEventListener('click', () => this.#dismiss());
     }
-    
+
     if (this.dismissBtn) {
       this.dismissBtn.addEventListener('click', () => this.#dismiss());
     }
@@ -30,9 +44,14 @@ class CountryPopup extends HTMLElement {
     if (this.switchBtn) {
       this.switchBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        this.#pushDataLayer('country_popup_click_switch');
+        this.#pushDataLayer({
+          event: "country_popup_click",
+          popup_action: "accepted_redirect",
+          detected_country: this.getAttribute('data-target-country'),
+          destination_url: this.switchBtn.href
+        });
         this.#setCookie();
-        
+
         setTimeout(() => {
           window.location.href = this.switchBtn.href;
         }, 300);
@@ -45,7 +64,12 @@ class CountryPopup extends HTMLElement {
   }
 
   #dismiss() {
-    this.#pushDataLayer('country_popup_click_dismiss');
+    this.#pushDataLayer({
+      event: "country_popup_click",
+      popup_action: "declined_redirect",
+      detected_country: this.getAttribute('data-target-country'),
+      destination_url: this.switchBtn ? this.switchBtn.href : ''
+    });
     this.#setCookie();
     this.removeAttribute('open');
   }
@@ -63,11 +87,9 @@ class CountryPopup extends HTMLElement {
     });
   }
 
-  #pushDataLayer(event) {
+  #pushDataLayer(payload) {
     window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-      event: event
-    });
+    window.dataLayer.push(payload);
   }
 }
 
