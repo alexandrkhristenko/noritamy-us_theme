@@ -41,7 +41,7 @@
           "type": "metafield-media",
           "name": "Media (Metafield)",
           "settings": {
-            "metafield": "custom.collection_media"
+            "metafield": "custom.collection_media.value"
           },
           "blocks": {}
         }
@@ -199,19 +199,6 @@
                   },
                   "blocks": {}
                 },
-                "swatches": {
-                  "type": "swatches",
-                  "settings": {
-                    "product_swatches_alignment": "center",
-                    "product_swatches_alignment_mobile": "center",
-                    "hide_padding": true,
-                    "product_swatches_padding_top": 4,
-                    "product_swatches_padding_bottom": 0,
-                    "product_swatches_padding_left": 0,
-                    "product_swatches_padding_right": 0
-                  },
-                  "blocks": {}
-                },
                 "price": {
                   "type": "price",
                   "settings": {
@@ -231,6 +218,19 @@
                     "padding-block-end": 0,
                     "padding-inline-start": 0,
                     "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                },
+                "swatches": {
+                  "type": "swatches",
+                  "settings": {
+                    "product_swatches_alignment": "center",
+                    "product_swatches_alignment_mobile": "center",
+                    "hide_padding": true,
+                    "product_swatches_padding_top": 4,
+                    "product_swatches_padding_bottom": 0,
+                    "product_swatches_padding_left": 0,
+                    "product_swatches_padding_right": 0
                   },
                   "blocks": {}
                 }
