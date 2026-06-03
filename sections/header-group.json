@@ -17,10 +17,9 @@
         "announcement_countdown_aTY9VB": {
           "type": "_announcement-countdown",
           "name": "Countdown announcement",
-          "disabled": true,
           "settings": {
-            "end_date": "2026-05-15 23:59",
-            "text": "Linked Theory sale - 15% OFF",
+            "end_date": "2026-06-7 23:59",
+            "text": "15% Off Scripted Collection",
             "link": "shopify://collections/linked-theory",
             "font": "var(--font-body--family)",
             "font_size": "1rem",
@@ -33,6 +32,7 @@
         "announcement_DKDV48": {
           "type": "_announcement",
           "name": "t:names.announcement",
+          "disabled": true,
           "settings": {
             "text": "Join Noritamy's Inner Circle And Get 10% Off Your First Order",
             "link": "",
@@ -47,6 +47,7 @@
         "announcement_kL6Uje": {
           "type": "_announcement",
           "name": "t:names.announcement",
+          "disabled": true,
           "settings": {
             "text": "Free Shipping",
             "link": "",
