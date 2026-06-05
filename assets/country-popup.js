@@ -74,6 +74,7 @@ class CountryPopup extends HTMLElement {
     });
     this.#setCookie();
     this.removeAttribute('open');
+    console.log(this)
   }
 
   #setCookie() {
