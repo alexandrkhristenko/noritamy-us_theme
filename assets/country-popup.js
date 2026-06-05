@@ -95,6 +95,6 @@ class CountryPopup extends HTMLElement {
 }
 
 if (!customElements.get('country-popup')) {
-  console.log('1');
+
   customElements.define('country-popup', CountryPopup);
 }
