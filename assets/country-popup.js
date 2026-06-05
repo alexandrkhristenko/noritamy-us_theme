@@ -8,7 +8,7 @@ class CountryPopup extends HTMLElement {
     this.cookieName = 'country_popup_dismissed';
     this.cookieDays = 30;
   }
-console.log('1')
+
   connectedCallback() {
     if (this.#hasCookie()) return;
 
