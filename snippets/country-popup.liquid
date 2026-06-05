@@ -24,7 +24,7 @@
 
 <link rel="stylesheet" href="{{ 'country-popup.css' | asset_url }}" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="{{ 'country-popup.css' | asset_url }}"></noscript>
-<script src="{{ 'country-popup.js' | asset_url }}"></script>
+<script src="{{ 'country-popup.js' | asset_url }}" defer="defer"></script>
 
 <!-- ДОБАВЛЕН АТРИБУТ data-target-country="IL" -->
 <country-popup class="country-popup" data-target-country="IL" data-target-url="https://www.noritamy.co.il{{ request.path }}{{ request.search }}">
