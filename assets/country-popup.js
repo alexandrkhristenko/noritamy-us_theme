@@ -1,17 +1,12 @@
 class CountryPopup extends HTMLElement {
   constructor() {
     super();
-    this.closeBtn = this.querySelector('.country-popup__close');
-    this.dismissBtn = this.querySelector('#country-popup-dismiss');
-    this.switchBtn = this.querySelector('#country-popup-switch');
-    this.overlay = this.querySelector('.country-popup__overlay');
-    this.cookieName = 'country_popup_dismissed';
-    this.cookieDays = 30;
+    this.storageKey = 'country_popup_dismissed';
   }
 
   connectedCallback() {
-    console.log(this.#hasCookie())
-    if (this.#hasCookie()) return;
+
+    if (this.#hasStorage()) return;
 
     const targetCountry = this.getAttribute('data-target-country');
   
@@ -35,59 +30,52 @@ class CountryPopup extends HTMLElement {
   }
 
   #setupListeners() {
-    if (this.closeBtn) {
-      this.closeBtn.addEventListener('click', () => this.#dismiss());
-    }
+    this.addEventListener('click', (e) => {
+      if (
+        e.target.closest('.country-popup__close') ||
+        e.target.closest('#country-popup-dismiss') ||
+        e.target.classList.contains('country-popup__overlay')
+      ) {
+        this.#dismiss();
+      }
 
-    if (this.dismissBtn) {
-      this.dismissBtn.addEventListener('click', () => this.#dismiss());
-    }
-
-    if (this.switchBtn) {
-      this.switchBtn.addEventListener('click', (e) => {
+      const switchBtn = e.target.closest('#country-popup-switch');
+      if (switchBtn) {
         e.preventDefault();
         this.#pushDataLayer({
           event: "country_popup_click",
           popup_action: "accepted_redirect",
           detected_country: this.getAttribute('data-target-country'),
-          destination_url: this.switchBtn.href
+          destination_url: switchBtn.href
         });
-        this.#setCookie();
+        this.#setStorage();
 
         setTimeout(() => {
-          window.location.href = this.switchBtn.href;
+          window.location.href = switchBtn.href;
         }, 300);
-      });
-    }
-
-    if (this.overlay) {
-      this.overlay.addEventListener('click', () => this.#dismiss());
-    }
+      }
+    });
   }
 
   #dismiss() {
+    const switchBtn = this.querySelector('#country-popup-switch');
     this.#pushDataLayer({
       event: "country_popup_click",
       popup_action: "declined_redirect",
       detected_country: this.getAttribute('data-target-country'),
-      destination_url: this.switchBtn ? this.switchBtn.href : ''
+      destination_url: switchBtn ? switchBtn.href : ''
     });
-    this.#setCookie();
+    this.#setStorage();
     this.removeAttribute('open');
     console.log(this)
   }
 
-  #setCookie() {
-    const date = new Date();
-    date.setTime(date.getTime() + (this.cookieDays * 24 * 60 * 60 * 1000));
-    const expires = "expires=" + date.toUTCString();
-    document.cookie = this.cookieName + "=true;" + expires + ";path=/;SameSite=Lax";
+  #setStorage() {
+    sessionStorage.setItem(this.storageKey, 'true');
   }
 
-  #hasCookie() {
-    return document.cookie.split(';').some(c => {
-      return c.trim().startsWith(this.cookieName + '=');
-    });
+  #hasStorage() {
+    return sessionStorage.getItem(this.storageKey) === 'true';
   }
 
   #pushDataLayer(payload) {
