@@ -10,10 +10,11 @@ class CountryPopup extends HTMLElement {
   }
 
   connectedCallback() {
+    console.log(this.#hasCookie())
     if (this.#hasCookie()) return;
 
     const targetCountry = this.getAttribute('data-target-country');
-    console.log('ss',targetCountry)
+  
     if (!targetCountry) return;
 
     fetch('https://get.geojs.io/v1/ip/country.json')
