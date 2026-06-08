@@ -14,7 +14,6 @@
       "blocks": {
         "text_4Qxa9m": {
           "type": "text",
-          "disabled": true,
           "settings": {
             "text": "<p>Designed With Intention<br/>Worn With Attitude</p>",
             "width": "100%",
@@ -41,7 +40,6 @@
         "text_XFAAhi": {
           "type": "text",
           "name": "t:names.text",
-          "disabled": true,
           "settings": {
             "text": "",
             "width": "fit-content",
@@ -68,7 +66,6 @@
         "button_b4A4n9": {
           "type": "button",
           "name": "t:names.button",
-          "disabled": true,
           "settings": {
             "label": "Shop Now",
             "link": "shopify://collections/shop-all",
@@ -91,7 +88,7 @@
       "settings": {
         "link": "shopify://collections/scripted",
         "open_in_new_tab": false,
-        "media_type_1": "video",
+        "media_type_1": "image",
         "image_1": "shopify://shop_images/IMG_3987.webp",
         "mobile_image": "shopify://shop_images/IMG_3942_1e789970-9b9a-4b65-be54-997863438d57.webp",
         "video_1": "shopify://files/videos/WhatsApp Video 2026-06-03 at 15.36.20.mp4",
@@ -117,7 +114,7 @@
         "reflection_opacity": 75,
         "padding-block-start": 40,
         "padding-block-end": 30,
-        "tum_text": "<p><strong>*Cannot be combined with other promotions or discounts</strong></p>",
+        "tum_text": "",
         "tum_padding_top": 0,
         "tum_padding_bottom": 0,
         "tum_font_size": 16,
