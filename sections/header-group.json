@@ -17,11 +17,10 @@
         "announcement_countdown_aTY9VB": {
           "type": "_announcement-countdown",
           "name": "Countdown announcement",
-          "disabled": true,
           "settings": {
-            "end_date": "2026-06-7 23:59",
-            "text": "15% Off Scripted Collection",
-            "link": "shopify://collections/scripted",
+            "end_date": "2026-06-13 23:59",
+            "text": "סופש גאווה ואהבה 15% הנחה על כל התכשיטים באתר",
+            "link": "shopify://collections/shop-all",
             "font": "var(--font-body--family)",
             "font_size": "1rem",
             "weight": "",
@@ -33,6 +32,7 @@
         "announcement_DKDV48": {
           "type": "_announcement",
           "name": "t:names.announcement",
+          "disabled": true,
           "settings": {
             "text": "Join Noritamy's Inner Circle And Get 10% Off Your First Order",
             "link": "",
