@@ -20,7 +20,7 @@
           "settings": {
             "end_date": "2026-06-13 23:59",
             "text": "סופש גאווה ואהבה 15% הנחה על כל התכשיטים באתר",
-            "link": "shopify://collections/shop-all",
+            "link": "shopify://collections/best-sellers",
             "font": "var(--font-body--family)",
             "font_size": "1rem",
             "weight": "",
