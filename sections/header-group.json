@@ -122,6 +122,7 @@
         "announcement_XXRaty": {
           "type": "_announcement",
           "name": "t:names.announcement",
+          "disabled": true,
           "settings": {
             "text": "Up To 12 Installments",
             "link": "",
