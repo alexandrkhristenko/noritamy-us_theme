@@ -19,7 +19,7 @@
 .country-popup__content {
   position: relative;
   z-index: 1;
-  background-color: rgba(250, 248, 246, 0.85);
+  background-color: rgba(255, 255, 255, 0.93);
   backdrop-filter: blur(8px) saturate(1.2);
   -webkit-backdrop-filter: blur(8px) saturate(1.2);
   padding: 44px 40px 34px;
@@ -50,9 +50,9 @@
 .country-popup__close:hover { opacity: 1; }
 
 .country-popup__flag {
-  width: 56px;
-  height: 39px;
-  border-radius: 4px;
+  width: 28px;
+  height: 20px;
+  border-radius: 3px;
   overflow: hidden;
   box-shadow: 0 5px 16px rgba(20, 18, 16, 0.16);
   margin: 0 0 24px;
