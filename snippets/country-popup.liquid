@@ -29,6 +29,7 @@
     max-width: 440px;
     width: 90%;
     text-align: center;
+    border-radius: 12px;
     box-shadow: 0 24px 70px rgba(20, 18, 16, 0.22);
     display: flex;
     flex-direction: column;
@@ -50,28 +51,10 @@
   }
   .country-popup__close:hover { opacity: 1; }
 
-  .country-popup__brand {
-    font-family: var(--font-heading--family), 'Oswald', sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 0.34em;
-    font-size: 13px;
-    font-weight: 500;
-    color: #1e1f21;
-    margin: 0 0 16px;
-    padding-inline-start: 0.34em;
-  }
-
-  .country-popup__rule {
-    width: 36px;
-    height: 1px;
-    background-color: #ddd5cc;
-    margin: 0 0 26px;
-  }
-
   .country-popup__flag {
     width: 74px;
     height: 51px;
-    border-radius: 3px;
+    border-radius: 5px;
     overflow: hidden;
     box-shadow: 0 5px 16px rgba(20, 18, 16, 0.16);
     margin: 0 0 24px;
@@ -118,6 +101,7 @@
     color: #ffffff;
     background-color: #1e1f21;
     border: 1px solid #1e1f21;
+    border-radius: 8px;
     text-decoration: none;
     cursor: pointer;
     transition: background-color 0.25s ease, border-color 0.25s ease;
@@ -157,9 +141,6 @@
         <path d="M18 6L6 18M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </button>
-
-    <p class="country-popup__brand">Noritamy</p>
-    <div class="country-popup__rule"></div>
 
     <div class="country-popup__flag" aria-hidden="true">
       <svg viewBox="0 0 122.88 85.48" xmlns="http://www.w3.org/2000/svg">

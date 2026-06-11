@@ -33,8 +33,7 @@ class CountryPopup extends HTMLElement {
     this.addEventListener('click', (e) => {
       if (
         e.target.closest('.country-popup__close') ||
-        e.target.closest('#country-popup-dismiss') ||
-        e.target.classList.contains('country-popup__overlay')
+        e.target.closest('#country-popup-dismiss')
       ) {
         this.#dismiss();
       }
