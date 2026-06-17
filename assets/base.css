@@ -4634,3 +4634,10 @@ div>div.group-block-content.layout-panel-flex.layout-panel-flex--column>div:nth-
 .product-grid__item .product-badges::before {
     display: none !important ;
 }
+
+
+@media (max-width: 576px) {
+    .resource-list__carousel slideshow-arrows {
+        display: none;
+    }
+}
