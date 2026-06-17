@@ -132,6 +132,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     a.appendChild(r);
 })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
 </script>
+   <script>
+      if (/Instagram|FBAN|FBAV|TikTok|Bytedance|Snapchat/i.test(navigator.userAgent)) {
+        const style = document.createElement('style');
+        style.textContent = '@view-transition { navigation: none !important; }';
+        document.head.appendChild(style);
+        document.addEventListener('DOMContentLoaded', () => {
+          const style = document.createElement('style');
+          style.textContent = '@view-transition { navigation: none; } * { view-transition-name: none !important; }';
+          document.head.appendChild(style);
+          document.querySelectorAll('[data-page-transition-enabled]').forEach(el => el.removeAttribute('data-page-transition-enabled'));
+        });
+      }
+    </script>
   </head>
   {% render 'country-popup' %}
   <body class="page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }}">
