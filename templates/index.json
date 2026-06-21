@@ -14,6 +14,7 @@
       "blocks": {
         "text_4Qxa9m": {
           "type": "text",
+          "disabled": true,
           "settings": {
             "text": "<p>Designed With Intention<br/>Worn With Attitude</p>",
             "width": "100%",
@@ -89,8 +90,8 @@
         "link": "shopify://collections/best-sellers",
         "open_in_new_tab": false,
         "media_type_1": "image",
-        "image_1": "shopify://shop_images/Untitled-2-02.jpg",
-        "mobile_image": "shopify://shop_images/Untitled-2-01.jpg",
+        "image_1": "shopify://shop_images/banner-horizontal.jpg",
+        "mobile_image": "shopify://shop_images/banner-vertical.jpg",
         "video_1": "shopify://files/videos/WhatsApp Video 2026-06-03 at 15.36.20.mp4",
         "mobile_video_1": "shopify://files/videos/copy_D933F0F1-3FEB-4B6B-8E36-9AB7C049C2FF.mp4",
         "media_type_2": "image",
