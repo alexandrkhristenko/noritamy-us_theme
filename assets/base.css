@@ -3217,7 +3217,6 @@ slideshow-container {
     display: block;
     position: relative;
     grid-area: container;
-    container-type: inline-size;
 }
 
 /*
@@ -3700,7 +3699,6 @@ slideshow-arrows .slideshow-control.slideshow-control--style-none {
     row-gap: var(--gap);
     min-width: 0;
     min-height: 0;
-    container-type: inline-size;
     container-name: resource-list;
 }
 
@@ -3750,7 +3748,7 @@ slideshow-arrows .slideshow-control.slideshow-control--style-none {
         --resource-list-mobile-gap-max: 12px;
     }
 
-    @container resource-list (max-width: 749px) {
+    @media screen and (max-width: 749px) {
         --resource-list-mobile-gap-max: 12px;
     }
 }
@@ -3764,11 +3762,11 @@ slideshow-arrows .slideshow-control.slideshow-control--style-none {
         grid-template-columns: var(--resource-list-columns);
     }
 
-    @container resource-list (max-width: 449px) {
+    @media screen and (max-width: 449px) {
         grid-template-columns: var(--resource-list-columns-mobile);
     }
 
-    @container resource-list(min-width: 450px) and (max-width: 749px) {
+    @media screen and (min-width: 450px) and (max-width: 749px) {
         --resource-list-columns-per-row: 3;
 
         grid-template-columns: repeat(var(--resource-list-columns-per-row), 1fr);
@@ -3781,7 +3779,7 @@ slideshow-arrows .slideshow-control.slideshow-control--style-none {
         }
     }
 
-    @container resource-list (min-width: 750px) {
+    @media screen and (min-width: 750px) {
         grid-template-columns: repeat(var(--resource-list-columns-per-row), 1fr);
 
         &:has(.resource-list__item:first-child:nth-last-child(n + 9)) {
@@ -3805,7 +3803,7 @@ slideshow-arrows .slideshow-control.slideshow-control--style-none {
         }
     }
 
-    @container resource-list (min-width: 1200px) {
+    @media screen and (min-width: 1200px) {
         &:has(.resource-list__item:first-child:nth-last-child(6)) {
             --resource-list-columns-per-row: 6;
         }
@@ -3821,7 +3819,6 @@ slideshow-arrows .slideshow-control.slideshow-control--style-none {
 .resource-list__carousel {
     width: 100%;
     position: relative;
-    container-type: inline-size;
     container-name: resource-list-carousel;
 
     --slide-width: 60vw;
@@ -3835,13 +3832,13 @@ slideshow-arrows .slideshow-control.slideshow-control--style-none {
     }
 }
 
-@container resource-list-carousel (max-width: 749px) {
+@media screen and (max-width: 749px) {
     .resource-list__carousel .resource-list__slide {
         --slide-width: clamp(150px, 60cqw, var(--slide-width-max));
     }
 }
 
-@container resource-list-carousel (min-width: 750px) {
+@media screen and (min-width: 750px) {
     .resource-list__carousel .resource-list__slide {
         --section-slide-width: calc((100% - (var(--resource-list-column-gap) * (var(--column-count) - 1)) - var(--peek-next-slide-size)) / var(--column-count));
         --fallback-slide-width: clamp(150px, 60cqw, var(--slide-width-max));

@@ -515,12 +515,13 @@ export class Slideshow extends Component {
     event.preventDefault();
     // Store initial position but don't start handling yet
     const { axis } = this.#scroll;
-    const startPosition = event[axis];
+    const startPositionX = event.clientX;
+    const startPositionY = event.clientY;
 
     const controller = new AbortController();
     const { signal } = controller;
     const startTime = performance.now();
-    let previous = startPosition;
+    let previous = startPositionX;
     let velocity = 0;
     let moved = false;
     let distanceTravelled = 0;
@@ -532,20 +533,29 @@ export class Slideshow extends Component {
      * @param {PointerEvent} event - The pointermove event.
      */
     const onPointerMove = (event) => {
-      const current = event[axis];
-      const initialDelta = startPosition - current;
+      const currentX = event.clientX;
+      const currentY = event.clientY;
+      const initialDeltaX = startPositionX - currentX;
+      const initialDeltaY = startPositionY - currentY;
 
-      if (!initialDelta) return;
+      if (!initialDeltaX && !initialDeltaY) return;
 
       if (!moved) {
+        // If movement is mostly vertical, let the browser handle scrolling and abort our drag
+        if (Math.abs(initialDeltaY) > Math.abs(initialDeltaX)) {
+          controller.abort();
+          this.#dragging = false;
+          return;
+        }
+
         moved = true;
         this.setPointerCapture(event.pointerId);
 
         // Prevent clicks once the user starts dragging
         document.addEventListener('click', preventDefault, { once: true, signal });
 
-        const movingRight = initialDelta < 0;
-        const movingLeft = initialDelta > 0;
+        const movingRight = initialDeltaX < 0;
+        const movingLeft = initialDeltaX > 0;
 
         // Check if the current slideshow should handle this drag
         const closestSlideshow = this.parentElement?.closest('slideshow-component');
@@ -565,10 +575,10 @@ export class Slideshow extends Component {
       // Stop the event from bubbling up to parent slideshow components
       event.stopImmediatePropagation();
 
-      const delta = previous - current;
+      const delta = previous - currentX;
       const timeDelta = performance.now() - startTime;
       velocity = Math.round((delta / timeDelta) * 1000);
-      previous = current;
+      previous = currentX;
       distanceTravelled += Math.abs(delta);
 
       this.#scroll.by(delta, { instant: true });
