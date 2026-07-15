@@ -34,7 +34,7 @@ div:has(.compare-at-price) .price {
 }
 
 .compare-at-price {
-  color: rgba(30, 31, 33, 0.4) !important;
+  color:  #000 !important;
   text-decoration: line-through 1.5px rgba(30, 31, 33, 0.35) !important;
 }
 
