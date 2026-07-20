@@ -89,7 +89,7 @@
       "settings": {
         "link": "shopify://collections/best-sellers",
         "open_in_new_tab": false,
-        "media_type_1": "video",
+        "media_type_1": "image",
         "image_1": "shopify://shop_images/banner-horizontal.jpg",
         "mobile_image": "shopify://shop_images/banner-vertical.jpg",
         "video_1": "shopify://files/videos/copy_F50107CD-6F26-46C2-8271-92D56D6F09F5.mov",
