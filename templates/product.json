@@ -42,7 +42,7 @@
             "extend_media": false,
             "constrain_to_viewport": false,
             "zoom": true,
-            "video_loop": false,
+            "video_loop": true,
             "hide_variants": false,
             "padding-block-start": 0,
             "padding-block-end": 0,
