@@ -15,7 +15,7 @@
         "text_tqQTNE": {
           "type": "text",
           "settings": {
-            "text": "<p>{{ closest.collection.title }}</p>",
+            "text": "{{ closest.collection.description }}",
             "width": "100%",
             "max_width": "normal",
             "alignment": "center",
