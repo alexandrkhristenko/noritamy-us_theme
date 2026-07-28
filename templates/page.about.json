@@ -16,7 +16,7 @@
           "type": "heading",
           "settings": {
             "text": "Our Story",
-            "heading_tag": "h1"
+            "heading_tag": "h2"
           }
         }
       },
@@ -27,6 +27,7 @@
       "settings": {
         "color_scheme": "",
         "image_size": "lg",
+        "image": "shopify://shop_images/IMG_2459_e0004e6f-e4bf-4092-8383-496ab2fa73ab.jpg",
         "allow_transparent_header": false,
         "reveal_on_scroll": true,
         "remove_vertical_spacing": true,
@@ -34,7 +35,7 @@
         "mobile_text_position": "place-self-end-start text-start",
         "desktop_text_position": "sm:place-self-center-start sm:text-start",
         "overlay_color": "#000000",
-        "overlay_opacity": 30
+        "overlay_opacity": 47
       }
     },
     "main": {
@@ -53,7 +54,7 @@
         "heading_zbHF4p": {
           "type": "heading",
           "settings": {
-            "text": "",
+            "text": "Art, architecture, and sculpture - translated into jewelry.",
             "heading_tag": "h2"
           }
         }
@@ -76,14 +77,14 @@
         "heading_46TpDQ": {
           "type": "heading",
           "settings": {
-            "text": "YOU'VE PROBABLY FELT IT BEFORE...",
+            "text": "AN AWARD-WINNING DIALOGUE",
             "heading_tag": "h2"
           }
         },
         "richtext_hpBxbt": {
           "type": "richtext",
           "settings": {
-            "content": "<p>... that sudden pull, that spark of recognition, a moment when the cosmic current connects to yours.</p><p>At ANNOORY, we give form to that feeling. Transforming the universe's invisible light grid into iconic recycled 14k gold and lab grown diamond jewelry, amplifying your natural powers, aligning pathways, and weaving connections.</p><p>Like gold purified in fire, our perceptions are shaped by experience, intention, and awareness.</p>"
+            "content": "<p>Noritamy is an award-winning brand that creates handcrafted jewelry and accessories, drawing inspiration from the realms of art, architecture, and sculpture.</p><p>This unique blend brings a modern twist to classic design - collections that embody the eternal debate between these two trades, resulting in dramatic and refined pieces.</p>"
           }
         }
       },
@@ -96,6 +97,7 @@
         "section_id": "more-info",
         "color_scheme": "",
         "separate_section_with_border": true,
+        "image": "shopify://shop_images/sterling-silver-short-rugged-ring_fae09755-854f-4d34-9a03-45372d00e23d.webp",
         "reveal_on_scroll": true,
         "image_position": "start",
         "image_placement": "fill",
@@ -119,14 +121,14 @@
         "heading_XfrnwX": {
           "type": "heading",
           "settings": {
-            "text": "GIVING FORM TO ENERGY",
+            "text": "FOUNDED BY NORI & TAMY",
             "heading_tag": "h2"
           }
         },
         "richtext_myzkWR": {
           "type": "richtext",
           "settings": {
-            "content": "<p>We give form to that feeling. Each ANNOORY piece is born from the universe’s invisible light grid – crafted in 14k American-source gold and lab-grown diamonds that channel intention, clarity, and power.</p><p>Every shape carries vibration. Every connection resonates. Together, they tune you to your highest frequency.<br/></p>"
+            "content": "<p>The brand was launched 18 years ago as a creative fusion of two accomplished women, Nori and Tamy.</p><p>Nori, a trained interior architect with a B.des degree, and Tamy, an artist with a background in jewelry making, synergize their knowledge and experience to create timeless luxury pieces with a contemporary and fashionable feminine flair.</p>"
           }
         }
       },
@@ -139,6 +141,7 @@
         "section_id": "more-info",
         "color_scheme": "",
         "separate_section_with_border": true,
+        "image": "shopify://shop_images/elinor-avni-by-natasha-zeriker-0u3a7220-scaled-e1733663719958.jpg",
         "reveal_on_scroll": true,
         "image_position": "end",
         "image_placement": "fill",
@@ -162,14 +165,14 @@
         "heading_XU8T6P": {
           "type": "heading",
           "settings": {
-            "text": "CONSCIOUS LUXURY",
+            "text": "FROM THE MIDDLE EAST TO LFW",
             "heading_tag": "h2"
           }
         },
         "richtext_MxN69U": {
           "type": "richtext",
           "settings": {
-            "content": "<p>We believe true beauty is never separate from responsibility. </p><p>That’s why sustainability lives at the core of everything we create – from the materials we source to the way we craft and package each piece. </p><p><a href=\"/pages/sustainability\" title=\"Sustainability\">Learn how conscious luxury shapes our world</a><br/><br/></p>"
+            "content": "<p>Originally launched in the Middle East, Noritamy rapidly gained global recognition after participating in the London Fashion Week designer showrooms.</p><p>Over the past 5 years, Nori has taken sole lead of the brand - expanding into consulting, fashion design, and the creation of home and art pieces, with an emphasis on collaborations.</p><p>Coveted in Europe, Asia, and the Middle East, Noritamy is admired for its wide range of fashion-oriented statement pieces and delicate high-end gold and diamond creations. Nori was recently awarded \"Best Sculpture-Oriented Jewelry Designer in the Middle East\" by Lux magazine.</p>"
           }
         }
       },
@@ -182,6 +185,7 @@
         "section_id": "more-info",
         "color_scheme": "",
         "separate_section_with_border": true,
+        "image": "shopify://shop_images/editorial-2-1_00c7b1a8-6fb6-406f-bb57-289ba9bc72b3.jpg",
         "reveal_on_scroll": true,
         "image_position": "start",
         "image_placement": "fill",
@@ -209,49 +213,6 @@
         "line_thickness": 1
       }
     },
-    "image_with_text_Tf8VGA": {
-      "type": "image-with-text",
-      "blocks": {
-        "heading_FBbEEL": {
-          "type": "heading",
-          "settings": {
-            "text": "MEET ANNA & ELINOR",
-            "heading_tag": "h2"
-          }
-        },
-        "richtext_BzHmGy": {
-          "type": "richtext",
-          "settings": {
-            "content": "<p>ANNOORY is the creation of Elinor Avni, a world-renowned jewelry designer and master of form, and Anna Cohen, a global spiritual mentor in energetics and wellness - a seer of energies. Together, they fuse design and intuition to create jewelry that resonates beyond beauty. <br/><br/><a href=\"/pages/meet-the-founders\" title=\"Meet The Founders\">Learn More</a></p>"
-          }
-        }
-      },
-      "block_order": [
-        "heading_FBbEEL",
-        "richtext_BzHmGy"
-      ],
-      "name": "t:sections.image_with_text.presets.image_with_text.name",
-      "settings": {
-        "section_id": "more-info",
-        "color_scheme": "scheme-3",
-        "separate_section_with_border": true,
-        "reveal_on_scroll": true,
-        "image_position": "end",
-        "image_placement": "contain",
-        "image_max_height": 600,
-        "content_position": "center",
-        "content_style": "default",
-        "content_width": "md",
-        "remove_vertical_spacing": false,
-        "add_borders": false,
-        "borders_color": "#dfdeda",
-        "bg_color": "",
-        "boxed_section": false,
-        "m_bg_color": "",
-        "title_over_image": false,
-        "mobile_center_text": false
-      }
-    },
     "media_grid_h8ebrC": {
       "type": "media-grid",
       "blocks": {
@@ -259,68 +220,72 @@
           "type": "image",
           "settings": {
             "color_scheme": "",
-            "column_count": "12",
+            "image": "shopify://shop_images/HAF-B-10-editorial_11d7a730-290d-4244-94ea-7ea0b5c86f47.jpg",
+            "column_count": "6",
             "row_count": 2,
-            "title": "Media Grid Item",
-            "heading_tag": "h4",
-            "content": "<p>Content for media grid item.</p>",
+            "title": "HANDMADE IN OUR STUDIO",
+            "heading_tag": "h3",
+            "content": "<p>No two pieces are exactly alike.</p>",
             "link_text": "",
             "link_url": "",
             "link_style": "link",
-            "text_position": "",
+            "text_position": "place-self-end-start text-start",
             "overlay_color": "#000000",
-            "overlay_opacity": 0
+            "overlay_opacity": 25
           }
         },
         "image_xkHLge": {
           "type": "image",
           "settings": {
             "color_scheme": "",
-            "column_count": "12",
+            "image": "shopify://shop_images/18K_gold.jpg",
+            "column_count": "6",
             "row_count": 2,
-            "title": "Media Grid Item",
-            "heading_tag": "h4",
-            "content": "<p>Content for media grid item.</p>",
+            "title": "24K GOLD & SILVER TONE",
+            "heading_tag": "h3",
+            "content": "<p>Dipped in a heavy layer of finish.</p>",
             "link_text": "",
             "link_url": "",
             "link_style": "link",
-            "text_position": "",
+            "text_position": "place-self-end-start text-start",
             "overlay_color": "#000000",
-            "overlay_opacity": 0
+            "overlay_opacity": 25
           }
         },
         "image_Q7V4TA": {
           "type": "image",
           "settings": {
             "color_scheme": "",
-            "column_count": "12",
+            "image": "shopify://shop_images/editorial-5_0ac2b4ec-75fc-44bd-8f0c-707b3a3bb414.jpg",
+            "column_count": "6",
             "row_count": 2,
-            "title": "Media Grid Item",
-            "heading_tag": "h4",
-            "content": "<p>Content for media grid item.</p>",
+            "title": "NICKEL FREE",
+            "heading_tag": "h3",
+            "content": "<p>All pieces, every time.</p>",
             "link_text": "",
             "link_url": "",
             "link_style": "link",
-            "text_position": "",
+            "text_position": "place-self-end-start text-start",
             "overlay_color": "#000000",
-            "overlay_opacity": 0
+            "overlay_opacity": 25
           }
         },
         "image_3qNFR9": {
           "type": "image",
           "settings": {
             "color_scheme": "",
-            "column_count": "12",
+            "image": "shopify://shop_images/Design-date-pic.jpg",
+            "column_count": "6",
             "row_count": 2,
-            "title": "",
-            "heading_tag": "h4",
-            "content": "",
+            "title": "CUSTOM CREATIONS",
+            "heading_tag": "h3",
+            "content": "<p>Bespoke pieces, made on request.</p>",
             "link_text": "",
             "link_url": "",
             "link_style": "link",
-            "text_position": "place-self-center text-center",
+            "text_position": "place-self-end-start text-start",
             "overlay_color": "#000000",
-            "overlay_opacity": 0
+            "overlay_opacity": 25
           }
         }
       },
@@ -338,9 +303,9 @@
         "mobile_row_height": 180,
         "section_width": "lg",
         "spacing": "md",
-        "subheading": "",
-        "title": "",
-        "content": ""
+        "subheading": "INSIDE THE CRAFT",
+        "title": "Made by hand, one piece at a time",
+        "content": "<p>All Noritamy jewelry is handmade in our studio - dipped in a heavy layer of 24k gold or silver tone, always nickel free. Premium lines and bespoke commissions are available on request.</p>"
       }
     },
     "featured_collections_bXeKxA": {
@@ -351,7 +316,7 @@
           "settings": {
             "collection": "bracelets",
             "products_count": 8,
-            "title": "Featured Collection",
+            "title": "Featured pieces",
             "link_url": "",
             "link_text": "View all"
           }
@@ -370,8 +335,8 @@
         "products_per_row_desktop": 4,
         "horizontal_spacing_factor": 1,
         "vertical_spacing_factor": 1,
-        "subheading": "WEARABLE ENERGY",
-        "subheading_tip": "123"
+        "subheading": "WEARABLE ART",
+        "subheading_tip": ""
       }
     },
     "images_with_text_scroll_3Nqkmi": {
@@ -380,9 +345,10 @@
         "image_with_text_rXJ4dc": {
           "type": "image_with_text",
           "settings": {
+            "image": "shopify://shop_images/BARE-EARRINGS-editorial.jpg",
             "subheading": "",
-            "title": "Nothing is random.",
-            "content": "<p>Beneath every choice, behind every encounter, ther's a frequency an invisible rhythm shaping our lives, guiding us toward meaning. you recognise that sensation, that connection to something bigger a moment when the rhythm of the universe connects to you.</p>",
+            "title": "Where form meets feeling",
+            "content": "<p>Noritamy lives at the intersection of art, architecture, and sculpture - a modern dialogue with classic design that produces pieces both dramatic and refined.</p>",
             "link_text": "",
             "link_url": "",
             "link_style": "solid"
@@ -391,9 +357,10 @@
         "image_with_text_9YLRjh": {
           "type": "image_with_text",
           "settings": {
+            "image": "shopify://shop_images/Studio-Session-5832_b0faee8f-5071-4815-a508-d80875e1d13f.jpg",
             "subheading": "",
-            "title": "At Annoory, we give form to that feeling",
-            "content": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>",
+            "title": "A creative fusion",
+            "content": "<p>Launched 18 years ago by Nori, a trained interior architect with a B.des, and Tamy, an artist working in jewelry. Two disciplines, one signature.</p>",
             "link_text": "",
             "link_url": "",
             "link_style": "solid"
@@ -402,9 +369,10 @@
         "image_with_text_3X97yR": {
           "type": "image_with_text",
           "settings": {
+            "image": "shopify://shop_images/n-story-01-by-natasha-zeriker8.1-scaled-1_f2ed228e-6e5f-45f5-a83e-f6768627154c.jpg",
             "subheading": "",
-            "title": "",
-            "content": "<p>Created by Elinor Avni and Anna Cohen, Annoory reflects the harmony of form and intention Elinor's refined designs infused with Anna's deep understanding of energy and manifestation. More than adornment, these pieces are channels for good energy, Opening the pathways to whats always been yours</p>",
+            "title": "Middle East to London Fashion Week",
+            "content": "<p>Originally launched in the Middle East, the brand gained global recognition through the LFW designer showrooms - opening the door to buyers and press across Europe and Asia.</p>",
             "link_text": "",
             "link_url": "",
             "link_style": "solid"
@@ -413,9 +381,10 @@
         "image_with_text_4kMLEt": {
           "type": "image_with_text",
           "settings": {
+            "image": "shopify://shop_images/R-Colored_Z_N9214-Noritamy-Jan21-by-Natasha-Zeriker-scaled-1.jpg",
             "subheading": "",
-            "title": "Elinor Avni.",
-            "content": "<p>Known for her creative mastery and architectural precision, Elinor's innovative work at AME and Noritamy has garnered international acclaim over the past 18 years. Her jewelry designs have graced the pages of leading fashion publications including Vogue, Elle, and Harper’s Bazaar, and has adorned members of Hollywood’s elite. Merging modern form with timeless elegance, her pieces </p><p>speak through structure and texture. Elinor has collaborated with brands such as Samsung, Chivas Regal, and Converse. Her designs have been featured in WGSN trend reports, Swarovski’s Book of Inspirations, and The Business of Fashion (BOF). She is a proud recipient of two  design awards.</p>",
+            "title": "At the helm",
+            "content": "<p>For the past five years, Nori has led the brand alone, with each season unveiling a new collection and an original story to fuel her creativity. Her ability to blend art, architecture, and fashion continues to enchant the fashion world, and makes Noritamy a prominent and celebrated name in the industry.</p>",
             "link_text": "",
             "link_url": "",
             "link_style": "solid"
@@ -424,9 +393,10 @@
         "image_with_text_g8nTVa": {
           "type": "image_with_text",
           "settings": {
+            "image": "shopify://shop_images/editorial-3-1_4215d333-92f0-4b06-beb9-04750bbee045.jpg",
             "subheading": "",
-            "title": "Anna Cohen.",
-            "content": "<p>Rooted in personal transformation and the power of frequency and structure, Anna brings a unique </p><p>multidimensional lens combining a high fashion and jewelry background with over a decade of experience in personal development and mindset coaching. Anna is a mentor, international speaker educator and author. Her expansive global clientele are a testimony to her ability to open doorways of consciousness for others and facilitate powerful progressions and life changing experiences. </p><p>Anna's approach blends a a deep gift of intuition with strategy, a bridge for bringing higher wisdom into pragmatic practice and evolution. offering a practical framework, for living and leading with empowerment, vibrance and optimization across mind, body, and soul as a unified one</p>",
+            "title": "Press and stage",
+            "content": "<p>Featured in UK, Paris and Italian VOGUE, Harper's Bazaar, BOF, Elle, Marie Claire, Interview, WGSN, and the Swarovski Book of Inspirations.</p><p>Top stylists and bloggers globally have been captivated by the jewelry, which has graced the likes of Marta Pozan, Caylee Cowen, Victor Perez, Nicole Scherzinger, Eugen Lee Yang, FKA twigs, Alesha Dixon, Alena Watson, Clara Amfo and more.</p>",
             "link_text": "",
             "link_url": "",
             "link_style": "solid"
@@ -435,9 +405,10 @@
         "image_with_text_bf3zEF": {
           "type": "image_with_text",
           "settings": {
+            "image": "shopify://shop_images/Studio-Session-5804_a16b7c27-50a0-45c7-a483-25b660ee6032.jpg",
             "subheading": "",
-            "title": "",
-            "content": "<p>Annoory is the creation of Elinor Avni, a world-renowned designer and master of form, and Anna Cohen, a global spiritual mentor in energetics and wellness a seer of energies. Together, they fuse design and intuition to create jewelry that resonates beyond beauty. This is more than adornment. it's a unification of power and aesthetics.  A consistent pattern that tunes you into the heartbeat of creation, designed to lead you exactly where you need to be. All you have to do is align with it. Annoory. Good things come to those who wear.</p>",
+            "title": "Visit the studio",
+            "content": "<p>Each Noritamy piece is handmade in our studio - dipped in a heavy layer of 24k gold or silver tone, always nickel free, no two pieces ever exactly alike. Explore the collections - or come see how they're made.</p>",
             "link_text": "",
             "link_url": "",
             "link_style": "solid"
@@ -470,7 +441,6 @@
     "image_with_text_qpihQL",
     "image_with_text_ihHBTt",
     "separator_Nq4ntw",
-    "image_with_text_Tf8VGA",
     "media_grid_h8ebrC",
     "featured_collections_bXeKxA",
     "images_with_text_scroll_3Nqkmi"
