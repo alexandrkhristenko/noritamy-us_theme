@@ -1131,7 +1131,7 @@
                           "type": "text",
                           "name": "t:names.heading",
                           "settings": {
-                            "text": "<p><a href=\"/pages/about-us\" title=\"About us\">About us</a></p>",
+                            "text": "<p><a href=\"https://www.noritamy.com/pages/1?view=about\" title=\"https://www.noritamy.com/pages/1?view=about\">About us</a></p>",
                             "width": "fit-content",
                             "max_width": "normal",
                             "alignment": "left",
