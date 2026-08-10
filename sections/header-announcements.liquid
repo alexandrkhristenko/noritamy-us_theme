@@ -57,6 +57,7 @@
     </div>
   </announcement-bar-component>
 {% endif %}
+<script src="{{ 'klaviyo-announcement.js' | asset_url }}" defer></script>
 </aside>
 
 {% stylesheet %}
@@ -208,6 +209,9 @@
   "blocks": [
     {
       "type": "_announcement"
+    },
+    {
+      "type": "_announcement-countdown"
     }
   ],
   "enabled_on": {

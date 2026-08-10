@@ -1,82 +1,77 @@
 {%- doc -%}
-  Renders product badges for the product card.
-  Automatically shows a "NEW" badge when the product belongs to a collection
-  with the handle "new".
+  Renders a single product badge — highest priority only.
+  Precedence: SALE > NEW > BEST SELLER > custom label_ tag
+  SALE badge: shows inline savings % in the same row.
+  Visual: frosted glass (white, backdrop-filter), ink text, 0px radius.
 
   @param {object} product - The product object.
   @param {object} settings - The theme settings object.
-
-  @example
-  {% render 'product-card-badges', product: product, settings: settings %}
 {%- enddoc -%}
 
-<div
-  class="product-badges product-badges--{{ settings.badge_position }}"
-  style="
-    --badge-border-radius: {{ settings.badge_corner_radius }}px;
-    --badge-font-family: var(--font-{{ settings.badge_font_family }}--family); --badge-font-weight: var(--font-{{ settings.badge_font_family }}--weight); --badge-text-transform: {{ settings.badge_text_transform }};
-  "
->
-  {% comment %}
-    {%- if product.available == false or product.compare_at_price > product.price and product.available -%}
-      <div
-        class="
-          product-badges__badge product-badges__badge--rectangle
-          {% if product.available == false %} color-{{ settings.badge_sold_out_color_scheme }}{% elsif product.compare_at_price > product.price %} color-{{ settings.badge_sale_color_scheme }}{% endif %}
-        "
-      >
-        {%- if product.available == false -%}
-          {{ 'content.product_badge_sold_out' | t }}
-        {%- elsif product.compare_at_price > product.price -%}
-          {{ 'content.product_badge_sale' | t }}
+{%- liquid
+  assign badge = blank
+  assign badge_label = blank
+  assign saved_pct = 0
+
+  if product.compare_at_price_max > product.price
+    assign badge = 'sale'
+    assign saved_pct = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round
+  else
+    unless collection.handle == 'new' or collection.handle == 'new-1'
+      for col in product.collections
+        if col.handle == 'new' or col.handle == 'new-1'
+          assign badge = 'new'
+          break
+        endif
+      endfor
+    endunless
+
+    if badge == blank
+      unless collection.handle contains 'best-seller' or collection.handle contains 'bestseller'
+        for col in product.collections
+          if col.handle contains 'best-seller' or col.handle contains 'bestseller'
+            assign badge = 'best-seller'
+            break
+          endif
+        endfor
+      endunless
+    endif
+
+    if badge == blank
+      for tag in product.tags
+        if tag contains 'label_'
+          assign badge = 'custom'
+          assign badge_label = tag | split: 'label_' | last
+          break
+        endif
+      endfor
+    endif
+  endif
+-%}
+
+{%- if badge != blank -%}
+  <div
+    class="product-badges product-badges--{{ settings.badge_position }}"
+    style="--badge-border-radius: 0px;"
+  >
+    {%- if badge == 'sale' -%}
+      <div class="noritamy-badge-row">
+        <span class="noritamy-badge">SALE</span>
+        {%- if saved_pct > 0 -%}
+          <span class="noritamy-badge noritamy-badge--savings">Save {{ saved_pct }}%</span>
         {%- endif -%}
       </div>
+    {%- else -%}
+      <span class="noritamy-badge">
+        {%- case badge -%}
+          {%- when 'new' -%}NEW
+          {%- when 'best-seller' -%}BEST SELLER
+          {%- when 'custom' -%}{{ badge_label }}
+        {%- endcase -%}
+      </span>
     {%- endif -%}
-  {% endcomment %}
-
-  {%- assign is_new = false -%}
-  {%- if collection.handle != 'new' and collection.handle != 'new-1' -%}
-    {%- for col in product.collections -%}
-      {%- if col.handle == 'new' or col.handle == 'new-1' -%}
-        {%- assign is_new = true -%}
-        {%- break -%}
-      {%- endif -%}
-    {%- endfor -%}
-  {%- endif -%}
-  {%- if is_new -%}
-    <div class="product-badges__badge product-badges__badge--rectangle product-badges__badge--new color-{{ settings.badge_sale_color_scheme }}">
-      NEW
-    </div>
-  {%- endif -%}
-
-  {%- if product.compare_at_price_max > product.price -%}
-    <div class="product-badges__badge product-badges__badge--rectangle color-{{ settings.badge_sale_color_scheme }}">
-      SALE
-    </div>
-  {%- endif -%}
-
-  {%- assign is_best_seller = false -%}
-  {%- for col in product.collections -%}
-    {%- if col.handle contains 'best-seller' or col.handle contains 'bestseller' -%}
-      {%- assign is_best_seller = true -%}
-      {%- break -%}
-    {%- endif -%}
-  {%- endfor -%}
-  {%- if is_best_seller -%}
-    <div class="product-badges__badge product-badges__badge--rectangle color-{{ settings.badge_sale_color_scheme }}">
-      BEST SELLER
-    </div>
-  {%- endif -%}
-
-  {%- for tag in product.tags -%}
-    {%- if tag contains 'label_' -%}
-      {%- assign badge_text = tag | split: 'label_' | last -%}
-      <div class="product-badges__badge product-badges__badge--rectangle color-{{ settings.badge_sale_color_scheme }}">
-        {{ badge_text }}
-      </div>
-    {%- endif -%}
-  {%- endfor -%}
-</div>
+  </div>
+{%- endif -%}
 
 {%- if settings.product_card_strip_text != blank -%}
   <div class="product-badges__strip">
@@ -85,82 +80,77 @@
 {%- endif -%}
 
 <style>
-    .product-badges {
-      position: absolute;
-      z-index: var(--layer-flat);
-      --badge-inset: max(var(--padding-xs), calc((var(--border-radius) + var(--padding-xs)) * (1 - cos(45deg))));
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-    }
+  .product-badges {
+    position: absolute;
+    /* Force physical top-left regardless of admin badge_position or RTL rules.
+       width: max-content prevents the container from stretching when both
+       left and right are set by the RTL stylesheet simultaneously. */
+    top: 6px !important;
+    left: 6px !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: max-content !important;
+    align-items: flex-start;
+    z-index: var(--layer-raised);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
 
-    .product-badges--bottom-left {
-      bottom: calc(var(--badge-inset) + var(--padding-block-start));
-      left: calc(var(--badge-inset) + var(--padding-inline-start));
-    }
+  /* Keep z-index raised on hover so quick-add doesn't clip the badge */
+  .product-card:hover .product-badges {
+    z-index: var(--layer-raised);
+  }
 
-    .product-badges--top-left {
-      top: calc(var(--badge-inset) + var(--padding-block-start));
-      left: calc(var(--badge-inset) + var(--padding-inline-start));
-    }
+  .noritamy-badge-row {
+    display: flex;
+    flex-direction: row;
+    /* Force LTR so SALE appears on the left even on an RTL page */
+    direction: ltr;
+    gap: 3px;
+    align-items: center;
+    flex-wrap: nowrap;
+  }
 
-    .product-badges--top-right {
-      top: calc(var(--badge-inset) + var(--padding-block-start));
-      right: calc(var(--badge-inset) + var(--padding-inline-start));
-    }
+  /* Frosted glass badge — modern, readable over any photo */
+  .noritamy-badge {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.88) !important;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    color: #1e1f21 !important;
+    font-family: 'Rubik', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 7px;
+    border-radius: 0;
+    line-height: 1;
+    white-space: nowrap;
+  }
 
-    .product-badges__badge,
-    .product-grid__item .product-badges::after {
-      --badge-font-size: 12px;
-      width: fit-content;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      color: var(--color-foreground);
-      background: var(--color-background);
-      font-size: var(--badge-font-size);
+  /* Savings percentage: warm rust to differentiate from the SALE label */
+  .noritamy-badge--savings {
+    color: #7d5449 !important;
+  }
 
-  {% if request.locale.iso_code == 'he' %}
-       font-family: Rubik;
-  {% else %}
-          font-family: Montserrat;
-          {% endif %}
-      font-weight: var(--badge-font-weight);
-      text-transform: var(--badge-text-transform);
-      border-radius: var(--badge-border-radius);
-    }
-
-    .product-badges__badge--rectangle,
-    .product-grid__item .product-badges::after {
-      padding-block: var(--badge-rectangle-padding-block);
-      padding-inline: var(--badge-rectangle-padding-inline);
-    }
-
-    /* CSS Counter for Product Grid Items */
-    .product-grid-container,
-    .search-results-container {
-      counter-reset: product-index;
-    }
-    .product-grid__item {
-      counter-increment: product-index;
-    }
-    .product-grid__item .product-badges::after {
-      content: counter(product-index);
-    }
-
-    .product-badges__strip {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background: var(--color-background);
-      color: #ff0000;
-      text-align: center;
-      padding: 6px 10px;
-      font-size: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-      z-index: var(--layer-flat);
-    }
+  .product-badges__strip {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.88);
+    color: #1e1f21;
+    text-align: center;
+    padding: 6px 10px;
+    font-size: 10px;
+    font-weight: 600;
+    font-family: 'Rubik', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    z-index: var(--layer-flat);
+    backdrop-filter: blur(4px);
+  }
 </style>

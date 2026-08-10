@@ -1,0 +1,46 @@
+{
+  "sections": {
+    "hero": {
+      "type": "our-materials-hero",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "overlay_color": "#00000066",
+        "title": "Our Materials",
+        "subtitle": "<p>Discover the finest materials we use to craft our exquisite pieces. Hand-selected for unmatched quality and durability.</p>"
+      }
+    },
+    "feature_1": {
+      "type": "our-materials-feature",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "image_position": "left",
+        "title": "Gold & Silver",
+        "text": "<p>Our metals are sourced responsibly, ensuring each piece shines with brilliance and longevity. We use only the highest grade gold and silver for our collections.</p>"
+      }
+    },
+    "feature_2": {
+      "type": "our-materials-feature",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "image_position": "right",
+        "title": "Fine Leather",
+        "text": "<p>Crafted using traditional techniques, our leather is supple, durable, and develops a beautiful patina over time. Every cut is meticulously inspected.</p>"
+      }
+    },
+    "feature_3": {
+      "type": "our-materials-feature",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "image_position": "left",
+        "title": "Precious Stones",
+        "text": "<p>Each stone is carefully chosen for its clarity, color, and cut. We work with trusted partners to bring you ethically sourced gems that truly mesmerize.</p>"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "feature_1",
+    "feature_2",
+    "feature_3"
+  ]
+}

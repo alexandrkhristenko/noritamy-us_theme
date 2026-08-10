@@ -1,15 +1,10 @@
 
 
-{% capture children %}
-  {% unless closest.product == blank %}
-    {% render 'product-card-badges', product: closest.product %}
-    {%  if settings.quick_add or settings.mobile_quick_add %}
-      {% render 'quick-add', product: closest.product, section_id: section.id %}
-    {% endif %}
-  {% endunless %}
-{% endcapture %}
+{% render 'card-gallery' %}
 
-{% render 'card-gallery', children: children %}
+{% unless closest.product == blank %}
+  {% render 'product-card-badges', product: closest.product %}
+{% endunless %}
 
 {% # Title and price for the zoomed out grid view %}
 <div class="product-grid-view-zoom-out--details">

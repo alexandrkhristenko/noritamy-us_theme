@@ -1819,6 +1819,21 @@
         "label": "Collection"
       },
       {
+        "type": "header",
+        "content": "Empty Cart Drawer Slider"
+      },
+      {
+        "type": "text",
+        "id": "cart_drawer_empty_slider_title",
+        "label": "Empty Cart Title",
+        "default": "RECOMMENDED FOR YOU"
+      },
+      {
+        "type": "collection",
+        "id": "cart_drawer_empty_slider_collection",
+        "label": "Empty Cart Collection"
+      },
+      {
         "type": "checkbox",
         "id": "cart_drawer_slider_autoplay",
         "label": "Autoplay",
@@ -2094,6 +2109,13 @@
         "label": "t:settings.mobile_quick_add",
         "default": false,
         "visible_if": "{{ settings.quick_add == true }}"
+      },
+      {
+        "type": "checkbox",
+        "id": "mobile_bottom_nav",
+        "label": "Mobile bottom navigation bar",
+        "info": "Shows a fixed 4-item nav bar (Home / Collections / Search / Cart) at the bottom of the screen on mobile. Hidden on product pages.",
+        "default": true
       },
       {
         "type": "color_scheme",

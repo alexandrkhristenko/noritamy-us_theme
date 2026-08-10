@@ -1,0 +1,87 @@
+{% doc %}
+  Our Materials Feature section.
+  Displays an image and a text block side-by-side to describe a specific material.
+
+  @param {Object} section - The section object
+{% enddoc %}
+
+{{ 'section-our-materials-feature.css' | asset_url | stylesheet_tag }}
+
+<section class="our-materials-feature color-{{ section.settings.color_scheme }} {% if section.settings.image_position == 'right' %}our-materials-feature--image-right{% endif %}" id="{{ section.id }}">
+  <div class="our-materials-feature__media">
+    {% if section.settings.video != blank %}
+      {{ section.settings.video | video_tag: autoplay: true, loop: true, controls: false, muted: true, image_size: 'master' }}
+    {% elsif section.settings.image != blank %}
+      {{ section.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy' }}
+    {% else %}
+      {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+    {% endif %}
+  </div>
+
+  <div class="our-materials-feature__content">
+    {% if section.settings.title != blank %}
+      <h2 class="our-materials-feature__title">{{ section.settings.title }}</h2>
+    {% endif %}
+    
+    {% if section.settings.text != blank %}
+      <div class="our-materials-feature__text">{{ section.settings.text }}</div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Material Feature",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Desktop image placement",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Video"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Material Name"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Description of the material highlighting its quality and source.</p>"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Material Feature"
+    }
+  ]
+}
+{% endschema %}

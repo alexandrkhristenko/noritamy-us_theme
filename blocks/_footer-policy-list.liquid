@@ -11,13 +11,20 @@
 >
   {%- for policy in shop.policies -%}
     {%- if policy != blank -%}
+      {%- if policy.url contains '/policies/shipping-policy' -%}
+        {%- continue -%}
+      {%- endif -%}
       <li>
         <a
           href="{{ policy.url }}"
           class="footer-utilities__text"
-          aria-label="{{ policy.title | escape }}"
+          aria-label="{% if policy.url contains '/policies/refund-policy' %}Shipping, Returns & Refund Policy{% else %}{{ policy.title | escape }}{% endif %}"
         >
-          {{- policy.title | escape -}}
+          {%- if policy.url contains '/policies/refund-policy' -%}
+            Shipping, Returns & Refund Policy
+          {%- else -%}
+            {{- policy.title | escape -}}
+          {%- endif -%}
         </a>
       </li>
     {%- endif -%}

@@ -287,5 +287,16 @@
     "book_date": "Book a Design Date",
     "text_us": "Text us",
     "button_text": "Size Guide"
+  },
+  "shopify": {
+    "checkout": {
+      "marketing": {
+        "sms": {
+          "disclaimer": {
+            "description_html": "By checking this box, you agree to receive recurring automated marketing messages, including cart reminders from Veridian Flow LLC, at the phone number provided. Consent is not a condition of purchase. Reply STOP to unsubscribe or click the unsubscribe link (where applicable). Reply HELP for help. Message frequency varies. Msg & data rates may apply. View our {{ privacy_policy_link }} and {{ terms_of_service_link }}"
+          }
+        }
+      }
+    }
   }
 }

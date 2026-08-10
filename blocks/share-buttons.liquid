@@ -1,0 +1,71 @@
+{% liquid
+  assign current_product = closest.product | default: product
+  assign product_url = shop.url | append: current_product.url
+%}
+
+{% doc %}
+  Product share buttons block.
+
+  @example
+  {% render 'share-buttons', block: block %}
+{% enddoc %}
+
+{{ 'share-buttons.css' | asset_url | stylesheet_tag }}
+
+<div 
+  class="share-buttons" 
+  {{ block.shopify_attributes }}
+  style="--padding-block-start: {{ block.settings.padding-block-start }}px; --padding-block-end: {{ block.settings.padding-block-end }}px;"
+>
+  <span class="share-buttons__label">Share:</span>
+  <ul class="list-social list-unstyled" role="list">
+    <li class="list-social__item">
+      <a class="list-social__link link" href="https://www.facebook.com/sharer.php?u={{ product_url }}" target="_blank" rel="noopener" aria-label="Facebook">
+        <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">{%- render 'icon', icon: 'facebook' -%}</svg>
+      </a>
+    </li>
+    <li class="list-social__item">
+      <a class="list-social__link link" href="https://twitter.com/intent/tweet?text={{ current_product.title | url_param_escape }}&amp;url={{ product_url }}" target="_blank" rel="noopener" aria-label="Twitter">
+        <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">{%- render 'icon', icon: 'twitter' -%}</svg>
+      </a>
+    </li>
+    <li class="list-social__item">
+      <a class="list-social__link link" href="https://pinterest.com/pin/create/button/?url={{ product_url }}&amp;media={{ current_product.featured_image | image_url: width: 1024, height: 1024 }}&amp;description={{ current_product.title | url_param_escape }}" target="_blank" rel="noopener" aria-label="Pinterest">
+        <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">{%- render 'icon', icon: 'pinterest' -%}</svg>
+      </a>
+    </li>
+  </ul>
+</div>
+
+{% schema %}
+{
+  "name": "Share buttons",
+  "settings": [
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 16
+    }
+  ],
+  "presets": [
+    {
+      "name": "Share buttons"
+    }
+  ]
+}
+{% endschema %}

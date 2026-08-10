@@ -96,6 +96,7 @@
       --product-grid-gap-desktop: {{ section.settings.columns_gap_vertical }}px {{ section.settings.columns_gap_horizontal }}px;
       container-type: inline-size;
       container-name: product-grid;
+      width: 100%;
     "
   >
     {% if products.size == 0 %}
@@ -108,8 +109,6 @@
         </p>
       </div>
     {% else %}
-      <span ref="viewMorePrevious"></span>
-
       {% if title %}
         <h4 class="main-collection-grid__title">{{ title }}</h4>
       {% endif %}
@@ -123,7 +122,9 @@
       >
         {{ children }}
       </ul>
-      <span ref="viewMoreNext"></span>
+      {%- if paginate.pages > 1 -%}
+        {% render 'pagination', paginate: paginate, anchor: '' %}
+      {%- endif -%}
     {% endif %}
   </div>
 </div>

@@ -909,8 +909,24 @@ summary::-webkit-details-marker {
     margin: 0;
 }
 
+/* CSS Counter for Product Grid Items */
+.product-grid-container,
+.search-results-container,
+.product-grid {
+    counter-reset: product-index;
+}
+
 .product-grid__item {
+    position: relative;
     border: var(--product-card-border-width) solid rgba(from var(--color-border) r g b / var(--product-card-border-opacity));
+}
+
+.card-gallery {
+    counter-increment: product-index;
+}
+
+.product-grid__item .product-badges::before {
+    content: counter(product-index);
 }
 
 .product-grid--organic[product-grid-view='default'] .product-grid__item {
@@ -918,6 +934,7 @@ summary::-webkit-details-marker {
 }
 
 .product-grid__card.product-grid__card {
+    position: relative;
     display: flex;
     flex-flow: column nowrap;
     gap: var(--product-card-gap);
@@ -1469,7 +1486,7 @@ media-gallery {
         /* arbitrary offset value based on average theme spacing and header height */
         --viewport-offset: 400px;
         --constrained-min-height: 300px;
-        --constrained-height: max(var(--constrained-min-height), calc(100vh - var(--viewport-offset)));
+        --constrained-height: max(var(--constrained-min-height), calc(100svh - var(--viewport-offset)));
 
         margin-right: auto;
         margin-left: auto;
@@ -1550,7 +1567,7 @@ media-gallery:where(.media-gallery--grid) .media-gallery__grid {
 
 zoom-dialog dialog {
     width: 100vw;
-    height: 100vh;
+    height: 100svh;
     border: none;
     margin: 0;
     padding: 0;
@@ -1628,7 +1645,7 @@ zoom-dialog dialog {
         flex-direction: column;
         inset: 50% var(--margin-lg) auto auto;
         right: 0;
-        max-height: calc(100vh - 200px);
+        max-height: calc(100svh - 200px);
         overflow-y: auto;
         animation: thumbnailsSlideInTop calc(var(--animation-speed) * 0.5) var(--animation-easing) forwards;
         animation-delay: calc(var(--animation-speed) * 2);
@@ -4609,3 +4626,12 @@ div>div.group-block-content.layout-panel-flex.layout-panel-flex--column>div:nth-
         bottom: 60px;
     }
 }
+
+.product-badges::before {
+    display:none;
+}
+
+.product-grid__item .product-badges::before {
+    display: none !important ;
+}
+

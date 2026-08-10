@@ -63,6 +63,12 @@ added.
             <div class="cart-drawer__items">
               {% render 'cart-products' %}
             </div>
+
+            <div class="cart-drawer__summary">
+              {%- if settings.cart_drawer_empty_slider_collection != blank -%}
+                {% render 'cart-drawer-slider', slider_collection: settings.cart_drawer_empty_slider_collection, slider_title: settings.cart_drawer_empty_slider_title %}
+              {%- endif -%}
+            </div>
           </div>
         {%- else -%}
           <div
@@ -101,7 +107,7 @@ added.
                     class="cart-drawer__summary"
             >
               {%- if settings.cart_drawer_slider_collection != blank -%}
-                {% render 'cart-drawer-slider' %}
+                {% render 'cart-drawer-slider', slider_collection: settings.cart_drawer_slider_collection, slider_title: settings.cart_drawer_slider_title %}
               {%- endif -%}
               {% render 'cart-summary' %}
             </div>

@@ -14,6 +14,72 @@
     "header_announcements_pbXTDf": {
       "type": "header-announcements",
       "blocks": {
+        "announcement_countdown_aTY9VB": {
+          "type": "_announcement-countdown",
+          "name": "Countdown announcement",
+          "disabled": true,
+          "settings": {
+            "end_date": "2026-06-13 23:59",
+            "text": "סופש גאווה ואהבה 15% הנחה על כל התכשיטים באתר",
+            "link": "shopify://collections/best-sellers",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "weight": "",
+            "letter_spacing": "normal",
+            "case": "none"
+          },
+          "blocks": {}
+        },
+        "announcement_DKDV48": {
+          "type": "_announcement",
+          "name": "t:names.announcement",
+          "settings": {
+            "text": "Join Noritamy's Inner Circle And Get 10% Off Your First Order",
+            "link": "",
+            "enable_klaviyo_popup": true,
+            "klaviyo_form_id": "WhpzHA",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "weight": "",
+            "letter_spacing": "normal",
+            "case": "none"
+          },
+          "blocks": {}
+        },
+        "announcement_kL6Uje": {
+          "type": "_announcement",
+          "name": "t:names.announcement",
+          "disabled": true,
+          "settings": {
+            "text": "Free Shipping",
+            "link": "",
+            "enable_klaviyo_popup": false,
+            "klaviyo_form_id": "",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "weight": "",
+            "letter_spacing": "normal",
+            "case": "none"
+          },
+          "blocks": {}
+        },
+        "announcement_MnjcKA": {
+          "type": "_announcement",
+          "name": "t:names.announcement",
+          "disabled": true,
+          "settings": {
+            "text": "1 Year Warranty",
+            "link": "",
+            "enable_klaviyo_popup": false,
+            "klaviyo_form_id": "",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "weight": "",
+            "letter_spacing": "normal",
+            "case": "none"
+          },
+          "blocks": {}
+        },
         "announcement_Ji78WG": {
           "type": "_announcement",
           "name": "t:names.announcement",
@@ -21,6 +87,8 @@
           "settings": {
             "text": "15% OFF for  Valentine's! Coupon: 15LOVE",
             "link": "",
+            "enable_klaviyo_popup": false,
+            "klaviyo_form_id": "",
             "font": "var(--font-body--family)",
             "font_size": "1rem",
             "weight": "",
@@ -36,6 +104,8 @@
           "settings": {
             "text": "EXPLORE OUR HAND MADE JEWELRY",
             "link": "shopify://collections",
+            "enable_klaviyo_popup": false,
+            "klaviyo_form_id": "",
             "font": "var(--font-accent--family)",
             "font_size": "0.75rem",
             "weight": "",
@@ -51,6 +121,8 @@
           "settings": {
             "text": "<span style=\"text-decoration:underline\"><strong>20% Off</strong></span> for Orders Over 2000 NIS!",
             "link": "shopify://collections/shop-all",
+            "enable_klaviyo_popup": false,
+            "klaviyo_form_id": "",
             "font": "var(--font-body--family)",
             "font_size": "1rem",
             "weight": "700",
@@ -62,9 +134,12 @@
         "announcement_XXRaty": {
           "type": "_announcement",
           "name": "t:names.announcement",
+          "disabled": true,
           "settings": {
-            "text": "Free Shipping | Up To 12 Payments",
+            "text": "Up To 12 Installments",
             "link": "",
+            "enable_klaviyo_popup": false,
+            "klaviyo_form_id": "",
             "font": "var(--font-body--family)",
             "font_size": "1rem",
             "weight": "",
@@ -75,6 +150,10 @@
         }
       },
       "block_order": [
+        "announcement_countdown_aTY9VB",
+        "announcement_DKDV48",
+        "announcement_kL6Uje",
+        "announcement_MnjcKA",
         "announcement_Ji78WG",
         "announcement_KMAGKG",
         "announcement_nqcUGB",
@@ -85,8 +164,8 @@
       ],
       "name": "t:names.announcement_bar",
       "settings": {
-        "layout": "marquee",
-        "speed": 3,
+        "layout": "slider",
+        "speed": 4,
         "section_width": "full-width",
         "color_scheme": "scheme-4",
         "divider_width": 0,
@@ -127,6 +206,10 @@
           "static": true,
           "settings": {
             "menu": "new-main-menu",
+            "target_index": 4,
+            "highlight_color": "#7d5448",
+            "highlight_bg_color": "rgba(0,0,0,0)",
+            "highlight_font_weight": "bold",
             "menu_style": "text",
             "featured_products_aspect_ratio": "4 / 5",
             "featured_collections_aspect_ratio": "16 / 9",
@@ -173,7 +256,7 @@
         "localization_row": "top",
         "section_width": "full-width",
         "section_height": "standard",
-        "enable_sticky_header": "never",
+        "enable_sticky_header": "always",
         "divider_width": 1,
         "divider_size": "page-width",
         "border_width": 1,

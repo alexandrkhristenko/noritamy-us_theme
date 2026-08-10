@@ -8,15 +8,36 @@
 {% endcapture %}
 
 {% if block.settings.source == 'uploaded' %}
-  {% render 'video',
-    video: block.settings.video,
-    video_class: 'spacing-style size-style border-style',
-    video_loop: block.settings.video_loop,
-    video_style: video_style,
-    video_preview_image: block.settings.video.preview_image,
-    additional_attributes: block.shopify_attributes,
-    section_id: section.id
-  %}
+  {% if block.settings.video_mobile != blank %}
+    {% render 'video',
+      video: block.settings.video,
+      video_class: 'spacing-style size-style border-style hidden--mobile',
+      video_loop: block.settings.video_loop,
+      video_style: video_style,
+      video_preview_image: block.settings.video.preview_image,
+      additional_attributes: block.shopify_attributes,
+      section_id: section.id
+    %}
+    {% render 'video',
+      video: block.settings.video_mobile,
+      video_class: 'spacing-style size-style border-style hidden--desktop',
+      video_loop: block.settings.video_loop,
+      video_style: video_style,
+      video_preview_image: block.settings.video_mobile.preview_image,
+      additional_attributes: block.shopify_attributes,
+      section_id: section.id
+    %}
+  {% else %}
+    {% render 'video',
+      video: block.settings.video,
+      video_class: 'spacing-style size-style border-style',
+      video_loop: block.settings.video_loop,
+      video_style: video_style,
+      video_preview_image: block.settings.video.preview_image,
+      additional_attributes: block.shopify_attributes,
+      section_id: section.id
+    %}
+  {% endif %}
 {% else %}
   {% render 'video',
     video_from_url: true,
@@ -62,6 +83,12 @@
       "type": "video",
       "id": "video",
       "label": "t:settings.video",
+      "visible_if": "{{ block.settings.source == 'uploaded' }}"
+    },
+    {
+      "type": "video",
+      "id": "video_mobile",
+      "label": "Video (Mobile)",
       "visible_if": "{{ block.settings.source == 'uploaded' }}"
     },
     {
