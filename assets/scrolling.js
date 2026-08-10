@@ -156,10 +156,14 @@ export class Scroller {
 
     if (!instant) this.#setup();
 
-    this.element[method]({
-      [this.#edge.toLowerCase()]: value,
-      behavior: instant ? 'instant' : 'smooth',
-    });
+    if (instant) {
+      this.element[this.#edge === 'Left' ? 'scrollLeft' : 'scrollTop'] = value;
+    } else {
+      this.element[method]({
+        [this.#edge.toLowerCase()]: value,
+        behavior: 'smooth',
+      });
+    }
   }
 
   /**

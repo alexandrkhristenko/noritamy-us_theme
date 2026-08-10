@@ -1486,7 +1486,7 @@ media-gallery {
         /* arbitrary offset value based on average theme spacing and header height */
         --viewport-offset: 400px;
         --constrained-min-height: 300px;
-        --constrained-height: max(var(--constrained-min-height), calc(100vh - var(--viewport-offset)));
+        --constrained-height: max(var(--constrained-min-height), calc(100svh - var(--viewport-offset)));
 
         margin-right: auto;
         margin-left: auto;
@@ -1567,7 +1567,7 @@ media-gallery:where(.media-gallery--grid) .media-gallery__grid {
 
 zoom-dialog dialog {
     width: 100vw;
-    height: 100vh;
+    height: 100svh;
     border: none;
     margin: 0;
     padding: 0;
@@ -1645,7 +1645,7 @@ zoom-dialog dialog {
         flex-direction: column;
         inset: 50% var(--margin-lg) auto auto;
         right: 0;
-        max-height: calc(100vh - 200px);
+        max-height: calc(100svh - 200px);
         overflow-y: auto;
         animation: thumbnailsSlideInTop calc(var(--animation-speed) * 0.5) var(--animation-easing) forwards;
         animation-delay: calc(var(--animation-speed) * 2);
