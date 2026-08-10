@@ -25,7 +25,12 @@
     {{ block.shopify_attributes }}
     aria-hidden="{% if block_index == 0 %}false{% else %}true{% endif %}"
   >
-    <p class="announcement-bar__text">
+    <p class="announcement-bar__text {% if block.settings.enable_klaviyo_popup and block.settings.klaviyo_form_id != blank %}js-klaviyo-announcement{% endif %}"
+       {% if block.settings.enable_klaviyo_popup and block.settings.klaviyo_form_id != blank %}
+         data-klaviyo-form-id="{{ block.settings.klaviyo_form_id }}"
+         style="cursor: pointer;"
+       {% endif %}
+    >
       {{ block.settings.text }}
     </p>
 
@@ -139,6 +144,22 @@
       "type": "url",
       "id": "link",
       "label": "t:settings.link"
+    },
+    {
+      "type": "header",
+      "content": "Klaviyo Popup"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_klaviyo_popup",
+      "label": "Enable Klaviyo Popup",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "klaviyo_form_id",
+      "label": "Klaviyo Form ID",
+      "info": "Enter your 6-digit Form ID"
     },
     {
       "type": "header",

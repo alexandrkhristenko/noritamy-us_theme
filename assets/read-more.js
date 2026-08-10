@@ -46,6 +46,14 @@ class ReadMoreComponent extends HTMLElement {
             this.expand();
         } else {
             this.collapse();
+
+            // Bring the block back into view only when the shopper collapses it
+            // themselves from further down the page. Never on an automatic
+            // re-check — mobile browsers fire `resize` whenever the URL bar
+            // collapses mid-scroll, which would yank the page back up here.
+            if (this.getBoundingClientRect().top < 0) {
+                this.scrollIntoView({ behavior: 'smooth' });
+            }
         }
     }
 
@@ -59,12 +67,6 @@ class ReadMoreComponent extends HTMLElement {
         this.wrapper.style.height = `${this.collapsedHeight}px`;
         this.wrapper.classList.remove('expanded');
         this.button.querySelector('.read-more-text').textContent = this.dataset.readMoreText;
-
-        // Scroll back to top of component if we're far down
-        const rect = this.getBoundingClientRect();
-        if (rect.top < 0) {
-            this.scrollIntoView({ behavior: 'smooth' });
-        }
     }
 }
 

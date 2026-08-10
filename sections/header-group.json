@@ -36,6 +36,8 @@
           "settings": {
             "text": "Join Noritamy's Inner Circle And Get 10% Off Your First Order",
             "link": "",
+            "enable_klaviyo_popup": true,
+            "klaviyo_form_id": "WhpzHA",
             "font": "var(--font-body--family)",
             "font_size": "1rem",
             "weight": "",
@@ -51,6 +53,8 @@
           "settings": {
             "text": "Free Shipping",
             "link": "",
+            "enable_klaviyo_popup": false,
+            "klaviyo_form_id": "",
             "font": "var(--font-body--family)",
             "font_size": "1rem",
             "weight": "",
@@ -66,6 +70,8 @@
           "settings": {
             "text": "1 Year Warranty",
             "link": "",
+            "enable_klaviyo_popup": false,
+            "klaviyo_form_id": "",
             "font": "var(--font-body--family)",
             "font_size": "1rem",
             "weight": "",
@@ -81,6 +87,8 @@
           "settings": {
             "text": "15% OFF for  Valentine's! Coupon: 15LOVE",
             "link": "",
+            "enable_klaviyo_popup": false,
+            "klaviyo_form_id": "",
             "font": "var(--font-body--family)",
             "font_size": "1rem",
             "weight": "",
@@ -96,6 +104,8 @@
           "settings": {
             "text": "EXPLORE OUR HAND MADE JEWELRY",
             "link": "shopify://collections",
+            "enable_klaviyo_popup": false,
+            "klaviyo_form_id": "",
             "font": "var(--font-accent--family)",
             "font_size": "0.75rem",
             "weight": "",
@@ -111,6 +121,8 @@
           "settings": {
             "text": "<span style=\"text-decoration:underline\"><strong>20% Off</strong></span> for Orders Over 2000 NIS!",
             "link": "shopify://collections/shop-all",
+            "enable_klaviyo_popup": false,
+            "klaviyo_form_id": "",
             "font": "var(--font-body--family)",
             "font_size": "1rem",
             "weight": "700",
@@ -126,6 +138,8 @@
           "settings": {
             "text": "Up To 12 Installments",
             "link": "",
+            "enable_klaviyo_popup": false,
+            "klaviyo_form_id": "",
             "font": "var(--font-body--family)",
             "font_size": "1rem",
             "weight": "",

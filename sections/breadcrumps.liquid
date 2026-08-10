@@ -68,9 +68,35 @@
                         <a class="breadcrumbs__link" href="{{ page.url }}" aria-current="page">{{ page.title }}</a>
                     </li>
                 {%- when 'product' -%}
-                    {%- if collection.url -%}
+                    {%- liquid
+                      assign crumb_category = blank
+                      assign type_handle = product.category.name | handleize
+                      if type_handle == blank
+                        assign type_handle = product.type | handleize
+                      endif
+                      if type_handle != blank
+                        for c in product.collections
+                          if c.handle == type_handle
+                            assign crumb_category = c
+                            break
+                          endif
+                        endfor
+                      endif
+
+                      assign crumb_subcategory = blank
+                      if collection.handle != blank and collection.handle != crumb_category.handle
+                        assign crumb_subcategory = collection
+                      endif
+                    -%}
+
+                    {%- if crumb_category and crumb_category.url -%}
                         <li class="breadcrumbs__item">
-                            {{ collection.title | link_to: collection.url }}
+                            {{ crumb_category.title | link_to: crumb_category.url }}
+                        </li>
+                    {%- endif -%}
+                    {%- if crumb_subcategory and crumb_subcategory.url -%}
+                        <li class="breadcrumbs__item">
+                            {{ crumb_subcategory.title | link_to: crumb_subcategory.url }}
                         </li>
                     {%- endif -%}
                     <li class="breadcrumbs__item">

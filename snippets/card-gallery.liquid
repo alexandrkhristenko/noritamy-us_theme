@@ -203,12 +203,30 @@
     {% if hover_behavior == 'none' or settings.product_card_carousel == false %}
       {% assign slideshow_attributes = 'disabled="true"' %}
     {% endif %}
+
+    {% comment %} Noritamy: always-visible left/right swipe arrows. Custom class namespace (NOT the
+       theme's .slideshow-control, which the theme force-hides on touch) + a self-contained scroll
+       handler in noritamy-card-nav.js. Explicit chevron paths so direction is unambiguous in RTL/LTR. {% endcomment %}
+    {% capture card_arrows %}
+      {% if all_media.size > 1 and slideshow_attributes == '' %}
+        <div class="noritamy-cardnav" data-noritamy-cardnav>
+          <button type="button" class="noritamy-cardnav__btn noritamy-cardnav__btn--prev" data-dir="prev" aria-label="{{ 'accessibility.slideshow_previous' | t }}">
+            {% render 'icon-chevron-left' %}
+          </button>
+          <button type="button" class="noritamy-cardnav__btn noritamy-cardnav__btn--next" data-dir="next" aria-label="{{ 'accessibility.slideshow_next' | t }}">
+            {% render 'icon-chevron-right' %}
+          </button>
+        </div>
+      {% endif %}
+    {% endcapture %}
+
     {% render 'slideshow',
       ref: 'slideshow',
       initial_slide: selected_variant_image_index,
       slides: slides,
       slide_count: all_media.size,
-      show_arrows: show_arrows,
+      show_arrows: false,
+      slideshow_arrows: card_arrows,
       attributes: slideshow_attributes
     %}
   {% elsif product != blank and product.media.size == 0 %}
@@ -224,8 +242,9 @@
 {% stylesheet %}
   .card-gallery {
     overflow: hidden;
-    container-type: inline-size; /* Make card-gallery a container */
-    container-name: card-gallery-container; /* Optional: name the container */
+    container-type: inline-size;
+    container-name: card-gallery-container;
+    width: 100%;
   }
 
   .card-gallery .product-media-container {
