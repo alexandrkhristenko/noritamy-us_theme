@@ -37,12 +37,12 @@
             "slideshow_mobile_controls_style": "dots",
             "thumbnail_position": "right",
             "thumbnail_width": 44,
-            "aspect_ratio": "1",
+            "aspect_ratio": "1/1.25",
             "media_radius": 0,
             "extend_media": false,
             "constrain_to_viewport": false,
             "zoom": true,
-            "video_loop": false,
+            "video_loop": true,
             "hide_variants": false,
             "padding-block-start": 0,
             "padding-block-end": 0,
@@ -142,6 +142,19 @@
               },
               "blocks": {}
             },
+            "product_inventory_7bxwGB": {
+              "type": "product-inventory",
+              "name": "t:names.product_inventory",
+              "settings": {
+                "inventory_threshold": 3,
+                "show_inventory_quantity": true,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
             "variant_picker_R3rGDr": {
               "type": "variant-picker",
               "settings": {
@@ -159,8 +172,7 @@
               "type": "size-guide",
               "name": "Size Guide",
               "settings": {
-                "button_text": "Size Guide",
-                "video": "shopify://files/videos/WhatsApp Video 2026-04-20 at 19.03.08.mp4"
+                "button_text": "Size Guide"
               },
               "blocks": {}
             },
@@ -204,8 +216,8 @@
               "name": "Shipping Estimate",
               "settings": {
                 "text_prefix": "Handmade to order, Receive by",
-                "min_days": 4,
-                "max_days": 8
+                "min_days": 6,
+                "max_days": 22
               },
               "blocks": {}
             },
@@ -460,7 +472,7 @@
                       "type": "text",
                       "name": "t:names.text",
                       "settings": {
-                        "text": "<p>Up to 12 Payments</p>",
+                        "text": "<p>Up to 12 Installments</p>",
                         "width": "fit-content",
                         "max_width": "normal",
                         "alignment": "left",
@@ -499,7 +511,7 @@
               "type": "product-description",
               "name": "t:names.product_description",
               "settings": {
-                "text": "<p>{{ closest.product.description }}</p>",
+                "text": "{{ closest.product.description }}",
                 "collapsed_height": 100,
                 "read_more_text": "Read more",
                 "read_less_text": "Read less",
@@ -740,7 +752,7 @@
                     "text_rKmYaB": {
                       "type": "text",
                       "settings": {
-                        "text": "<p>Each piece is handcrafted in our Tel Aviv studio. From the moment you place your order, expect to receive it within 4-8 business days — that includes crafting, quality check, and delivery. You can also pick up from our studio at Herzl 20, Tel Aviv, by appointment. Once shipped, you’ll receive a tracking email. For any questions, contact us at info@noritamy.com.</p>",
+                        "text": "<p>Each piece is handcrafted in our Tel Aviv studio. From the moment you place your order, expect to receive it within 4-8 business days — that includes crafting, quality check, and delivery. Once shipped, you’ll receive a tracking email. For any questions, contact us at hey@noritamy.com.</p>",
                         "width": "100%",
                         "max_width": "normal",
                         "alignment": "left",
@@ -779,7 +791,7 @@
                     "text_wMFRAi": {
                       "type": "text",
                       "settings": {
-                        "text": "<p><strong>Care Instructions for Your Plated or full gold Jewelry</strong><br/><br/>Our pieces are crafted to make a statement—and to stay with you for years. To keep their shine and spirit alive, a little mindful care goes a long way.<br/><br/>Here’s how to love them back:<br/><br/><strong>Last on, first off.</strong><br/>Put your jewelry on after applying perfume, lotion, or makeup—and take it off before undressing, showering, or sleeping.<br/><br/><strong>Keep it dry.</strong><br/>Water, humidity, and plating don’t mix. Avoid wearing your piece while swimming, bathing, or sweating.<br/><br/><strong>Soft touch only.</strong><br/>Clean gently with a soft, dry cloth after each wear to remove any natural oils or residue. No chemicals, no abrasives—just a little love.<br/><br/><strong>Store with intention.</strong><br/>Keep your piece in its Noritamy pouch or box, away from sunlight and other jewelry to prevent scratching or fading.<br/><br/><strong>Time to replate?</strong><br/>Over time, gold plating may naturally fade depending on wear. When that moment comes, we offer a re-plating service to bring your piece back to life.<br/><br/><strong>Materials: </strong></p>{{ closest.product.metafields.custom.materials | metafield_tag }}",
+                        "text": "<p><strong>Care Instructions for Your Plated or full gold Jewelry</strong><br/><br/>Our pieces are crafted to make a statement - and to stay with you for years. To keep their shine and spirit alive, a little mindful care goes a long way.<br/><br/>Here’s how to love them back:<br/><br/><strong>Last on, first off.</strong><br/>Put your jewelry on after applying perfume, lotion, or makeup - and take it off before undressing, showering, or sleeping.<br/><br/><strong>Keep it dry.</strong><br/>Water, humidity, and plating don’t mix. Avoid wearing your piece while swimming, bathing, or sweating.<br/><br/><strong>Soft touch only.</strong><br/>Clean gently with a soft, dry cloth after each wear to remove any natural oils or residue. No chemicals, no abrasives - just a little love.<br/><br/><strong>Store with intention.</strong><br/>Keep your piece in its Noritamy pouch or box, away from sunlight and other jewelry to prevent scratching or fading.<br/><br/><strong>Time to replate?</strong><br/>Over time, gold plating may naturally fade depending on wear. When that moment comes, we offer a re-plating service to bring your piece back to life.<br/><br/><strong>Materials: </strong></p>{{ closest.product.metafields.custom.materials | metafield_tag }}",
                         "width": "100%",
                         "max_width": "normal",
                         "alignment": "left",
@@ -818,7 +830,7 @@
                     "text_Nrxfg8": {
                       "type": "text",
                       "settings": {
-                        "text": "<p>From the moment you place your order, expect to receive your piece within <strong>4-8 business days</strong> — that includes crafting, quality check, and delivery. International orders: <strong>10-14 business days</strong>.</p><p>Shipping in Israel is <strong>free</strong>. International shipping: <strong>$50 USD</strong> via DHL Express.</p><p>Returns are accepted within 14 business days of delivery, provided the item is unworn and in its original condition. For full details, see our <a href=\"/pages/shipping-returns\">shipping &amp; returns policy</a>.</p>",
+                        "text": "<p>From the moment you place your order, please allow <strong>2-8 business days</strong> for our team to craft and quality-check your piece. All orders are shipped from our studio at Herzl 20, Israel. To ensure a seamless experience, we cover all related customs taxes and charges.</p><h2>Shipping Options</h2><p><strong>Economy Service (USPS in the USA):</strong> 5-14 business days once sent — Fully traceable — <strong>Free</strong></p><p><strong>DHL Express:</strong> 2-6 business days once sent — Fully traceable — <strong>$15 USD</strong></p><h2>Returns &amp; Exchanges</h2><p>Returns are accepted within 30 days of delivery, provided the item is unworn and in its original condition. For your convenience, returns are sent to our US-based address. For full details and instructions, please refer to our <a href=\"/pages/shipping-returns\">complete shipping and returns policy</a>.</p>",
                         "width": "100%",
                         "max_width": "normal",
                         "alignment": "left",
@@ -964,7 +976,7 @@
                       "name": "t:names.icon",
                       "settings": {
                         "icon": "price_tag",
-                        "image_upload": "shopify://shop_images/whatsapp_1419525_svg.svg",
+                        "image_upload": "shopify://shop_images/envelope.png",
                         "width": 24,
                         "link": "",
                         "open_in_new_tab": false
@@ -975,7 +987,7 @@
                       "type": "text",
                       "name": "t:names.text",
                       "settings": {
-                        "text": "<p><a href=\"https://api.whatsapp.com/send?phone=972544559091\" target=\"_blank\" title=\"https://api.whatsapp.com/send?phone=972544559091\">Contact Us</a></p>",
+                        "text": "<p><a href=\"mailto:hey@noritamy.com\" target=\"_blank\" title=\"mailto:hey@noritamy.com\">Contact Us</a></p>",
                         "width": "fit-content",
                         "max_width": "normal",
                         "alignment": "left",
@@ -1006,6 +1018,7 @@
                 "group_pLfRUV": {
                   "type": "group",
                   "name": "t:names.group",
+                  "disabled": true,
                   "settings": {
                     "link": "",
                     "open_in_new_tab": false,
@@ -1092,6 +1105,15 @@
                 "group_hLQxMW",
                 "group_pLfRUV"
               ]
+            },
+            "share_buttons_jWxPWP": {
+              "type": "share-buttons",
+              "name": "Share buttons",
+              "settings": {
+                "padding-block-start": 16,
+                "padding-block-end": 16
+              },
+              "blocks": {}
             }
           },
           "block_order": [
@@ -1099,6 +1121,7 @@
             "judge_me_reviews_preview_badge_9hhHMy",
             "reviews",
             "price_a7krng",
+            "product_inventory_7bxwGB",
             "variant_picker_R3rGDr",
             "size_guide_FY9Rkx",
             "buy_buttons_eYQEYi",
@@ -1106,7 +1129,8 @@
             "group_Q4eVWb",
             "product_description_Uxa63K",
             "accordion_Yd4U4w",
-            "group_RF8QBV"
+            "group_RF8QBV",
+            "share_buttons_jWxPWP"
           ]
         }
       },
@@ -1567,7 +1591,7 @@
                 "text_gJHkg3": {
                   "type": "text",
                   "settings": {
-                    "text": "<p>For Return policy please read <a href=\"/pages/shipping-returns\" target=\"_blank\" title=\"Shipping & Returns\">here</a> </p><p></p><p></p>",
+                    "text": "<p>For Return policy please read <a href=\"/policies/refund-policy\" target=\"_blank\" title=\"Refund Policy\">here</a> </p><p></p><p></p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
@@ -1647,7 +1671,7 @@
                   "type": "text",
                   "name": "t:names.text",
                   "settings": {
-                    "text": "<p>Each Noritamy piece is crafted by hand. From order to delivery, expect to receive your piece within 4-8 business days. For more info see our <a href=\"/pages/shipping-returns\" target=\"_blank\" title=\"Shipping &amp; Returns\">shipping policy</a>.</p>",
+                    "text": "<p>Each Noritamy piece is crafted by hand. From order to delivery, expect to receive your piece within 4-8 business days. For more info see our <a href=\"/policies/shipping-policy\" target=\"_blank\" title=\"Shipping Policy\">shipping policy</a>.</p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
@@ -1729,7 +1753,7 @@
                   "type": "text",
                   "name": "t:names.text",
                   "settings": {
-                    "text": "<p>Shipping within Israel is free! International shipping is $50 USD via DHL Express.</p>",
+                    "text": "<p>Economy Service (will be delivered in the US using USPS) - 5-14 business days once sent, fully traceable - free shipping <br/>DHL Express - 2-6 business days once sent, fully traceable - $15 <br/></p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",

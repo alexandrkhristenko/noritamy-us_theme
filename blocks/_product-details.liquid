@@ -125,6 +125,9 @@
     },
     {
       "type": "shipping-estimate"
+    },
+    {
+      "type": "share-buttons"
     }
   ],
   "tag": null,
@@ -482,6 +485,15 @@
             "alignment": "left"
           }
         },
+        "product_inventory": {
+          "type": "product-inventory",
+          "settings": {
+            "inventory_threshold": 10,
+            "show_inventory_quantity": true,
+            "padding-block-start": 4,
+            "padding-block-end": 4
+          }
+        },
         "variant_picker_R3rGDr": {
           "type": "variant-picker",
           "settings": {
@@ -690,6 +702,13 @@
             }
           },
           "block_order": ["recommendations-header"]
+        },
+        "share_buttons": {
+          "type": "share-buttons",
+          "settings": {
+            "padding-block-start": 16,
+            "padding-block-end": 16
+          }
         }
       },
       "block_order": [
@@ -697,11 +716,13 @@
         "heading_m7KmQQ",
         "text_GMQR8L",
         "price_a7krng",
+        "product_inventory",
         "variant_picker_R3rGDr",
         "buy_buttons_eYQEYi",
         "group_Q4eVWb",
         "accordion",
-        "complementary_products"
+        "complementary_products",
+        "share_buttons"
       ]
     }
   ]

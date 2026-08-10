@@ -1,0 +1,13 @@
+/* Section Media Grid */
+.media-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  padding: 40px 20px;
+}
+.media-grid__item img,
+.media-grid__item svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}

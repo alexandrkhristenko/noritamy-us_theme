@@ -110,17 +110,10 @@
             "padding-inline-end": 0
           },
           "blocks": {}
-        },
-        "ga_image_gallery_photo_galler_app_embeded_yfzrVr": {
-          "type": "shopify://apps/g-ai-slideshow-photo-gallery/blocks/app-embeded/6e61cc50-97c2-40a1-9971-8ad3f8851e1e",
-          "settings": {
-            "popup_embedded_id": "gallery-id-6522"
-          }
         }
       },
       "block_order": [
-        "text_rN33dp",
-        "ga_image_gallery_photo_galler_app_embeded_yfzrVr"
+        "text_rN33dp"
       ],
       "name": "t:names.custom_section",
       "settings": {
@@ -153,17 +146,6 @@
     },
     "1753127093534ee5a3": {
       "type": "_blocks",
-      "blocks": {
-        "ga_image_gallery_photo_galler_app_embeded_E9NYpR": {
-          "type": "shopify://apps/g-ai-slideshow-photo-gallery/blocks/app-embeded/6e61cc50-97c2-40a1-9971-8ad3f8851e1e",
-          "settings": {
-            "popup_embedded_id": "gallery-id-5752"
-          }
-        }
-      },
-      "block_order": [
-        "ga_image_gallery_photo_galler_app_embeded_E9NYpR"
-      ],
       "settings": {
         "content_direction": "column",
         "vertical_on_mobile": true,

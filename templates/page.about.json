@@ -1,0 +1,448 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "image_with_text_overlay_rUUdzk": {
+      "type": "image-with-text-overlay",
+      "blocks": {
+        "heading_Tpn8qY": {
+          "type": "heading",
+          "settings": {
+            "text": "Our Story",
+            "heading_tag": "h2"
+          }
+        }
+      },
+      "block_order": [
+        "heading_Tpn8qY"
+      ],
+      "name": "t:sections.image_with_text_overlay.presets.image_with_text_overlay.name",
+      "settings": {
+        "color_scheme": "",
+        "image_size": "lg",
+        "image": "shopify://shop_images/IMG_2459_e0004e6f-e4bf-4092-8383-496ab2fa73ab.jpg",
+        "allow_transparent_header": false,
+        "reveal_on_scroll": true,
+        "remove_vertical_spacing": true,
+        "content_width": "md",
+        "mobile_text_position": "place-self-end-start text-start",
+        "desktop_text_position": "sm:place-self-center-start sm:text-start",
+        "overlay_color": "#000000",
+        "overlay_opacity": 47
+      }
+    },
+    "main": {
+      "type": "main-page",
+      "settings": {
+        "content_direction": "column",
+        "gap": 12,
+        "color_scheme": "scheme-1",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "rich_text_tAWiLE": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_zbHF4p": {
+          "type": "heading",
+          "settings": {
+            "text": "Art, architecture, and sculpture - translated into jewelry.",
+            "heading_tag": "h2"
+          }
+        }
+      },
+      "block_order": [
+        "heading_zbHF4p"
+      ],
+      "name": "t:sections.rich_text.presets.rich_text.name",
+      "settings": {
+        "color_scheme": "",
+        "separate_section_with_border": true,
+        "content_width": "sm",
+        "text_position": "center",
+        "remove_vertical_spacing": true
+      }
+    },
+    "image_with_text_cztw7A": {
+      "type": "image-with-text",
+      "blocks": {
+        "heading_46TpDQ": {
+          "type": "heading",
+          "settings": {
+            "text": "AN AWARD-WINNING DIALOGUE",
+            "heading_tag": "h2"
+          }
+        },
+        "richtext_hpBxbt": {
+          "type": "richtext",
+          "settings": {
+            "content": "<p>Noritamy is an award-winning brand that creates handcrafted jewelry and accessories, drawing inspiration from the realms of art, architecture, and sculpture.</p><p>This unique blend brings a modern twist to classic design - collections that embody the eternal debate between these two trades, resulting in dramatic and refined pieces.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading_46TpDQ",
+        "richtext_hpBxbt"
+      ],
+      "name": "t:sections.image_with_text.presets.image_with_text.name",
+      "settings": {
+        "section_id": "more-info",
+        "color_scheme": "",
+        "separate_section_with_border": true,
+        "image": "shopify://shop_images/sterling-silver-short-rugged-ring_fae09755-854f-4d34-9a03-45372d00e23d.webp",
+        "reveal_on_scroll": true,
+        "image_position": "start",
+        "image_placement": "fill",
+        "image_max_height": 600,
+        "content_position": "center",
+        "content_style": "default",
+        "content_width": "sm",
+        "remove_vertical_spacing": true,
+        "add_borders": false,
+        "borders_color": "#dfdeda",
+        "bg_color": "",
+        "boxed_section": false,
+        "m_bg_color": "",
+        "title_over_image": false,
+        "mobile_center_text": false
+      }
+    },
+    "image_with_text_qpihQL": {
+      "type": "image-with-text",
+      "blocks": {
+        "heading_XfrnwX": {
+          "type": "heading",
+          "settings": {
+            "text": "FOUNDED BY NORI & TAMY",
+            "heading_tag": "h2"
+          }
+        },
+        "richtext_myzkWR": {
+          "type": "richtext",
+          "settings": {
+            "content": "<p>The brand was launched 18 years ago as a creative fusion of two accomplished women, Nori and Tamy.</p><p>Nori, a trained interior architect with a B.des degree, and Tamy, an artist with a background in jewelry making, synergize their knowledge and experience to create timeless luxury pieces with a contemporary and fashionable feminine flair.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading_XfrnwX",
+        "richtext_myzkWR"
+      ],
+      "name": "t:sections.image_with_text.presets.image_with_text.name",
+      "settings": {
+        "section_id": "more-info",
+        "color_scheme": "",
+        "separate_section_with_border": true,
+        "image": "shopify://shop_images/elinor-avni-by-natasha-zeriker-0u3a7220-scaled-e1733663719958.jpg",
+        "reveal_on_scroll": true,
+        "image_position": "end",
+        "image_placement": "fill",
+        "image_max_height": 600,
+        "content_position": "center",
+        "content_style": "default",
+        "content_width": "sm",
+        "remove_vertical_spacing": true,
+        "add_borders": false,
+        "borders_color": "#dfdeda",
+        "bg_color": "",
+        "boxed_section": false,
+        "m_bg_color": "",
+        "title_over_image": false,
+        "mobile_center_text": false
+      }
+    },
+    "image_with_text_ihHBTt": {
+      "type": "image-with-text",
+      "blocks": {
+        "heading_XU8T6P": {
+          "type": "heading",
+          "settings": {
+            "text": "FROM THE MIDDLE EAST TO LFW",
+            "heading_tag": "h2"
+          }
+        },
+        "richtext_MxN69U": {
+          "type": "richtext",
+          "settings": {
+            "content": "<p>Originally launched in the Middle East, Noritamy rapidly gained global recognition after participating in the London Fashion Week designer showrooms.</p><p>Over the past 5 years, Nori has taken sole lead of the brand - expanding into consulting, fashion design, and the creation of home and art pieces, with an emphasis on collaborations.</p><p>Coveted in Europe, Asia, and the Middle East, Noritamy is admired for its wide range of fashion-oriented statement pieces and delicate high-end gold and diamond creations. Nori was recently awarded \"Best Sculpture-Oriented Jewelry Designer in the Middle East\" by Lux magazine.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading_XU8T6P",
+        "richtext_MxN69U"
+      ],
+      "name": "t:sections.image_with_text.presets.image_with_text.name",
+      "settings": {
+        "section_id": "more-info",
+        "color_scheme": "",
+        "separate_section_with_border": true,
+        "image": "shopify://shop_images/editorial-2-1_00c7b1a8-6fb6-406f-bb57-289ba9bc72b3.jpg",
+        "reveal_on_scroll": true,
+        "image_position": "start",
+        "image_placement": "fill",
+        "image_max_height": 600,
+        "content_position": "center",
+        "content_style": "default",
+        "content_width": "sm",
+        "remove_vertical_spacing": true,
+        "add_borders": false,
+        "borders_color": "#dfdeda",
+        "bg_color": "",
+        "boxed_section": false,
+        "m_bg_color": "",
+        "title_over_image": false,
+        "mobile_center_text": false
+      }
+    },
+    "separator_Nq4ntw": {
+      "type": "separator",
+      "name": "Separator / Spacer",
+      "settings": {
+        "style": "invisible",
+        "height": 55,
+        "line_color": "#e1e1e1",
+        "line_thickness": 1
+      }
+    },
+    "media_grid_h8ebrC": {
+      "type": "media-grid",
+      "blocks": {
+        "image_eApfqj": {
+          "type": "image",
+          "settings": {
+            "color_scheme": "",
+            "image": "shopify://shop_images/HAF-B-10-editorial_11d7a730-290d-4244-94ea-7ea0b5c86f47.jpg",
+            "column_count": "6",
+            "row_count": 2,
+            "title": "HANDMADE IN OUR STUDIO",
+            "heading_tag": "h3",
+            "content": "<p>No two pieces are exactly alike.</p>",
+            "link_text": "",
+            "link_url": "",
+            "link_style": "link",
+            "text_position": "place-self-end-start text-start",
+            "overlay_color": "#000000",
+            "overlay_opacity": 25
+          }
+        },
+        "image_xkHLge": {
+          "type": "image",
+          "settings": {
+            "color_scheme": "",
+            "image": "shopify://shop_images/18K_gold.jpg",
+            "column_count": "6",
+            "row_count": 2,
+            "title": "24K GOLD & SILVER TONE",
+            "heading_tag": "h3",
+            "content": "<p>Dipped in a heavy layer of finish.</p>",
+            "link_text": "",
+            "link_url": "",
+            "link_style": "link",
+            "text_position": "place-self-end-start text-start",
+            "overlay_color": "#000000",
+            "overlay_opacity": 25
+          }
+        },
+        "image_Q7V4TA": {
+          "type": "image",
+          "settings": {
+            "color_scheme": "",
+            "image": "shopify://shop_images/editorial-5_0ac2b4ec-75fc-44bd-8f0c-707b3a3bb414.jpg",
+            "column_count": "6",
+            "row_count": 2,
+            "title": "NICKEL FREE",
+            "heading_tag": "h3",
+            "content": "<p>All pieces, every time.</p>",
+            "link_text": "",
+            "link_url": "",
+            "link_style": "link",
+            "text_position": "place-self-end-start text-start",
+            "overlay_color": "#000000",
+            "overlay_opacity": 25
+          }
+        },
+        "image_3qNFR9": {
+          "type": "image",
+          "settings": {
+            "color_scheme": "",
+            "image": "shopify://shop_images/Design-date-pic.jpg",
+            "column_count": "6",
+            "row_count": 2,
+            "title": "CUSTOM CREATIONS",
+            "heading_tag": "h3",
+            "content": "<p>Bespoke pieces, made on request.</p>",
+            "link_text": "",
+            "link_url": "",
+            "link_style": "link",
+            "text_position": "place-self-end-start text-start",
+            "overlay_color": "#000000",
+            "overlay_opacity": 25
+          }
+        }
+      },
+      "block_order": [
+        "image_eApfqj",
+        "image_xkHLge",
+        "image_Q7V4TA",
+        "image_3qNFR9"
+      ],
+      "name": "t:sections.media_grid.presets.media_grid.name",
+      "settings": {
+        "color_scheme": "",
+        "separate_section_with_border": true,
+        "desktop_row_height": 290,
+        "mobile_row_height": 180,
+        "section_width": "lg",
+        "spacing": "md",
+        "subheading": "INSIDE THE CRAFT",
+        "title": "Made by hand, one piece at a time",
+        "content": "<p>All Noritamy jewelry is handmade in our studio - dipped in a heavy layer of 24k gold or silver tone, always nickel free. Premium lines and bespoke commissions are available on request.</p>"
+      }
+    },
+    "featured_collections_bXeKxA": {
+      "type": "featured-collections",
+      "blocks": {
+        "collection_r8Qegf": {
+          "type": "collection",
+          "settings": {
+            "collection": "bracelets",
+            "products_count": 8,
+            "title": "Featured pieces",
+            "link_url": "",
+            "link_text": "View all"
+          }
+        }
+      },
+      "block_order": [
+        "collection_r8Qegf"
+      ],
+      "name": "t:sections.featured_collections.presets.featured_collections.name",
+      "settings": {
+        "color_scheme": "",
+        "separate_section_with_border": true,
+        "hide_product_information": false,
+        "stack_products": false,
+        "products_per_row_mobile": "2",
+        "products_per_row_desktop": 4,
+        "horizontal_spacing_factor": 1,
+        "vertical_spacing_factor": 1,
+        "subheading": "WEARABLE ART",
+        "subheading_tip": ""
+      }
+    },
+    "images_with_text_scroll_3Nqkmi": {
+      "type": "images-with-text-scroll",
+      "blocks": {
+        "image_with_text_rXJ4dc": {
+          "type": "image_with_text",
+          "settings": {
+            "image": "shopify://shop_images/BARE-EARRINGS-editorial.jpg",
+            "subheading": "",
+            "title": "Where form meets feeling",
+            "content": "<p>Noritamy lives at the intersection of art, architecture, and sculpture - a modern dialogue with classic design that produces pieces both dramatic and refined.</p>",
+            "link_text": "",
+            "link_url": "",
+            "link_style": "solid"
+          }
+        },
+        "image_with_text_9YLRjh": {
+          "type": "image_with_text",
+          "settings": {
+            "image": "shopify://shop_images/Studio-Session-5832_b0faee8f-5071-4815-a508-d80875e1d13f-opt.jpg",
+            "subheading": "",
+            "title": "A creative fusion",
+            "content": "<p>Launched 18 years ago by Nori, a trained interior architect with a B.des, and Tamy, an artist working in jewelry. Two disciplines, one signature.</p>",
+            "link_text": "",
+            "link_url": "",
+            "link_style": "solid"
+          }
+        },
+        "image_with_text_3X97yR": {
+          "type": "image_with_text",
+          "settings": {
+            "image": "shopify://shop_images/n-story-01-by-natasha-zeriker8.1-scaled-1_f2ed228e-6e5f-45f5-a83e-f6768627154c.jpg",
+            "subheading": "",
+            "title": "Middle East to London Fashion Week",
+            "content": "<p>Originally launched in the Middle East, the brand gained global recognition through the LFW designer showrooms - opening the door to buyers and press across Europe and Asia.</p>",
+            "link_text": "",
+            "link_url": "",
+            "link_style": "solid"
+          }
+        },
+        "image_with_text_4kMLEt": {
+          "type": "image_with_text",
+          "settings": {
+            "image": "shopify://shop_images/R-Colored_Z_N9214-Noritamy-Jan21-by-Natasha-Zeriker-scaled-1.jpg",
+            "subheading": "",
+            "title": "At the helm",
+            "content": "<p>For the past five years, Nori has led the brand alone, with each season unveiling a new collection and an original story to fuel her creativity. Her ability to blend art, architecture, and fashion continues to enchant the fashion world, and makes Noritamy a prominent and celebrated name in the industry.</p>",
+            "link_text": "",
+            "link_url": "",
+            "link_style": "solid"
+          }
+        },
+        "image_with_text_g8nTVa": {
+          "type": "image_with_text",
+          "settings": {
+            "image": "shopify://shop_images/editorial-3-1_4215d333-92f0-4b06-beb9-04750bbee045.jpg",
+            "subheading": "",
+            "title": "Press and stage",
+            "content": "<p>Featured in UK, Paris and Italian VOGUE, Harper's Bazaar, BOF, Elle, Marie Claire, Interview, WGSN, and the Swarovski Book of Inspirations.</p><p>Top stylists and bloggers globally have been captivated by the jewelry, which has graced the likes of Marta Pozan, Caylee Cowen, Victor Perez, Nicole Scherzinger, Eugen Lee Yang, FKA twigs, Alesha Dixon, Alena Watson, Clara Amfo and more.</p>",
+            "link_text": "",
+            "link_url": "",
+            "link_style": "solid"
+          }
+        },
+        "image_with_text_bf3zEF": {
+          "type": "image_with_text",
+          "settings": {
+            "image": "shopify://shop_images/Studio-Session-5804_a16b7c27-50a0-45c7-a483-25b660ee6032-opt.jpg",
+            "subheading": "",
+            "title": "Visit the studio",
+            "content": "<p>Each Noritamy piece is handmade in our studio - dipped in a heavy layer of 24k gold or silver tone, always nickel free, no two pieces ever exactly alike. Explore the collections - or come see how they're made.</p>",
+            "link_text": "",
+            "link_url": "",
+            "link_style": "solid"
+          }
+        }
+      },
+      "block_order": [
+        "image_with_text_rXJ4dc",
+        "image_with_text_9YLRjh",
+        "image_with_text_3X97yR",
+        "image_with_text_4kMLEt",
+        "image_with_text_g8nTVa",
+        "image_with_text_bf3zEF"
+      ],
+      "settings": {
+        "color_scheme": "scheme-3",
+        "image_position": "start",
+        "text_alignment": "center",
+        "heading_tag": "h3",
+        "overlay_color": "#2c2a25",
+        "overlay_opacity": 40
+      }
+    }
+  },
+  "order": [
+    "image_with_text_overlay_rUUdzk",
+    "main",
+    "rich_text_tAWiLE",
+    "image_with_text_cztw7A",
+    "image_with_text_qpihQL",
+    "image_with_text_ihHBTt",
+    "separator_Nq4ntw",
+    "media_grid_h8ebrC",
+    "featured_collections_bXeKxA",
+    "images_with_text_scroll_3Nqkmi"
+  ]
+}

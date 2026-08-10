@@ -1,0 +1,26 @@
+/* Section Images with Text Scroll */
+.images-with-text-scroll {
+  width: 100%;
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding: 40px 20px;
+  scroll-snap-type: x mandatory;
+}
+.images-with-text-scroll__item {
+  flex: 0 0 80%;
+  max-width: 400px;
+  scroll-snap-align: center;
+  background: #f4f4f4;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.images-with-text-scroll__item img,
+.images-with-text-scroll__item svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.images-with-text-scroll__content {
+  padding: 20px;
+}

@@ -254,8 +254,19 @@
     width: 100%;
     min-height: var(--minimum-touch-target);
     text-align: center !important;
+    font-size: 0;
+    position: relative;
+    text-transform: var(--button-text-case-primary);
   }
-
+  .product-form-buttons .shopify-payment-button__button:after {
+    content: 'Shop Now';
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 16px;
+  }
   .quantity-selector,
   .add-to-cart-button {
     height: var(--height-buy-buttons);

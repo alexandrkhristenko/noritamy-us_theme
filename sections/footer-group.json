@@ -43,7 +43,7 @@
         "text_XNPRHy": {
           "type": "text",
           "settings": {
-            "text": "<p>Welcome to Noritamy where bold design meets timeless craftsmanship. </p><p>Join our inner circle and be the first to hear about exclusive drops, private events, and what’s happening behind the scenes. </p><p>As a little something to say hello, enjoy 15% off your first purchase. Because great style begins with a good connection.</p>",
+            "text": "<p>Welcome to Noritamy where bold design meets timeless craftsmanship. </p><p>Join our inner circle and be the first to hear about exclusive drops, private events, and what's happening behind the scenes. </p><p>As a little something to say hello, enjoy 10% off your first purchase. Because great style begins with a good connection.</p>",
             "width": "100%",
             "max_width": "none",
             "alignment": "center",
@@ -550,7 +550,7 @@
                           "type": "text",
                           "name": "t:names.heading",
                           "settings": {
-                            "text": "<p><a href=\"mailto:info@noritamy.com\">info@noritamy.com</a></p>",
+                            "text": "<p><a href=\"mailto:hey@noritamy.com\" title=\"mailto:hey@noritamy.com\">hey@noritamy.com</a></p>",
                             "width": "fit-content",
                             "max_width": "normal",
                             "alignment": "left",
@@ -633,7 +633,7 @@
                           "type": "text",
                           "name": "t:names.heading",
                           "settings": {
-                            "text": "<p><a href=\"tel:077-645-0860\" title=\"tel:077-645-0860\">077-645-0860</a></p>",
+                            "text": "<p><a href=\"tel:+97277645860\" title=\"tel:+97277645860\">+972-77-645-0860</a></p>",
                             "width": "fit-content",
                             "max_width": "normal",
                             "alignment": "left",
@@ -715,7 +715,7 @@
                           "type": "text",
                           "name": "t:names.heading",
                           "settings": {
-                            "text": "<p><a href=\"https://www.waze.com/en/live-map/directions/il/tel-aviv-district/tel-aviv-yafo/herzl-st-20?place=ChIJr4fWJZxMHRURxIlIZcL8RXc\" target=\"_blank\" title=\"https://www.waze.com/en/live-map/directions/il/tel-aviv-district/tel-aviv-yafo/herzl-st-20?place=ChIJr4fWJZxMHRURxIlIZcL8RXc\">20 Herzl st, Tel Aviv, 1st Floor</a></p>",
+                            "text": "<p><a href=\"https://maps.app.goo.gl/axeC5jvW6Y4wW9Jb9\" title=\"https://maps.app.goo.gl/axeC5jvW6Y4wW9Jb9\">140 Broadway NY, 10005 USA</a></p>",
                             "width": "fit-content",
                             "max_width": "normal",
                             "alignment": "left",
@@ -871,7 +871,7 @@
                           "type": "text",
                           "name": "t:names.heading",
                           "settings": {
-                            "text": "<p><a href=\"/pages/shipping-returns\" title=\"Shipping & Returns\">Shipping and returns</a></p>",
+                            "text": "<p><a href=\"/policies/refund-policy\" title=\"Refund Policy\">Shipping and returns</a></p>",
                             "width": "fit-content",
                             "max_width": "normal",
                             "alignment": "left",
@@ -898,7 +898,7 @@
                           "name": "t:names.heading",
                           "settings": {
                             "text": "<p><a href=\"/pages/how-to-measure-your-fingers\" title=\"How to measure your fingers\">How to measure your fingers</a></p>",
-                            "width": "fit-content",
+                            "width": "100%",
                             "max_width": "normal",
                             "alignment": "left",
                             "type_preset": "rte",
@@ -944,12 +944,39 @@
                             "padding-inline-end": 0
                           },
                           "blocks": {}
+                        },
+                        "text_6P9nNL": {
+                          "type": "text",
+                          "name": "t:names.heading",
+                          "settings": {
+                            "text": "<p><a href=\"/pages/ccpa-privacy-notice\" title=\"CCPA PRIVACY NOTICE\">CCPA Privacy Notice</a></p>",
+                            "width": "fit-content",
+                            "max_width": "normal",
+                            "alignment": "left",
+                            "type_preset": "rte",
+                            "font": "var(--font-body--family)",
+                            "font_size": "1rem",
+                            "line_height": "normal",
+                            "letter_spacing": "normal",
+                            "case": "none",
+                            "wrap": "pretty",
+                            "color": "var(--color-foreground)",
+                            "background": false,
+                            "background_color": "#00000026",
+                            "corner_radius": 0,
+                            "padding-block-start": 0,
+                            "padding-block-end": 0,
+                            "padding-inline-start": 0,
+                            "padding-inline-end": 0
+                          },
+                          "blocks": {}
                         }
                       },
                       "block_order": [
                         "text_T9tn7c",
                         "text_4aUWzh",
-                        "text_bHVwWx"
+                        "text_bHVwWx",
+                        "text_6P9nNL"
                       ]
                     }
                   },
@@ -1079,7 +1106,7 @@
                           "name": "t:names.heading",
                           "settings": {
                             "text": "<p><a href=\"/pages/about-our-materials-and-gold-plating\" title=\"About our materials and gold plating\">About our materials and gold plating</a></p>",
-                            "width": "fit-content",
+                            "width": "100%",
                             "max_width": "normal",
                             "alignment": "left",
                             "type_preset": "rte",
@@ -1104,7 +1131,7 @@
                           "type": "text",
                           "name": "t:names.heading",
                           "settings": {
-                            "text": "<p><a href=\"/pages/about-us\" title=\"About us\">About us</a></p>",
+                            "text": "<p><a href=\"https://www.noritamy.com/pages/1?view=about\" title=\"https://www.noritamy.com/pages/1?view=about\">About us</a></p>",
                             "width": "fit-content",
                             "max_width": "normal",
                             "alignment": "left",
@@ -1129,6 +1156,7 @@
                         "text_JLjadc": {
                           "type": "text",
                           "name": "t:names.heading",
+                          "disabled": true,
                           "settings": {
                             "text": "<p><a href=\"/pages/press-clips\" title=\"As Seen On\">Spotted in Noritamy</a></p>",
                             "width": "fit-content",
@@ -1155,6 +1183,7 @@
                         "text_iYkqte": {
                           "type": "text",
                           "name": "t:names.heading",
+                          "disabled": true,
                           "settings": {
                             "text": "<p><a href=\"/pages/i-love-my-noritamy\" title=\"I Love My Noritamy\">I love my Noritamy</a></p>",
                             "width": "fit-content",
@@ -1212,11 +1241,38 @@
                         "text_iYkqte",
                         "text_tTzCPi"
                       ]
+                    },
+                    "text_ff8ieC": {
+                      "type": "text",
+                      "name": "t:names.heading",
+                      "settings": {
+                        "text": "<p><a href=\"/pages/faq\" title=\"FAQ\">FAQ</a></p>",
+                        "width": "fit-content",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "rte",
+                        "font": "var(--font-body--family)",
+                        "font_size": "1rem",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "color": "var(--color-foreground)",
+                        "background": false,
+                        "background_color": "#00000026",
+                        "corner_radius": 0,
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
                     }
                   },
                   "block_order": [
                     "text_mbXF3z",
-                    "group_6jt4Yg"
+                    "group_6jt4Yg",
+                    "text_ff8ieC"
                   ]
                 },
                 "divider_FNwChW": {
@@ -1538,7 +1594,7 @@
             "horizontal_alignment": "flex-start",
             "vertical_alignment": "center",
             "align_baseline": false,
-            "horizontal_alignment_flex_direction_column": "flex-start",
+            "horizontal_alignment_flex_direction_column": "center",
             "vertical_alignment_flex_direction_column": "center",
             "gap": 12,
             "width": "fill",

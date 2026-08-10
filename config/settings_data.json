@@ -17,6 +17,7 @@
     "type_heading_font": "oswald_n4",
     "type_accent_font": "montserrat_n5",
     "type_size_paragraph": "16",
+    "type_line_height_h1": "display-normal",
     "type_size_h2": "32",
     "type_font_h3": "heading",
     "type_size_h3": "24",
@@ -50,12 +51,15 @@
     "enable_cart_upsell_popup": false,
     "cart_drawer_slider_title": "You may also like...",
     "cart_drawer_slider_collection": "1500-nis-and-up",
+    "cart_drawer_empty_slider_collection": "",
+    "cart_drawer_slider_autoplay": true,
     "inputs_border_radius": 0,
     "type_preset": "paragraph",
     "popover_border": "none",
     "currency_code_enabled_product_pages": false,
     "currency_code_enabled_product_cards": true,
-    "mobile_quick_add": false,
+    "mobile_quick_add": true,
+    "mobile_bottom_nav": false,
     "quick_add_color_scheme": "scheme-1",
     "product_card_strip_text": "",
     "variant_swatch_radius": 0,
@@ -105,19 +109,9 @@
         "disabled": true,
         "settings": {}
       },
-      "848547589086771589": {
-        "type": "shopify://apps/photo-gallery-lookbook/blocks/app-extension/6e61cc50-97c2-40a1-9971-8ad3f8851e1e",
-        "disabled": true,
-        "settings": {}
-      },
       "855628211100114053": {
         "type": "shopify://apps/klaviyo-email-marketing-sms/blocks/klaviyo-onsite-embed/2632fe16-c075-4321-a88b-50b567f42507",
         "disabled": false,
-        "settings": {}
-      },
-      "9741741230116411038": {
-        "type": "shopify://apps/optis-color-swatch/blocks/bss-se-script/ad128d8f-5ebd-45ad-954a-7dd4c4226109",
-        "disabled": true,
         "settings": {}
       }
     },

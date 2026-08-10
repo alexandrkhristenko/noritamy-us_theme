@@ -1,0 +1,40 @@
+<nav class="noritamy-bottom-nav" aria-label="Navigation">
+
+  <a href="{{ routes.root_url }}"
+     class="noritamy-bottom-nav__item{% if request.page_type == 'index' %} is-active{% endif %}"
+     onclick="dataLayer.push({event:'bottom_nav_click',nav_item:'home'})">
+    <span class="svg-wrapper" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M3 8.5 10 2.5l7 6V17a1 1 0 0 1-1 1h-4v-4.5H8V18H4a1 1 0 0 1-1-1z"/>
+      </svg>
+    </span>
+    <span class="noritamy-bottom-nav__label">Home</span>
+  </a>
+
+  <a href="{{ routes.collections_url }}"
+     class="noritamy-bottom-nav__item{% if request.page_type == 'collection' %} is-active{% endif %}"
+     onclick="dataLayer.push({event:'bottom_nav_click',nav_item:'collections'})">
+    <span class="svg-wrapper" aria-hidden="true">{{ 'icon-grid-default.svg' | inline_asset_content }}</span>
+    <span class="noritamy-bottom-nav__label">Collections</span>
+  </a>
+
+  <button type="button"
+          class="noritamy-bottom-nav__item{% if request.page_type == 'search' %} is-active{% endif %}"
+          onclick="dataLayer.push({event:'bottom_nav_click',nav_item:'search'}); document.getElementById('search-modal').showDialog()"
+          aria-label="{{ 'accessibility.search' | t }}">
+    <span class="svg-wrapper" aria-hidden="true">{{ 'icon-search.svg' | inline_asset_content }}</span>
+    <span class="noritamy-bottom-nav__label">Search</span>
+  </button>
+
+  <button type="button"
+          class="noritamy-bottom-nav__item noritamy-bottom-nav__cart-btn"
+          onclick="dataLayer.push({event:'bottom_nav_click',nav_item:'cart'}); var d=document.querySelector('cart-drawer-component');d?d.open():window.location.href='{{ routes.cart_url }}'"
+          aria-label="{{ 'accessibility.cart' | t }}">
+    <span class="noritamy-bottom-nav__cart-wrap">
+      {% render 'cart-icon-component' %}
+    </span>
+    <span class="noritamy-bottom-nav__label">Cart</span>
+  </button>
+
+</nav>
