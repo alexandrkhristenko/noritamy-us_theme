@@ -76,10 +76,12 @@
   rel="modulepreload"
   href="{{ 'events.js' | asset_url }}"
 >
-<script
-  src="{{ 'quick-add.js' | asset_url }}"
-  type="module"
-></script>
+{% if settings.quick_add or settings.mobile_quick_add %}
+  <script
+    src="{{ 'quick-add.js' | asset_url }}"
+    type="module"
+  ></script>
+{% endif %}
 {% if settings.show_add_discount_code %}
   <script
     src="{{ 'cart-discount.js' | asset_url }}"
@@ -122,10 +124,13 @@
   src="{{ 'product-inventory.js' | asset_url }}"
   type="module"
 ></script>
-<script
-  src="{{ 'show-more.js' | asset_url }}"
-  type="module"
-></script>
+{% comment %} show-more is only used by the facet filters, which render on collection and search. {% endcomment %}
+{% if template.name == 'collection' or template.name == 'search' %}
+  <script
+    src="{{ 'show-more.js' | asset_url }}"
+    type="module"
+  ></script>
+{% endif %}
 <script
   src="{{ 'slideshow.js' | asset_url }}"
   type="module"

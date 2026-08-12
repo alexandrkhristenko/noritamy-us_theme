@@ -5,11 +5,18 @@
   dir="ltr"
 >
   <head>
-    <meta name="google-site-verification" content="fBVd1VmGu47eS2QHok5RD150FV8oHUHTc23QieFma4M">
-    <meta name="facebook-domain-verification" content="0s3cs9efgqim3hxqfzufsqbsqa77hn">
-    <link rel="alternate" hreflang="en-IL" href="https://www.noritamy.co.il{{ request.path }}">
-    <link rel="alternate" hreflang="x-default" href="https://www.noritamy.com{{ request.path }}">
-    <link rel="preconnect" href="https://fonts.cdnfonts.com" crossorigin>
+    {%- comment -%}
+      meta-tags renders <meta charset> and <meta name="viewport">. Both must appear within the
+      first 1024 bytes of the document, otherwise the browser restarts parsing and mobile layout
+      is delayed. Keep this render first in <head>.
+    {%- endcomment -%}
+    {%- render 'meta-tags' -%}
+
+    {%- comment -%}
+      Third-party speed-optimizer payload. Installs a MutationObserver on documentElement that
+      rewrites nodes as they are inserted. It must run before any <link>/<script>/<img> is parsed,
+      so it stays directly after meta-tags. Restored at the store owner's request.
+    {%- endcomment -%}
     <script>
       eval(
         (function (e, t, n, a, r, o) {
@@ -44,13 +51,8 @@
         )
       );
     </script>
-    <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-MDXMWV7K');</script>
-<!-- End Google Tag Manager -->
+
+    {%- comment -%} Locale path redirect runs before any network work so we never pay for a discarded render. {%- endcomment -%}
     <script>
       (function () {
         var currentUrl = window.location.href;
@@ -73,15 +75,21 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       })();
     </script>
 
+    {%- comment -%} Render-blocking CSS and fonts are requested before any third-party script. {%- endcomment -%}
+    {%- render 'fonts' -%}
     {%- render 'stylesheets' -%}
     {{ 'noritamy-overrides.css' | asset_url | stylesheet_tag }}
     {{ 'noritamy-polish.css' | asset_url | stylesheet_tag }}
+    {%- render 'theme-styles-variables' -%}
+    {%- render 'color-schemes' -%}
     <style>
       product-recommendations:not([data-recommendations-performed="true"]) {
         min-height: 450px;
         display: block;
       }
     </style>
+
+    {%- render 'scripts' -%}
     <script src="{{ 'noritamy-quick-add.js' | asset_url }}" defer></script>
     <script src="{{ 'noritamy-card-nav.js' | asset_url }}" defer></script>
 
@@ -93,69 +101,62 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       >
     {%- endif -%}
 
-    {% comment %} This a way to wait for main content to load when navigating to a new page so that the view transitions can work consistently {% endcomment %}
-    <link
-      rel="expect"
-      href="#MainContent"
-      blocking="render"
-      id="view-transition-render-blocker"
-    >
-    {%- render 'meta-tags' -%}
+    {%- if settings.page_transition_enabled -%}
+      {% comment %} This a way to wait for main content to load when navigating to a new page so that the view transitions can work consistently {% endcomment %}
+      <link
+        rel="expect"
+        href="#MainContent"
+        blocking="render"
+        id="view-transition-render-blocker"
+      >
+    {%- endif -%}
+
     {%- render 'product-schema' -%}
-    {%- render 'fonts' -%}
-    {%- render 'scripts' -%}
-    {%- render 'theme-styles-variables' -%}
-    {%- render 'color-schemes' -%}
+
+    <meta name="google-site-verification" content="fBVd1VmGu47eS2QHok5RD150FV8oHUHTc23QieFma4M">
+    <meta name="facebook-domain-verification" content="0s3cs9efgqim3hxqfzufsqbsqa77hn">
+    <link rel="alternate" hreflang="en-IL" href="https://www.noritamy.co.il{{ request.path }}">
+    <link rel="alternate" hreflang="x-default" href="https://www.noritamy.com{{ request.path }}">
 
     {% if request.design_mode %}
       {%- render 'theme-editor' -%}
     {% endif %}
 
     {{ content_for_header }}
-    {% comment %}
-      <!-- Google Tag Manager -->
-      <script>
-        (function (w, d, s, l, i) {
-          w[l] = w[l] || [];
-          w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
-          var f = d.getElementsByTagName(s)[0],
-            j = d.createElement(s),
-            dl = l != 'dataLayer' ? '&l=' + l : '';
-          j.async = true;
-          j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-          f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', 'GTM-NFXS7F5F');
-      </script>
-      <!-- End Google Tag Manager -->
-    {% endcomment %}
-     <script src="https://t.contentsquare.net/uxa/353f6805c2fd9.js"></script>
-<!--  Hotjar Tracking Code for www.noritamy.com -->
-<script>
-(function(h,o,t,j,a,r){
-    h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-    h._hjSettings={hjid:1049512,hjsv:6};
-    a=o.getElementsByTagName('head')[0];
-    r=o.createElement('script');r.async=1;
-    r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-    a.appendChild(r);
-})(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
-</script>
-   <script>
-      if (/Instagram|FBAN|FBAV|TikTok|Bytedance|Snapchat/i.test(navigator.userAgent)) {
-        const style = document.createElement('style');
-        style.textContent = '@view-transition { navigation: none !important; }';
-        document.head.appendChild(style);
-        document.addEventListener('DOMContentLoaded', () => {
-          const style = document.createElement('style');
-          style.textContent = '@view-transition { navigation: none; } * { view-transition-name: none !important; }';
-          document.head.appendChild(style);
-          document.querySelectorAll('[data-page-transition-enabled]').forEach(el => el.removeAttribute('data-page-transition-enabled'));
-        });
-      }
+
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != 'dataLayer' ? '&l=' + l : '';
+        j.async = true;
+        j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, 'script', 'dataLayer', 'GTM-MDXMWV7K');
     </script>
+    <!-- End Google Tag Manager -->
+
+    {%- if settings.page_transition_enabled or settings.transition_to_main_product -%}
+      <script>
+        if (/Instagram|FBAN|FBAV|TikTok|Bytedance|Snapchat/i.test(navigator.userAgent)) {
+          const style = document.createElement('style');
+          style.textContent = '@view-transition { navigation: none !important; }';
+          document.head.appendChild(style);
+          document.addEventListener('DOMContentLoaded', () => {
+            const style = document.createElement('style');
+            style.textContent = '@view-transition { navigation: none; } * { view-transition-name: none !important; }';
+            document.head.appendChild(style);
+            document.querySelectorAll('[data-page-transition-enabled]').forEach(el => el.removeAttribute('data-page-transition-enabled'));
+          });
+        }
+      </script>
+    {%- endif -%}
   </head>
-  {% render 'country-popup' %}
   <body class="page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }}">
+    {% render 'country-popup' %}
     {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
     <div id="header-group">
       {% sections 'header-group' %}
@@ -194,10 +195,38 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     {% if settings.enable_cart_upsell_popup %}
       {% section 'cart-upsell-popup' %}
     {% endif %}
-    <!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MDXMWV7K"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
 
+    {%- comment -%}
+      Analytics and session-replay tags load at the end of the body so they never compete with
+      the LCP resource for bandwidth or main-thread time.
+    {%- endcomment -%}
+    <script src="https://t.contentsquare.net/uxa/353f6805c2fd9.js" async></script>
+    <!-- Hotjar Tracking Code for www.noritamy.com -->
+    <script>
+      (function (h, o, t, j, a, r) {
+        h.hj =
+          h.hj ||
+          function () {
+            (h.hj.q = h.hj.q || []).push(arguments);
+          };
+        h._hjSettings = { hjid: 1049512, hjsv: 6 };
+        a = o.getElementsByTagName('head')[0];
+        r = o.createElement('script');
+        r.async = 1;
+        r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
+        a.appendChild(r);
+      })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=');
+    </script>
+
+    <!-- Google Tag Manager (noscript) -->
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-MDXMWV7K"
+        height="0"
+        width="0"
+        style="display:none;visibility:hidden"
+      ></iframe
+    ></noscript>
+    <!-- End Google Tag Manager (noscript) -->
   </body>
 </html>
