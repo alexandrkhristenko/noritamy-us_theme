@@ -11,11 +11,43 @@
   {% render 'predictive-search', search_position: 'left', search_test_id: 'header-search' %}
 {%- enddoc -%}
 
-<script
-  src="{{ 'predictive-search.js' | asset_url }}"
-  type="module"
-  defer
-></script>
+{% comment %}
+  This snippet only renders inside the search modal, a <dialog> that starts closed, so nothing
+  on screen waits for predictive-search.js. At 15.4 KB it was loading on every page of the site
+  for a modal most visitors never open. It also pulls in recently-viewed-products, which then
+  loaded everywhere for the same reason.
+
+  Loads on the first pointer movement, tap or key press, or on idle within 1.5s, whichever
+  lands first — the modal still has to be opened and typed into after that.
+
+  Note: the previous tag carried both type="module" and defer. defer is ignored on module
+  scripts, which are deferred by definition.
+{% endcomment %}
+{% if request.design_mode %}
+  <script
+    src="{{ 'predictive-search.js' | asset_url }}"
+    type="module"
+  ></script>
+{% else %}
+  <script type="module">
+    let predictiveSearchRequested = false;
+    const loadPredictiveSearch = () => {
+      if (predictiveSearchRequested) return;
+      predictiveSearchRequested = true;
+      import("{{ 'predictive-search.js' | asset_url }}");
+    };
+
+    for (const type of ['pointerover', 'pointerdown', 'keydown', 'focusin']) {
+      addEventListener(type, loadPredictiveSearch, { once: true, capture: true, passive: true });
+    }
+
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(loadPredictiveSearch, { timeout: 1500 });
+    } else {
+      addEventListener('load', loadPredictiveSearch, { once: true });
+    }
+  </script>
+{% endif %}
 
 <predictive-search-component
   class="predictive-search{% if class != blank %} {{ class | strip }}{% endif %}{% if search_position != blank %} predictive-search--{{ search_position }}{% endif %}"

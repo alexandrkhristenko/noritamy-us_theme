@@ -64,10 +64,17 @@
   rel="modulepreload"
   href="{{ 'focus.js' | asset_url }}"
 >
-<link
-  rel="modulepreload"
-  href="{{ 'recently-viewed-products.js' | asset_url }}"
->
+{% comment %}
+  Only two things import recently-viewed-products: the product template, which records the
+  visit right below, and predictive-search.js, which now loads on interaction. Preloading it
+  everywhere would fetch a module nothing is about to use.
+{% endcomment %}
+{% if template.name == 'product' %}
+  <link
+    rel="modulepreload"
+    href="{{ 'recently-viewed-products.js' | asset_url }}"
+  >
+{% endif %}
 <link
   rel="modulepreload"
   href="{{ 'scrolling.js' | asset_url }}"
