@@ -21,10 +21,23 @@
     });
   };
 
-  // Наблюдатель за динамическими изменениями
-  const observer = new MutationObserver(() => {
-    hideSingleOptions();
-  });
+  // Наблюдатель за динамическими изменениями.
+  //
+  // Раньше колбэк вызывал querySelectorAll на каждую вставку узла. На странице коллекции
+  // с ленивыми картинками, перерисовкой фильтров и вставками стороннего приложения это
+  // сотни проходов по DOM подряд и заметное время в главном потоке. Теперь мутации
+  // схлопываются в один проход на кадр.
+  let scheduled = false;
+  const scheduleHideSingleOptions = () => {
+    if (scheduled) return;
+    scheduled = true;
+    requestAnimationFrame(() => {
+      scheduled = false;
+      hideSingleOptions();
+    });
+  };
+
+  const observer = new MutationObserver(scheduleHideSingleOptions);
 
   observer.observe(document.body, {
     childList: true,

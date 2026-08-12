@@ -222,7 +222,7 @@
                   >
                     <div class="facets__image-wrapper">
                       {% if value.image %}
-                        {{ value.image | image_url: width: 300 | image_tag: alt: value.alt }}
+                        {{ value.image | image_url: width: 300 | image_tag: alt: value.alt, loading: 'lazy' }}
                       {% endif %}
                       {% if is_disabled %}
                         <svg

@@ -3,54 +3,127 @@
   Displays 1 file for all screens, or 2 files (desktop then mobile).
 {%- enddoc -%}
 
-{%- assign metafield_key = block.settings.metafield -%}
-{%- assign namespace = metafield_key | split: '.' | first -%}
-{%- assign key = metafield_key | split: '.' | last -%}
+{%- liquid
+  # The setting accepts both "namespace.key" and the "namespace.key.value" form used by the
+  # theme editor picker, so read the first two segments rather than first-and-last.
+  assign metafield_parts = block.settings.metafield | split: '.'
+  assign namespace = metafield_parts[0]
+  assign key = metafield_parts[1]
 
-{%- assign target = product | default: collection | default: page | default: article -%}
-{%- assign media_list = target.metafields[namespace][key] | reverse | reverse -%}
-{{ media_list }}
+  assign target = product | default: collection | default: page | default: article
+  assign media_list = target.metafields[namespace][key] | reverse | reverse
+
+  # A grid-wide media banner sits at the top of the page, so it is the LCP candidate.
+  assign image_widths = '400, 600, 750, 900, 1100, 1400, 1700, 2000, 2400, 3000'
+-%}
+
 {%- if media_list != blank -%}
   {%- assign media_count = media_list | size -%}
-{{ media_count }}
   <div class="metafield-media-block-{{ block.id }}" {{ block.shopify_attributes }}>
     {%- if media_count == 1 -%}
       {%- assign media_item = media_list[0] -%}
-        {{ media_item }}
       <div class="metafield-media-single">
         {%- if media_item.media_type == 'video' -%}
-
-          {{ media_item | video_tag: autoplay: true, loop: true, muted: true, controls: false, image_size: 'master' }}
+          {{
+            media_item
+            | video_tag: autoplay: true, loop: true, muted: true, controls: false, image_size: '1500x'
+          }}
         {%- elsif media_item.media_type == 'image' -%}
-          {{ media_item | image_url: width: 3840 | image_tag }}
+          {{
+            media_item
+            | image_url: width: 3000
+            | image_tag: widths: image_widths, sizes: '100vw', loading: 'eager', fetchpriority: 'high'
+          }}
         {%- else -%}
-          <img src="{{ media_item.url }}" alt="{{ media_item.alt | escape }}">
+          {% # theme-check-disable ImgWidthAndHeight, RemoteAsset %}
+          <img
+            src="{{ media_item.url }}"
+            alt="{{ media_item.alt | escape }}"
+            {% if media_item.width %}width="{{ media_item.width }}"{% endif %}
+            {% if media_item.height %}height="{{ media_item.height }}"{% endif %}
+            loading="eager"
+            fetchpriority="high"
+          >
+          {% # theme-check-enable ImgWidthAndHeight, RemoteAsset %}
         {%- endif -%}
       </div>
-        #shopify-section-template--21432035868887__section > div.section.section--full-width.color-scheme-1 >
     {%- elsif media_count == 2 -%}
       {%- assign desktop_media = media_list[0] -%}
       {%- assign mobile_media = media_list[1] -%}
-      {{ desktop_media }}
-      <div class="metafield-media-desktop">
-        {%- if desktop_media.media_type == 'video' -%}
-          {{ desktop_media | video_tag: autoplay: true, loop: true, muted: true, controls: false, image_size: 'master' }}
-        {%- elsif desktop_media.media_type == 'image' -%}
-          {{ desktop_media | image_url: width: 3840 | image_tag }}
-        {%- else -%}
-          <img src="{{ desktop_media.url }}" alt="{{ desktop_media.alt | escape }}">
-        {%- endif -%}
-      </div>
-      
-      <div class="metafield-media-mobile">
-        {%- if mobile_media.media_type == 'video' -%}
-          {{ mobile_media | video_tag: autoplay: true, loop: true, muted: true, controls: false, image_size: 'master' }}
-        {%- elsif mobile_media.media_type == 'image' -%}
-          {{ mobile_media | image_url: width: 3840 | image_tag }}
-        {%- else -%}
-          <img src="{{ mobile_media.url }}" alt="{{ mobile_media.alt | escape }}">
-        {%- endif -%}
-      </div>
+
+      {%- if desktop_media.media_type == 'image' and mobile_media.media_type == 'image' -%}
+        {%- comment -%}
+          One <picture> instead of two CSS-hidden containers. Two containers made the browser
+          download both files, so mobile paid for a desktop-sized image it never showed.
+        {%- endcomment -%}
+        {%- capture mobile_srcset -%}
+          {{ mobile_media | image_url: width: 750 }} 750w,
+          {{ mobile_media | image_url: width: 1100 }} 1100w,
+          {{ mobile_media | image_url: width: 1500 }} 1500w
+        {%- endcapture -%}
+        <picture>
+          <source
+            media="(max-width: 749px)"
+            srcset="{{ mobile_srcset | strip_newlines }}"
+            sizes="100vw"
+          >
+          {{
+            desktop_media
+            | image_url: width: 3000
+            | image_tag: widths: image_widths, sizes: '100vw', loading: 'eager', fetchpriority: 'high'
+          }}
+        </picture>
+      {%- else -%}
+        <div class="metafield-media-desktop">
+          {%- if desktop_media.media_type == 'video' -%}
+            {{
+              desktop_media
+              | video_tag: autoplay: true, loop: true, muted: true, controls: false, image_size: '1500x'
+            }}
+          {%- elsif desktop_media.media_type == 'image' -%}
+            {{
+              desktop_media
+              | image_url: width: 3000
+              | image_tag: widths: image_widths, sizes: '100vw', loading: 'eager', fetchpriority: 'high'
+            }}
+          {%- else -%}
+            {% # theme-check-disable ImgWidthAndHeight, RemoteAsset %}
+            <img
+              src="{{ desktop_media.url }}"
+              alt="{{ desktop_media.alt | escape }}"
+              {% if desktop_media.width %}width="{{ desktop_media.width }}"{% endif %}
+              {% if desktop_media.height %}height="{{ desktop_media.height }}"{% endif %}
+              loading="eager"
+            >
+            {% # theme-check-enable ImgWidthAndHeight, RemoteAsset %}
+          {%- endif -%}
+        </div>
+
+        <div class="metafield-media-mobile">
+          {%- if mobile_media.media_type == 'video' -%}
+            {{
+              mobile_media
+              | video_tag: autoplay: true, loop: true, muted: true, controls: false, image_size: '750x'
+            }}
+          {%- elsif mobile_media.media_type == 'image' -%}
+            {{
+              mobile_media
+              | image_url: width: 1500
+              | image_tag: widths: '400, 600, 750, 900, 1100, 1500', sizes: '100vw', loading: 'eager', fetchpriority: 'high'
+            }}
+          {%- else -%}
+            {% # theme-check-disable ImgWidthAndHeight, RemoteAsset %}
+            <img
+              src="{{ mobile_media.url }}"
+              alt="{{ mobile_media.alt | escape }}"
+              {% if mobile_media.width %}width="{{ mobile_media.width }}"{% endif %}
+              {% if mobile_media.height %}height="{{ mobile_media.height }}"{% endif %}
+              loading="eager"
+            >
+            {% # theme-check-enable ImgWidthAndHeight, RemoteAsset %}
+          {%- endif -%}
+        </div>
+      {%- endif -%}
     {%- endif -%}
   </div>
 
@@ -62,11 +135,11 @@
       display: block;
       object-fit: cover;
     }
-    
+
     {%- if media_count >= 2 -%}
       .metafield-media-block-{{ block.id }} .metafield-media-desktop { display: block; }
       .metafield-media-block-{{ block.id }} .metafield-media-mobile { display: none; }
-      
+
       @media screen and (max-width: 749px) {
         .metafield-media-block-{{ block.id }} .metafield-media-desktop { display: none; }
         .metafield-media-block-{{ block.id }} .metafield-media-mobile { display: block; }
