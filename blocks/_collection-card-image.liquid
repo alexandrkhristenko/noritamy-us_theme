@@ -37,7 +37,17 @@
 %}
 
 {% liquid
-  assign sizes = '(min-width: 750px) 50vw, 100vw'
+  # The mobile fallback used to be a flat 100vw while the grid renders mobile_columns per row,
+  # so browsers without sizes=auto support (Safari, Firefox) requested a candidate twice as wide
+  # as the card. Floor it at 50vw so a peeking mobile carousel, whose cards are wider than the
+  # nominal column, never ends up under-served.
+  assign mobile_columns_count = section.settings.mobile_columns | plus: 0
+  if mobile_columns_count < 1
+    assign mobile_columns_count = 1
+  endif
+  assign calculated_width_mobile = 100 | divided_by: mobile_columns_count | at_least: 50 | append: 'vw'
+
+  assign sizes = '(min-width: 750px) 50vw, [calc-width-mobile]' | replace: '[calc-width-mobile]', calculated_width_mobile
   assign lazy_sizes = 'auto, ' | append: sizes
   assign loading = 'eager'
 
@@ -47,7 +57,7 @@
   case section.settings.layout_type
     when 'grid', 'carousel'
       assign calculated_width = 100 | divided_by: section.settings.columns | append: 'vw'
-      assign sizes = '(min-width: 750px) [calc-width], 100vw' | replace: '[calc-width]', calculated_width
+      assign sizes = '(min-width: 750px) [calc-width], [calc-width-mobile]' | replace: '[calc-width]', calculated_width | replace: '[calc-width-mobile]', calculated_width_mobile
     when 'editorial', 'bento'
       assign loading = 'lazy'
       assign sizes = lazy_sizes
