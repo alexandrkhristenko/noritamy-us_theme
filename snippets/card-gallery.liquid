@@ -238,9 +238,14 @@
         {% assign attributes = '' %}
         {% capture slideshow_children %}
           {%- comment -%}
-            product-media defaults to 18 srcset candidates up to 5000px. A grid card is never
-            wider than ~800 CSS px, so the large candidates only add HTML bytes and let the
-            browser pick a needlessly heavy image.
+            product-media defaults to 18 srcset candidates up to 5000px, which is meaningless
+            for a card. The sizes attribute above tops out at 20vw on wide screens and only
+            reaches 100vw below 750px, so the widest a card is ever asked to fill is roughly
+            750 CSS px — about 1500 device px on a 2x tablet.
+
+            Six candidates cover that range at ratios of at most 1.5. Every extra candidate is
+            another full CDN URL in the markup, repeated for every slide of every card, and the
+            granularity it buys is smaller than the step between two adjacent widths.
           {%- endcomment -%}
           {%- render 'product-media',
             media: media,
@@ -248,7 +253,7 @@
             loading: loading,
             fetchpriority: fetchpriority,
             preview_image_only: true,
-            widths: '200, 300, 400, 500, 600, 750, 900, 1100, 1400, 1800'
+            widths: '300, 450, 600, 800, 1100, 1500'
           -%}
         {% endcapture %}
         {% capture class %}
