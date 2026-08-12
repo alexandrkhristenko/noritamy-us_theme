@@ -165,13 +165,52 @@
       {% assign show_arrows = true %}
     {% endif %}
 
+    {% comment %}
+      A card used to render one slide per media item. On a 24-product grid a product with eight
+      images produced ~190 <img> elements, each with a full srcset, which inflates the HTML and
+      the DOM node count on collection and home. Cap the generic media instead. Variant media is
+      never capped because the swatch picker swaps the card to it.
+    {% endcomment %}
+    {% assign card_generic_media_limit = 4 %}
+    {% unless settings.product_card_carousel %}
+      {% assign card_generic_media_limit = 2 %}
+    {% endunless %}
+
+    {% assign card_slide_count = 0 %}
+    {% assign generic_media_seen = 0 %}
+    {% for media in all_media_sorted %}
+      {% if variant_images contains media.src %}
+        {% assign card_slide_count = card_slide_count | plus: 1 %}
+      {% else %}
+        {% assign generic_media_seen = generic_media_seen | plus: 1 %}
+        {% if generic_media_seen <= card_generic_media_limit %}
+          {% assign card_slide_count = card_slide_count | plus: 1 %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+
     {% capture slides %}
+      {% assign slide_index = 0 %}
+      {% assign generic_media_rendered = 0 %}
       {% for media in all_media_sorted %}
+        {% assign is_variant_media = false %}
+        {% if variant_images contains media.src %}
+          {% assign is_variant_media = true %}
+        {% endif %}
+
+        {% unless is_variant_media %}
+          {% assign generic_media_rendered = generic_media_rendered | plus: 1 %}
+          {% if generic_media_rendered > card_generic_media_limit %}
+            {% continue %}
+          {% endif %}
+        {% endunless %}
+
+        {% assign slide_index = slide_index | plus: 1 %}
         {% assign loading = 'lazy' %}
         {% assign sizes = lazy_image_sizes %}
 
         {% assign fetchpriority = 'auto' %}
-        {% if forloop.first and section.index == nil or section.index <= 2 %}
+        {% if slide_index == 1 and section.index == nil or section.index <= 2 %}
           {% capture current_eager_count %}{% increment eager_image_counter %}{% endcapture %}
           {% assign current_eager_count = current_eager_count | plus: 0 %}
           {% if current_eager_count < 4 %}
@@ -183,19 +222,31 @@
 
         {% assign attributes = '' %}
         {% capture slideshow_children %}
-          {%- render 'product-media', media: media, sizes: sizes, loading: loading, fetchpriority: fetchpriority, preview_image_only: true -%}
+          {%- comment -%}
+            product-media defaults to 18 srcset candidates up to 5000px. A grid card is never
+            wider than ~800 CSS px, so the large candidates only add HTML bytes and let the
+            browser pick a needlessly heavy image.
+          {%- endcomment -%}
+          {%- render 'product-media',
+            media: media,
+            sizes: sizes,
+            loading: loading,
+            fetchpriority: fetchpriority,
+            preview_image_only: true,
+            widths: '200, 300, 400, 500, 600, 750, 900, 1100, 1400, 1800'
+          -%}
         {% endcapture %}
         {% capture class %}
           product-media-container media-fit product-media-container--{{ media.media_type }}{% if constrain_to_viewport %} constrain-height{% endif %}
         {% endcapture %}
         {% assign hidden = false %}
-        {% if variant_images contains media.src %}
+        {% if is_variant_media %}
           {% assign attributes = 'variant-image' %}
-          {% unless forloop.first and media.src == selected_variant_image or has_generic_media == false %}
+          {% unless slide_index == 1 and media.src == selected_variant_image or has_generic_media == false %}
             {% assign hidden = true %}
           {% endunless %}
         {% endif %}
-        {% render 'slideshow-slide', slide_id: media.id, index: forloop.index, children: slideshow_children, class: class, attributes: attributes, hidden: hidden, media_fit: media_fit %}
+        {% render 'slideshow-slide', slide_id: media.id, index: slide_index, children: slideshow_children, class: class, attributes: attributes, hidden: hidden, media_fit: media_fit %}
       {% endfor %}
     {% endcapture %}
 
@@ -208,7 +259,7 @@
        theme's .slideshow-control, which the theme force-hides on touch) + a self-contained scroll
        handler in noritamy-card-nav.js. Explicit chevron paths so direction is unambiguous in RTL/LTR. {% endcomment %}
     {% capture card_arrows %}
-      {% if all_media.size > 1 and slideshow_attributes == '' %}
+      {% if card_slide_count > 1 and slideshow_attributes == '' %}
         <div class="noritamy-cardnav" data-noritamy-cardnav>
           <button type="button" class="noritamy-cardnav__btn noritamy-cardnav__btn--prev" data-dir="prev" aria-label="{{ 'accessibility.slideshow_previous' | t }}">
             {% render 'icon-chevron-left' %}
@@ -224,7 +275,7 @@
       ref: 'slideshow',
       initial_slide: selected_variant_image_index,
       slides: slides,
-      slide_count: all_media.size,
+      slide_count: card_slide_count,
       show_arrows: false,
       slideshow_arrows: card_arrows,
       attributes: slideshow_attributes
