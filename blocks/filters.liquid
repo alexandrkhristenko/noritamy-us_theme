@@ -7,10 +7,40 @@
   @param {object} [filters] - The filters object
 {%- enddoc -%}
 
-<script
-  src="{{ 'facets.js' | asset_url }}"
-  type="module"
-></script>
+{% comment %}
+  facets.js is the largest script on a collection page and it is pure interaction code — the
+  filter and sort markup is server rendered, so nothing on screen depends on it. Loading it in
+  the initial burst made every visitor pay for filters most of them never touch.
+
+  It now loads on the first pointer movement, tap or key press, or on idle within 1.5s,
+  whichever comes first. pointerover fires well before the click that would use it, and the
+  mobile filters live behind a drawer that takes an extra tap to open.
+{% endcomment %}
+{% if request.design_mode %}
+  <script
+    src="{{ 'facets.js' | asset_url }}"
+    type="module"
+  ></script>
+{% else %}
+  <script type="module">
+    let facetsRequested = false;
+    const loadFacets = () => {
+      if (facetsRequested) return;
+      facetsRequested = true;
+      import("{{ 'facets.js' | asset_url }}");
+    };
+
+    for (const type of ['pointerover', 'pointerdown', 'keydown', 'focusin']) {
+      addEventListener(type, loadFacets, { once: true, capture: true, passive: true });
+    }
+
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(loadFacets, { timeout: 1500 });
+    } else {
+      addEventListener('load', loadFacets, { once: true });
+    }
+  </script>
+{% endif %}
 
 {%- liquid
   assign products_count = results_size
