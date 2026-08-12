@@ -49,14 +49,14 @@
 >
 
 {% if template.name == 'collection' or template.name == 'search' %}
+  {% comment %}
+    results-list.js imports paginated-list, so warming it here shortens that chain.
+    product-title-truncation has its own module script tag further down, which the preload
+    scanner reaches in the same pass — the extra hint bought nothing.
+  {% endcomment %}
   <link
     rel="modulepreload"
     href="{{ 'paginated-list.js' | asset_url }}"
-  >
-
-  <link
-    rel="modulepreload"
-    href="{{ 'product-title-truncation.js' | asset_url }}"
   >
 {% endif %}
 
