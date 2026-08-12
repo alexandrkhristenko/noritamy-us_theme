@@ -9,14 +9,18 @@
   @param {number} [product_card_gap] - The gap between the product card children (overrides block settings)
 {%- enddoc -%}
 
-{% style %}
-  {% if request.visual_preview_mode %}
+{% comment %}
+  The condition wraps the style tag rather than sitting inside it: this snippet renders once per
+  card, so an unconditional style tag emitted 24 empty <style> elements on a collection page.
+{% endcomment %}
+{% if request.visual_preview_mode %}
+  {% style %}
     product-card-link {
       width: 100%;
       min-width: 250px;
     }
-  {% endif %}
-{% endstyle %}
+  {% endstyle %}
+{% endif %}
 
 {% liquid
   assign has_quick_add = false
