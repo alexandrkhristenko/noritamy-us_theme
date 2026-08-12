@@ -2,6 +2,9 @@
   Renders a swatches variant picker, used within the product-swatches block.
 
   @param {object} product_resource - The product object, which contains variants and options.
+  @param {boolean} [include_variant_json] - Emit the selected variant as JSON. Defaults to true.
+    variant-picker.js reads this blob only out of a fetched section response, never out of the
+    live document, so the grid can skip it and save one copy per card.
 
   @example
   {% render 'variant-swatches', product_resource: product %}
@@ -81,8 +84,10 @@
         {% render 'overflow-list', children: children, ref: 'overflowList', defer: true %}
       </fieldset>
     {%- endfor -%}
-    <script type="application/json">
-      {{ product_resource.selected_or_first_available_variant | json }}
-    </script>
+    {%- unless include_variant_json == false -%}
+      <script type="application/json">
+        {{ product_resource.selected_or_first_available_variant | json }}
+      </script>
+    {%- endunless -%}
   </form>
 </swatches-variant-picker-component>

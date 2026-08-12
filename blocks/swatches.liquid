@@ -26,7 +26,12 @@
     "
     {{ block.shopify_attributes }}
   >
-    {% render 'variant-swatches', product_resource: closest.product %}
+    {% comment %}
+      No variant JSON in the grid: variant-picker.js only reads that blob out of a fetched
+      section-rendering-product-card response, so on a 24-card collection page the initial
+      document was carrying 24 copies nothing ever parsed.
+    {% endcomment %}
+    {% render 'variant-swatches', product_resource: closest.product, include_variant_json: false %}
   </product-swatches>
 {% endif %}
 
