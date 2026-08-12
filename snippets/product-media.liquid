@@ -32,23 +32,41 @@
   style="--ratio: {{ media.aspect_ratio }};"
   data-media-id="{{ media.id }}"
 >
-  {% liquid
-    assign high_res_url = media.preview_image | image_url: width: 3840
-  %}
+  {% comment %}
+    data_max_resolution is read by zoom-dialog.js only, and the zoom dialog exists solely in
+    the product media gallery. Grid cards render with preview_image_only, so there the
+    attribute was a second full CDN URL per image that nothing could ever open.
+  {% endcomment %}
   {% capture image_html %}
-    {{
-      media.preview_image
-      | image_url: width: 1946
-      | image_tag:
-        widths: widths,
-        alt: media.alt,
-        sizes: sizes,
-        loading: image_loading,
-        preload: image_preload,
-        class: 'product-media__image',
-        transitionToProduct: settings.transition_to_main_product,
-        data_max_resolution: high_res_url
-    }}
+    {% if preview_image_only %}
+      {{
+        media.preview_image
+        | image_url: width: 1946
+        | image_tag:
+          widths: widths,
+          alt: media.alt,
+          sizes: sizes,
+          loading: image_loading,
+          preload: image_preload,
+          class: 'product-media__image',
+          transitionToProduct: settings.transition_to_main_product
+      }}
+    {% else %}
+      {% assign high_res_url = media.preview_image | image_url: width: 3840 %}
+      {{
+        media.preview_image
+        | image_url: width: 1946
+        | image_tag:
+          widths: widths,
+          alt: media.alt,
+          sizes: sizes,
+          loading: image_loading,
+          preload: image_preload,
+          class: 'product-media__image',
+          transitionToProduct: settings.transition_to_main_product,
+          data_max_resolution: high_res_url
+      }}
+    {% endif %}
   {% endcapture %}
   {% if fetchpriority == 'high' %}
     {{ image_html | replace: '<img ', '<img fetchpriority="high" ' }}
