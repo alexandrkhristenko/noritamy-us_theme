@@ -1,3 +1,10 @@
-{{ 'base.css' | asset_url | preload_tag: as: 'style' }}
+{% comment %}
+  overflow-list.css is only referenced from inside <template shadowrootmode="open">, so the
+  preload scanner would not find it until those shadow roots are parsed. The preload here is what
+  starts the fetch alongside base.css.
+
+  base.css needs no preload: its own stylesheet tag sits on the next line, so the preload scanner
+  reaches both at the same moment and the extra link only adds markup.
+{% endcomment %}
 {{ 'overflow-list.css' | asset_url | preload_tag: as: 'style' }}
 {{ 'base.css' | asset_url | stylesheet_tag }}

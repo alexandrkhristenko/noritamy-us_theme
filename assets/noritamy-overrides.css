@@ -438,3 +438,462 @@ html[dir="rtl"] .product-badges--bottom-left {
     display: flex;
   }
 }
+
+/* ============================================================
+   Noritamy polish — targeted CSS
+   Merged in from the former noritamy-polish.css. Kept below the
+   overrides above so the original cascade order is preserved:
+   these rules were always loaded second and still win on ties.
+   Hits real elements by their live classes.
+   ============================================================ */
+
+/* ---- Product page: prominent price (buy box only, not cards) ---- */
+.product-information .price,
+.product-information [ref="priceContainer"] .price {
+  font-size: 1.28rem !important;
+  /* 20% smaller than the title-matched 1.6rem */
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+}
+
+/* ---- Product page: Add-to-cart + checkout buttons — compact box, same text size ---- */
+.product-information .add-to-cart-button,
+.add-to-cart-button.button,
+.product-form__submit {
+  font-size: 15px !important;
+  letter-spacing: 1.2px !important;
+  padding-block: 12px !important;
+  /* was 20px: ~20% shorter button, text unchanged */
+}
+
+/* The add-to-cart button is stretched to match the quantity selector in its row,
+   so shrink the whole row (~20% shorter) — text size stays the same. */
+.product-form-buttons .add-to-cart-button,
+.product-form-buttons .quantity-selector,
+.product-form-buttons quantity-selector,
+.product-form-buttons quantity-input,
+.product-form-buttons .quantity {
+  min-height: 42px !important;
+  height: 42px !important;
+}
+
+/* checkout / accelerated button (מעבר לתשלום) matches the reduced height */
+.accelerated-checkout-block .shopify-payment-button__button,
+.accelerated-checkout-block button,
+.product-information .shopify-payment-button__button {
+  min-height: 42px !important;
+  padding-block: 10px !important;
+}
+
+shopify-payment-terms {
+  font-size: 12px;
+}
+
+/* ---- Breadcrumbs: clean editorial ---- */
+.breadcrumbs__list {
+  font-size: 11px !important;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.breadcrumbs__link {
+  color: #7d5449 !important;
+}
+
+[dir="rtl"] .breadcrumbs__list {
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* ---- Accordion headers (product): editorial ---- */
+.product-information .accordion summary,
+.product-information .accordion__toggle {
+  text-transform: uppercase !important;
+  letter-spacing: 0.6px !important;
+  font-weight: 500 !important;
+}
+
+[dir="rtl"] .product-information .accordion summary,
+[dir="rtl"] .product-information .accordion__toggle {
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+
+/* ---- Product title: always English -> keep it LTR / left-aligned ---- */
+.product-information .product-title-text,
+.product-information .product-title-text p {
+  text-align: left !important;
+  direction: ltr !important;
+}
+
+/* ---- Variant dropdown: right-aligned on the Hebrew store ---- */
+[dir="rtl"] .variant-option__select,
+[dir="rtl"] .variant-option__select-wrapper {
+  text-align: right !important;
+  direction: rtl !important;
+}
+
+/* ---- Accordions follow Hebrew RTL on the Hebrew store ---- */
+[dir="rtl"] .accordion,
+[dir="rtl"] .accordion summary,
+[dir="rtl"] .accordion__title,
+[dir="rtl"] .accordion-custom,
+[dir="rtl"] .accordion-custom summary,
+[dir="rtl"] .accordion-custom rte-formatter,
+/* accordion bodies (e.g. Shipping & Returns) render Hebrew but sometimes flow LTR */
+[dir="rtl"] .product-information .accordion rte-formatter,
+[dir="rtl"] .product-information .accordion .rte,
+[dir="rtl"] .product-information .accordion .prose,
+[dir="rtl"] .product-information .accordion li {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+/* ---- RTL: right-align buy-box content on the Hebrew store ---- */
+[dir="rtl"] .product-information .price,
+[dir="rtl"] .product-information [ref="priceContainer"],
+[dir="rtl"] .variant-option,
+[dir="rtl"] .variant-option__title,
+[dir="rtl"] .product-information__details {
+  text-align: right !important;
+}
+
+[dir="rtl"] .product-information [ref="priceContainer"],
+[dir="rtl"] .variant-picker__form,
+[dir="rtl"] .variant-option--buttons {
+  justify-content: flex-end !important;
+}
+
+/* ---- Swatches: circle only, remove the square box around them (cards + product).
+   The square was the .variant-option__button-label--has-swatch wrapper (border-radius:0,
+   dark fill, outline). Round every layer so only the color circle reads. ---- */
+.variant-option--swatches .variant-option__swatch,
+.variant-option--swatches .variant-option__button-label,
+.variant-option--swatches .variant-option__button-label--has-swatch,
+.variant-option--swatches .swatch {
+  border-radius: 50% !important;
+}
+
+.variant-option--swatches .variant-option__button-label--has-swatch {
+  border: none !important;
+  box-shadow: none !important;
+  padding: 2px !important;
+}
+
+/* ---- Buy-box title: editorial tracking (Latin only) ---- */
+.product-information .product-title-text p {
+  letter-spacing: -0.01em;
+}
+
+[dir="rtl"] .product-information .product-title-text p {
+  letter-spacing: 0 !important;
+}
+
+/* ---- Buttons site-wide: consistent editorial tracking ---- */
+.button,
+button[type="submit"] {
+  letter-spacing: 0.04em;
+}
+
+[dir="rtl"] .button,
+[dir="rtl"] button[type="submit"] {
+  letter-spacing: 0;
+}
+
+/* ---- Section eyebrow/labels: brand accent ---- */
+.section-header__subtitle,
+.caption-with-letter-spacing {
+  color: #7d5449;
+}
+
+/* ---- Direction follows the actual text content, not just the locale ----
+   (English text flows LTR even on the Hebrew store, Hebrew flows RTL) ---- */
+.product-title-text,
+.product-information .rte,
+.rte,
+rte-formatter,
+.prose,
+.accordion-custom rte-formatter,
+[class*="description"] {
+  unicode-bidi: plaintext;
+}
+
+/* ---- Trust row: centre the "Up to 12 Payments" item (its text-block hugs the
+   start edge otherwise, so the wrapped Hebrew looks off-centre) ---- */
+[class*="text_PMmYtt"] {
+  align-items: center !important;
+}
+
+[class*="text_PMmYtt"],
+[class*="text_PMmYtt"] p {
+  text-align: center !important;
+}
+
+/* ---- Main menu weight: match Annoory (Barlow 400). The menu uses the heading font
+   (barlow_n5 / weight 500), which reads too heavy — especially in Hebrew, where the
+   family is overridden to Noto Sans Hebrew and 500 looks bold. 400 for both languages. ---- */
+.menu-list__link,
+.menu-list__link-title,
+.menu-drawer__menu-item,
+.menu-drawer__menu-item-text {
+  font-weight: 400 !important;
+}
+
+/* ---- Mobile menu (+ language drawer): flip submenu carets for RTL so "forward/
+   deeper" points left and "back" points right. RTL only — English is untouched. ---- */
+[dir="rtl"] .icon-caret--forward svg {
+  transform: rotate(90deg) !important;
+}
+
+[dir="rtl"] .icon-caret--backward svg {
+  transform: rotate(-90deg) !important;
+}
+
+/* ---- Subtle warm page background so whitespace/gaps are visible ---- */
+body {
+  background-color: #f5f4f2 !important;
+}
+
+/* ---- Collection + search pages: framed item tiles on a warm ground (edgy Noritamy).
+   Scoped by :has(.product-grid) — verified it applies only to collection/search grids,
+   NOT the homepage product list or PDP related-products (those don't use .product-grid). ---- */
+.shopify-section:has(.product-grid) {
+  /* Net-a-Porter style warm greige studio backdrop (subtle gradient) */
+  background: linear-gradient(
+    180deg,
+    #f1f0ec 0%,
+    #e8e6e1 55%,
+    #e3e2dc 100%
+  ) !important;
+  padding-block-start: 0 !important;
+  /* trim the oversized empty band above the filter bar */
+  margin-block-start: 28px;
+  /* space between the description above and the greige ground */
+}
+
+.product-grid {
+  gap: 12px !important;
+  row-gap: 20px !important;
+}
+
+.product-grid__item .product-card,
+.product-grid .product-card {
+  background: #ffffff !important;
+  border: 1px solid rgba(30, 31, 33, 0.18) !important;
+  padding: 12px 12px 16px !important;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* subtle lift on hover only on real hover devices (no sticky black frame on mobile touch) */
+@media (hover: hover) {
+  .product-grid .product-card:hover {
+    box-shadow: 0 6px 20px rgba(30, 31, 33, 0.1) !important;
+  }
+}
+
+.product-card .text-block p,
+.product-card__content .text-block p {
+  font-size: 15px !important;
+  letter-spacing: 0.3px !important;
+  line-height: 1.4 !important;
+  text-align: center !important;
+}
+
+.product-card .price,
+.product-card__content .price {
+  font-size: 14px !important;
+  text-align: center !important;
+}
+
+/* center the quick-add + swatches too so the whole card reads centered */
+.product-card .noritamy-title-row,
+.product-card [ref="priceContainer"] {
+  justify-content: center !important;
+}
+
+/* ---- Collection cards: always-visible left/right swipe arrows (replaces dots,
+   which covered too much of the image). Custom namespace so the theme's touch
+   hiding of .slideshow-control never applies. ---- */
+.noritamy-cardnav {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  pointer-events: none;
+  direction: ltr;
+  /* keep ‹ on the left and › on the right even in RTL (Hebrew) */
+}
+
+.card-gallery {
+  position: relative;
+}
+
+/* anchor the arrows to the image area */
+.noritamy-cardnav__btn {
+  pointer-events: auto;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  color: #1e1f21;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 1px 4px rgba(30, 31, 33, 0.12);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  transition:
+    background 0.15s ease,
+    opacity 0.15s ease;
+}
+
+@media (hover: hover) {
+  .noritamy-cardnav__btn:hover {
+    background: #ffffff;
+  }
+}
+
+.noritamy-cardnav__btn svg {
+  display: block;
+}
+
+/* 20% smaller on mobile */
+@media (max-width: 749px) {
+  .noritamy-cardnav__btn {
+    width: 24px;
+    height: 24px;
+  }
+
+  .noritamy-cardnav__btn svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* ---- Product buy-box: marked-down (compare-at) price, also 20% smaller ---- */
+.product-information .compare-at-price {
+  font-size: 0.84rem !important;
+  /* 20% smaller than 1.05rem */
+  opacity: 0.6;
+}
+
+.shopify-section-group-footer-group h3 {
+  font-family: "Rubik";
+}
+
+.email-signup__input--underline + .email-signup__button--integrated {
+  left: 0;
+  right: auto !important;
+}
+
+.shopify-section-group-footer-group h2 {
+  font-size: 28px;
+  font-family: "Rubik";
+}
+
+.email-signup__button.button-unstyled {
+  left: 0;
+  right: auto;
+}
+
+.email-signup__input:has(+ .email-signup__button--arrow),
+.email-signup__input:has(+ .email-signup__button--integrated) {
+  text-align: right !important;
+}
+
+.section-content-wrapper.section-content-wrapper {
+  padding: 40px 0;
+}
+
+.shopify-section.section-wrapper h2 {
+  font-size: 28px;
+  font-family: "Rubik";
+}
+
+@media (max-width: 749px) {
+  .shopify-section:has(.product-grid) {
+    margin-block-start: 0;
+  }
+
+  .section-content-wrapper.section-content-wrapper {
+    padding: 24px 15px;
+  }
+
+  results-list.product-grid-container {
+    padding: 0;
+  }
+
+  .product-grid {
+    row-gap: 12px !important;
+  }
+
+  .hero {
+    min-height: 30rem !important;
+  }
+
+  .ui-test-product-list .section-resource-list {
+    padding: 20px 0;
+  }
+
+  .breadcrumbs {
+    padding: 12px 15px !important;
+  }
+
+  .breadcrumbs__list {
+    margin-bottom: 0 !important;
+  }
+}
+.cart-drawer__summary {
+ padding: 0 8px 8px 8px !important;
+  gap: 12px !important;
+}
+.cart__summary-totals {
+  gap: 0px !important;
+}
+
+.cart-discount__summary {
+  padding: 6px 0 !important;
+}
+
+.cart__ctas .cart__checkout-button {
+  height: 40px !important;
+}
+.cart__total-container:has(.cart__installments) {
+  row-gap: 4px !important;
+}
+.cart-actions {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+shopify-accelerated-checkout {
+  --shopify-accelerated-checkout-button-block-size: 40px;
+  --shopify-accelerated-checkout-button-border-radius: 0px;
+  --shopify-accelerated-checkout-button-box-shadow: none;
+  --shopify-accelerated-checkout-skeleton-background-color: #dedede;
+  --shopify-accelerated-checkout-skeleton-animation-opacity-start: 1;
+  --shopify-accelerated-checkout-skeleton-animation-opacity-end: 0.5;
+  --shopify-accelerated-checkout-skeleton-animation-duration: 4s;
+  --shopify-accelerated-checkout-skeleton-animation-timing-function: ease;
+}
+
+shopify-accelerated-checkout-cart {
+  --shopify-accelerated-checkout-button-block-size: 40px;
+  --shopify-accelerated-checkout-button-inline-size: 54px;
+  --shopify-accelerated-checkout-button-border-radius: 4px;
+  --shopify-accelerated-checkout-button-box-shadow: none;
+  --shopify-accelerated-checkout-inline-alignment: flex-start;
+  --shopify-accelerated-checkout-row-gap: 8px;
+  --shopify-accelerated-checkout-skeleton-background-color: #dedede;
+  --shopify-accelerated-checkout-skeleton-animation-opacity-start: 1;
+  --shopify-accelerated-checkout-skeleton-animation-opacity-end: 0.5;
+  --shopify-accelerated-checkout-skeleton-animation-duration: 4s;
+  --shopify-accelerated-checkout-skeleton-animation-timing-function: ease;
+}
