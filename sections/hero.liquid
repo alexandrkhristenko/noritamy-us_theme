@@ -65,32 +65,48 @@
     {% assign image_1_alt = section.settings.image_1.alt | default: shop.name | escape %}
     {%- if section.settings.mobile_image != blank -%}
       {% assign mobile_image_alt = section.settings.mobile_image.alt | default: shop.name | escape %}
-      {{
-        section.settings.image_1
-        | image_url: width: 3840
-        | image_tag:
-          width: section.settings.image_1.width,
-          widths: widths,
-          height: section.settings.image_1.height,
-          alt: image_1_alt,
-          class: 'hero__image hero__image--desktop',
-          sizes: sizes,
-          loading: loading,
-          fetchpriority: fetchpriority
-      }}
-      {{
-        section.settings.mobile_image
-        | image_url: width: 3840
-        | image_tag:
-          width: section.settings.mobile_image.width,
-          widths: widths,
-          height: section.settings.mobile_image.height,
-          alt: mobile_image_alt,
-          class: 'hero__image hero__image--mobile',
-          sizes: sizes,
-          loading: loading,
-          fetchpriority: fetchpriority
-      }}
+      {%- comment -%}
+        The desktop and mobile heroes used to be two <img> elements toggled with display:none.
+        The preload scanner finds both before any CSS applies, so every phone downloaded the
+        desktop banner as well, and both carried fetchpriority="high" — the discarded one
+        competed with the LCP image for bandwidth. A <picture> resolves to a single request.
+
+        .hero__image is height:100%/width:100%/object-fit:cover and the section height comes from
+        --hero-min-height, so the intrinsic size of the <img> does not drive layout and swapping
+        the source across the breakpoint cannot shift it.
+      {%- endcomment -%}
+      {%- capture hero_desktop_srcset -%}
+        {%- assign hero_width_list = widths | split: ', ' -%}
+        {%- for hero_width in hero_width_list -%}
+          {%- assign hero_width_number = hero_width | plus: 0 -%}
+          {%- if hero_width_number <= section.settings.image_1.width -%}
+            {{ section.settings.image_1 | image_url: width: hero_width_number }} {{ hero_width_number }}w,
+          {%- endif -%}
+        {%- endfor -%}
+        {{ section.settings.image_1 | image_url: width: section.settings.image_1.width }} {{ section.settings.image_1.width }}w
+      {%- endcapture -%}
+      <picture>
+        <source
+          media="(min-width: 750px)"
+          srcset="{{ hero_desktop_srcset | strip_newlines | strip | replace: 'w,', 'w, ' }}"
+          sizes="{{ sizes }}"
+          width="{{ section.settings.image_1.width }}"
+          height="{{ section.settings.image_1.height }}"
+        >
+        {{
+          section.settings.mobile_image
+          | image_url: width: 3840
+          | image_tag:
+            width: section.settings.mobile_image.width,
+            widths: widths,
+            height: section.settings.mobile_image.height,
+            alt: mobile_image_alt,
+            class: 'hero__image',
+            sizes: sizes,
+            loading: loading,
+            fetchpriority: fetchpriority
+        }}
+      </picture>
     {%- else -%}
       {{
         section.settings.image_1
