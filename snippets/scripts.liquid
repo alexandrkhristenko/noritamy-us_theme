@@ -100,16 +100,60 @@
   src="{{ 'product-card.js' | asset_url }}"
   type="module"
 ></script>
-<script
-  src="{{ 'product-form.js' | asset_url }}"
-  type="module"
-></script>
+{% comment %}
+  These five only power the product form and the product media gallery. That means the product
+  template, or the quick-add modal, which fetches its markup on demand. Custom elements upgrade
+  retroactively, so on a page whose initial markup contains none of them they can load after
+  first paint instead of joining the ~30 modules already in the initial request chain.
+
+  variant-picker is deliberately not in this list: product-card.js imports it, so it is fetched
+  either way and deferring its own tag would save nothing.
+{% endcomment %}
+{% assign deferrable_product_scripts = 'product-form.js,media.js,product-inventory.js,component-quantity-selector.js,media-gallery.js' | split: ',' %}
+{% if template.name == 'product' %}
+  {% for product_script in deferrable_product_scripts %}
+    <script
+      src="{{ product_script | asset_url }}"
+      type="module"
+    ></script>
+  {% endfor %}
+{% else %}
+  <script type="module">
+    const productScripts = [
+      {%- for product_script in deferrable_product_scripts -%}
+        '{{ product_script | asset_url }}'{% unless forloop.last %}, {% endunless %}
+      {%- endfor -%}
+    ];
+
+    let productScriptsRequested = false;
+    const loadProductScripts = () => {
+      if (productScriptsRequested) return;
+      productScriptsRequested = true;
+      for (const url of productScripts) import(url);
+    };
+
+    // A section on this page may already render a product form or gallery — a featured product,
+    // for instance. Then there is nothing to defer and they load exactly as before.
+    const productMarkup =
+      'product-form-component, add-to-cart-component, quantity-selector-component, media-gallery, product-inventory, deferred-media, product-model';
+
+    if (document.querySelector(productMarkup)) {
+      loadProductScripts();
+    } else {
+      // Whichever comes first: the visitor reaching for quick add, or the browser going idle.
+      addEventListener('pointerdown', loadProductScripts, { once: true, capture: true });
+      addEventListener('keydown', loadProductScripts, { once: true, capture: true });
+
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(loadProductScripts, { timeout: 3000 });
+      } else {
+        addEventListener('load', loadProductScripts, { once: true });
+      }
+    }
+  </script>
+{% endif %}
 <script
   src="{{ 'accordion-custom.js' | asset_url }}"
-  type="module"
-></script>
-<script
-  src="{{ 'media.js' | asset_url }}"
   type="module"
 ></script>
 <script
@@ -118,10 +162,6 @@
 ></script>
 <script
   src="{{ 'product-title-truncation.js' | asset_url }}"
-  type="module"
-></script>
-<script
-  src="{{ 'product-inventory.js' | asset_url }}"
   type="module"
 ></script>
 {% comment %} show-more is only used by the facet filters, which render on collection and search. {% endcomment %}
@@ -141,14 +181,6 @@
 ></script>
 <script
   src="{{ 'video-background.js' | asset_url }}"
-  type="module"
-></script>
-<script
-  src="{{ 'component-quantity-selector.js' | asset_url }}"
-  type="module"
-></script>
-<script
-  src="{{ 'media-gallery.js' | asset_url }}"
   type="module"
 ></script>
 <script
