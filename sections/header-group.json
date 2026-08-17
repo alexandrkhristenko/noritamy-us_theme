@@ -46,6 +46,22 @@
           },
           "blocks": {}
         },
+        "announcement_XXRaty": {
+          "type": "_announcement",
+          "name": "t:names.announcement",
+          "settings": {
+            "text": "Price Includes All Import Taxes & Duties",
+            "link": "",
+            "enable_klaviyo_popup": false,
+            "klaviyo_form_id": "",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "weight": "",
+            "letter_spacing": "normal",
+            "case": "none"
+          },
+          "blocks": {}
+        },
         "announcement_kL6Uje": {
           "type": "_announcement",
           "name": "t:names.announcement",
@@ -130,34 +146,17 @@
             "case": "none"
           },
           "blocks": {}
-        },
-        "announcement_XXRaty": {
-          "type": "_announcement",
-          "name": "t:names.announcement",
-          "disabled": true,
-          "settings": {
-            "text": "Up To 12 Installments",
-            "link": "",
-            "enable_klaviyo_popup": false,
-            "klaviyo_form_id": "",
-            "font": "var(--font-body--family)",
-            "font_size": "1rem",
-            "weight": "",
-            "letter_spacing": "normal",
-            "case": "none"
-          },
-          "blocks": {}
         }
       },
       "block_order": [
         "announcement_countdown_aTY9VB",
         "announcement_DKDV48",
+        "announcement_XXRaty",
         "announcement_kL6Uje",
         "announcement_MnjcKA",
         "announcement_Ji78WG",
         "announcement_KMAGKG",
-        "announcement_nqcUGB",
-        "announcement_XXRaty"
+        "announcement_nqcUGB"
       ],
       "custom_css": [
         ".announcement-bar__text {color: rgb(125, 84, 73);}"
