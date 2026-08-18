@@ -143,8 +143,11 @@
               <select
                 id="Option-{{ block.id }}-{{ forloop.index0 }}"
                 name="options[{{ product_option.name | escape }}]"
-                class="variant-option__select"
+                class="variant-option__select{% if product_option.name == 'Size' or product_option.name == 'Размер' or product_option.name == 'מידה' or product_option.name == 'גודל' %} js-size-select{% endif %}"
               >
+                {%- if product_option.name == 'Size' or product_option.name == 'Размер' or product_option.name == 'מידה' or product_option.name == 'גודל' -%}
+                  <option value="" data-option-value-id="unselected" disabled hidden>Choose a size</option>
+                {%- endif -%}
                 {%- for product_option_value in product_option.values -%}
                   <option
                     value="{{ product_option_value | escape }}"
@@ -183,6 +186,13 @@
     </form>
   </variant-picker>
 {% endunless %}
+
+{% comment %}
+  Forces an explicit size choice before add-to-cart: the placeholder option above starts the
+  select empty, and this script blocks submit and the accelerated checkout buttons until every
+  size select has a value. See assets/size-dropdown-validation.js.
+{% endcomment %}
+<script src="{{ 'size-dropdown-validation.js' | asset_url }}" defer="defer"></script>
 
 {% stylesheet %}
   .variant-picker {
