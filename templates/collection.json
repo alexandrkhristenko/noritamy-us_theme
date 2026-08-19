@@ -102,6 +102,9 @@
         "image_V44KrM",
         "metafield_media_cNQYiT"
       ],
+      "custom_css": [
+        ".image-block__image{aspect-ratio: 16/9;}"
+      ],
       "settings": {
         "content_direction": "column",
         "vertical_on_mobile": true,
