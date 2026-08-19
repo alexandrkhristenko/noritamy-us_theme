@@ -60,13 +60,7 @@
         sizes: sizes,
         loading: loading
     }}
-  {%- else -%}
-    <div class="placeholder-image border-style size-style" style="{{ image_border_style }}">
-      <placeholder-image
-        data-block-id="{{ block.id }}"
-        data-type="general"
-      ></placeholder-image>
-    </div>
+
   {%- endif -%}
 {% endcapture %}
 
