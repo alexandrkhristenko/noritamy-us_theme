@@ -30,14 +30,6 @@
       | image_tag: width: width, widths: widths, sizes: sizes, loading: loading, alt: alt
     }}
   </image-block>
-{% else %}
-  <image-block
-    ratio="{{ block.settings.ratio }}"
-    height="{{ block.settings.height }}"
-    style="--border-radius: {{ block.settings.border_radius }}px;"
-    {{ block.shopify_attributes }}
-  >
-  </image-block>
 {% endif %}
 
 {% stylesheet %}
