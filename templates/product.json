@@ -168,7 +168,7 @@
               },
               "blocks": {}
             },
-            "globo_product_options_app_block_awJVCi": {
+            "globo_product_options_app_block_hzGxnL": {
               "type": "shopify://apps/globo-product-options/blocks/app-block/fdc9fad5-1a0f-4bd4-9c8a-1af6a6eef6b8",
               "settings": {
                 "product": "{{closest.product}}"
@@ -1128,7 +1128,7 @@
             "price_a7krng",
             "product_inventory_7bxwGB",
             "variant_picker_R3rGDr",
-            "globo_product_options_app_block_awJVCi",
+            "globo_product_options_app_block_hzGxnL",
             "size_guide_FY9Rkx",
             "buy_buttons_eYQEYi",
             "shipping_estimate_gLd9mN",
