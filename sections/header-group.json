@@ -65,9 +65,8 @@
         "announcement_kL6Uje": {
           "type": "_announcement",
           "name": "t:names.announcement",
-          "disabled": true,
           "settings": {
-            "text": "Free Shipping",
+            "text": "Free Shipping Worldwide",
             "link": "",
             "enable_klaviyo_popup": false,
             "klaviyo_form_id": "",
