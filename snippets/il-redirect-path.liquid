@@ -1,0 +1,128 @@
+{% doc %}
+  Outputs the path on noritamy.co.il that matches the page currently being viewed on
+  noritamy.com, so the Israel popup never sends a visitor to a 404.
+
+  Most handles are identical on both stores, so the current request path is the default.
+  The tables below only list the handles that differ, plus the handles that have no
+  Israeli equivalent at all (those fall back to a sensible landing page instead of a 404).
+
+  A product can override the table without a theme deploy: set the product metafield
+  custom.il_handle (single line text) to the Israeli handle, or to "none" when the
+  product does not exist on the Israeli store.
+
+  Verified against both storefronts on 2026-08-27.
+
+  @example
+  {% capture il_path %}{% render 'il-redirect-path' %}{% endcapture %}
+{% enddoc %}
+
+{%- liquid
+  # us-handle:il-handle pairs. Matched by SKU on both stores.
+  assign product_map = 'initial-necklace-l-l:initials-necklace-l-n-206-1,wind-bold-curb-bracelet:bold-cuban-links-bracelet,sterling-silver-crystal-tassel-earring-single:sterling-silver-black-crystal-tassel-earring,evil-eye-evolves-diamond-bracelet:evil-eye-evolves-diamond-bracelet-1,unisex-coin-pendant-necklace:unisex-coin-pendant-necklace-14k,oval-links-initial-necklace:oval-links-initial-necklace-copy,signet-octagon-initial-ring-14k-copy:octagon-pinky-diamond-ring-14k,bismuth-earrings:bismuth-chain-earrings-out-of-stock-haf-e-13,hoop-earring-prc-e-104-1:hoop-and-v-earring'
+
+  # US products with no Israeli equivalent - send these to the Israeli catalogue.
+  assign product_missing = 'oak-leaf-pendant-necklace,align-you-elements-diamond-bracelet,align-your-flow-large-diamond-earrin,co-creator-diamond-necklace,cosmic-balance-diamond-necklace,cosmic-transformer-diamond-earrings,cosmic-transformer-diamond-pinky-ring,divine-femme-diamond-ring,half-the-story-emerald-rose-gold-earrings,on-point-diamond-earrings,long-snake-earrings-s-e-2,tangled-earrings-h-e-100,horizontal-bar-ring-jn-r-32,initials-necklace-sterling-silver-lr-n-200'
+
+  assign collection_map = 'palm-bracelets:hand-chains'
+
+  # Price buckets are in USD here and in shekels there, so there is no honest one to one
+  # mapping. These land on the full catalogue rather than on a wrong price range.
+  assign collection_missing = 'frontpage,noris-curation,exclude-earnings,up-to-300-usd,up-to-600-usd,up-to-1000-usd,over-1000-usd'
+
+  assign page_map = 'about-us:about-us-1,loyalty-program:loyalty-program-the-circle'
+
+  # US-only pages (FAQ, CCPA notices) - nothing to link to on the Israeli store.
+  assign page_missing = 'faq,ccpa-privacy-notice,data-sharing-opt-out'
+
+  # /blogs/news exists here and 404s there; /blogs/projects is shared.
+  assign blog_missing = 'news'
+
+  assign catalogue_fallback = '/collections/shop-all'
+  assign home_fallback = '/'
+
+  assign il_path = request.path
+  assign resolved = false
+
+  case request.page_type
+    when 'product'
+      assign override = product.metafields.custom.il_handle.value | default: '' | strip | downcase
+      if override != blank
+        assign resolved = true
+        if override == 'none'
+          assign il_path = catalogue_fallback
+        else
+          assign il_path = '/products/' | append: override
+        endif
+      endif
+
+      unless resolved
+        assign missing = product_missing | split: ','
+        if missing contains product.handle
+          assign il_path = catalogue_fallback
+          assign resolved = true
+        endif
+      endunless
+
+      unless resolved
+        assign pairs = product_map | split: ','
+        for pair in pairs
+          assign kv = pair | split: ':'
+          if kv[0] == product.handle
+            assign il_path = '/products/' | append: kv[1]
+            assign resolved = true
+            break
+          endif
+        endfor
+      endunless
+
+    when 'collection'
+      assign missing = collection_missing | split: ','
+      if missing contains collection.handle
+        assign il_path = catalogue_fallback
+        assign resolved = true
+      endif
+
+      unless resolved
+        assign pairs = collection_map | split: ','
+        for pair in pairs
+          assign kv = pair | split: ':'
+          if kv[0] == collection.handle
+            assign il_path = '/collections/' | append: kv[1]
+            assign resolved = true
+            break
+          endif
+        endfor
+      endunless
+
+    when 'page'
+      assign missing = page_missing | split: ','
+      if missing contains page.handle
+        assign il_path = home_fallback
+        assign resolved = true
+      endif
+
+      unless resolved
+        assign pairs = page_map | split: ','
+        for pair in pairs
+          assign kv = pair | split: ':'
+          if kv[0] == page.handle
+            assign il_path = '/pages/' | append: kv[1]
+            assign resolved = true
+            break
+          endif
+        endfor
+      endunless
+
+    when 'blog', 'article'
+      assign missing = blog_missing | split: ','
+      if missing contains blog.handle
+        assign il_path = home_fallback
+      endif
+
+    when 'cart', 'customers/account', 'customers/login', 'customers/register', 'customers/order', 'customers/addresses', 'customers/reset_password', 'customers/activate_account', 'search', '404'
+      # Cart contents and customer accounts do not cross domains, and a search or 404
+      # path carries nothing worth replaying on the other store.
+      assign il_path = home_fallback
+  endcase
+-%}
+{{- il_path -}}
