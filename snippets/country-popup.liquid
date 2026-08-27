@@ -132,7 +132,12 @@
 <noscript><link rel="stylesheet" href="{{ 'country-popup.css' | asset_url }}"></noscript>
 <script src="{{ 'country-popup.js' | asset_url }}" defer="defer"></script>
 
-<country-popup class="country-popup" data-target-country="IL" data-target-url="https://www.noritamy.co.il{{ request.path }}{{ request.search }}">
+{%- capture il_redirect_path -%}{%- render 'il-redirect-path' -%}{%- endcapture -%}
+{%- assign il_redirect_url = 'https://www.noritamy.co.il' | append: il_redirect_path -%}
+{%- if il_redirect_path == request.path -%}
+  {%- assign il_redirect_url = il_redirect_url | append: request.search -%}
+{%- endif -%}
+<country-popup class="country-popup" data-target-country="IL" data-target-url="{{ il_redirect_url }}">
   <div class="country-popup__overlay"></div>
   <div class="country-popup__content" role="dialog" aria-modal="true" aria-labelledby="country-popup-title" dir="rtl">
     <button type="button" class="country-popup__close" aria-label="{{ 'accessibility.close' | t | default: 'Close' }}">
@@ -154,7 +159,7 @@
     <p class="country-popup__text">אנו ממליצים לך לגלוש באתר הישראלי שלנו לחוויית קנייה בעברית, במטבע מקומי ובמגוון אפשרויות לאיסוף עצמי או משלוח עד הבית</p>
 
     <div class="country-popup__actions">
-      <a href="https://www.noritamy.co.il{{ request.path }}{{ request.search }}" class="country-popup__btn country-popup__btn--primary" id="country-popup-switch">
+      <a href="{{ il_redirect_url }}" class="country-popup__btn country-popup__btn--primary" id="country-popup-switch">
         <span>עברי לאתר הישראלי</span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
           <path d="M19 12H5M12 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"/>
