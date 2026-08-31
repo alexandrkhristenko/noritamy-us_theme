@@ -30,6 +30,22 @@
           },
           "blocks": {}
         },
+        "announcement_Ji78WG": {
+          "type": "_announcement",
+          "name": "t:names.announcement",
+          "settings": {
+            "text": "15% OFF for Labor Day!",
+            "link": "",
+            "enable_klaviyo_popup": false,
+            "klaviyo_form_id": "",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "weight": "",
+            "letter_spacing": "normal",
+            "case": "none"
+          },
+          "blocks": {}
+        },
         "announcement_DKDV48": {
           "type": "_announcement",
           "name": "t:names.announcement",
@@ -95,23 +111,6 @@
           },
           "blocks": {}
         },
-        "announcement_Ji78WG": {
-          "type": "_announcement",
-          "name": "t:names.announcement",
-          "disabled": true,
-          "settings": {
-            "text": "15% OFF for  Valentine's! Coupon: 15LOVE",
-            "link": "",
-            "enable_klaviyo_popup": false,
-            "klaviyo_form_id": "",
-            "font": "var(--font-body--family)",
-            "font_size": "1rem",
-            "weight": "",
-            "letter_spacing": "normal",
-            "case": "none"
-          },
-          "blocks": {}
-        },
         "announcement_KMAGKG": {
           "type": "_announcement",
           "name": "EXPLORE OUR DESIGNS",
@@ -149,11 +148,11 @@
       },
       "block_order": [
         "announcement_countdown_aTY9VB",
+        "announcement_Ji78WG",
         "announcement_DKDV48",
         "announcement_XXRaty",
         "announcement_kL6Uje",
         "announcement_MnjcKA",
-        "announcement_Ji78WG",
         "announcement_KMAGKG",
         "announcement_nqcUGB"
       ],
