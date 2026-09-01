@@ -49,6 +49,7 @@
         "announcement_DKDV48": {
           "type": "_announcement",
           "name": "t:names.announcement",
+          "disabled": true,
           "settings": {
             "text": "Join Noritamy's Inner Circle And Get 10% Off Your First Order",
             "link": "",
@@ -66,7 +67,7 @@
           "type": "_announcement",
           "name": "t:names.announcement",
           "settings": {
-            "text": "Price Includes All Import Taxes & Duties",
+            "text": "Free Shipping | Price Includes All Taxes & Duties",
             "link": "",
             "enable_klaviyo_popup": false,
             "klaviyo_form_id": "",
@@ -81,6 +82,7 @@
         "announcement_kL6Uje": {
           "type": "_announcement",
           "name": "t:names.announcement",
+          "disabled": true,
           "settings": {
             "text": "Free Shipping Worldwide",
             "link": "",
