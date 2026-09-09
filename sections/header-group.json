@@ -33,6 +33,7 @@
         "announcement_Ji78WG": {
           "type": "_announcement",
           "name": "t:names.announcement",
+          "disabled": true,
           "settings": {
             "text": "15% OFF Site-wide for Labor Day!",
             "link": "",
@@ -49,7 +50,6 @@
         "announcement_DKDV48": {
           "type": "_announcement",
           "name": "t:names.announcement",
-          "disabled": true,
           "settings": {
             "text": "Join Noritamy's Inner Circle And Get 10% Off Your First Order",
             "link": "",
