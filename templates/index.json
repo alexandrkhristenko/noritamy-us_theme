@@ -88,7 +88,7 @@
       ],
       "name": "t:names.hero",
       "settings": {
-        "link": "shopify://collections/best-sellers",
+        "link": "shopify://collections/linked-theory",
         "open_in_new_tab": false,
         "media_type_1": "image",
         "image_1": "shopify://shop_images/WhatsApp_Image_2026-09-09_at_11.12.03.webp",
