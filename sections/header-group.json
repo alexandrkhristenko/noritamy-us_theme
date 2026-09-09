@@ -205,7 +205,7 @@
           "static": true,
           "settings": {
             "menu": "new-main-menu",
-            "target_index": 4,
+            "target_index": 0,
             "highlight_color": "#7d5448",
             "highlight_bg_color": "rgba(0,0,0,0)",
             "highlight_font_weight": "bold",
