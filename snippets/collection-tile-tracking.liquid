@@ -1,0 +1,227 @@
+{% comment %}
+  Collection tile tracking — impressions, clicks, quick-add and wishlist, per product per position.
+
+  Pushes to window.dataLayer. GTM must forward these to GA4 (see docs/collection-tile-tracking.md);
+  nothing reaches GA4 until those tags exist.
+
+  Every event carries BOTH positions:
+    position_served - the rank Shopify rendered (the merchandised order)
+    position_shown  - the DOM index at the moment of the event, after visitor-personalization
+                      has reshuffled the grid. Equal to position_served unless the shopper was
+                      personalized, which is what `personalized` reports.
+
+  Event names: `select_item` and `add_to_wishlist` are the GA4 standard names - nothing else emits
+  them, so GA4's item-scoped list dimensions populate for free. Impressions and add-to-cart use
+  `tile_impression` / `tile_add_to_cart` on purpose: Shopify's Google & YouTube pixel already sends
+  view_item_list and add_to_cart, and reusing those names would double-count store-wide totals.
+{% endcomment %}
+
+<script>
+(function () {
+  'use strict';
+
+  var LIST_NAME = {{ collection.title | default: 'Collection' | json }};
+  var LIST_ID   = {{ collection.handle | default: '' | json }};
+  var CURRENCY  = {{ cart.currency.iso_code | json }};
+  var VERSION   = 'v1_tile_tracking';
+
+  var dl = function (payload) {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push(payload);
+  };
+
+  /**
+   * GA4 ecommerce envelope. `items` must live under `ecommerce` or GTM's built-in mapping finds
+   * nothing; the null reset stops item data bleeding from the previous push.
+   */
+  function push(eventName, item) {
+    dl({ ecommerce: null });
+    dl({
+      event: eventName,
+      feature_version: VERSION,
+      position_served: item.position_served,
+      position_shown: item.position_shown,
+      personalized: item.personalized,
+      ecommerce: { currency: CURRENCY, item_list_name: LIST_NAME, item_list_id: LIST_ID, items: [item] }
+    });
+  }
+
+  function grid() {
+    return document.querySelector('.product-grid');
+  }
+
+  /** DOM index right now (1-based) - reflects any client-side reshuffle. */
+  function positionShown(tile) {
+    var g = grid();
+    if (!g) return null;
+    var tiles = Array.prototype.slice.call(g.querySelectorAll('.product-grid__item[data-product-id]'));
+    var i = tiles.indexOf(tile);
+    return i === -1 ? null : i + 1;
+  }
+
+  function itemFrom(tile) {
+    var served = parseInt(tile.getAttribute('data-position-served'), 10);
+    var shown = positionShown(tile);
+    var price = parseFloat(tile.getAttribute('data-product-price'));
+    var compareAt = parseFloat(tile.getAttribute('data-compare-at-price'));
+    var onSale = !isNaN(price) && !isNaN(compareAt) && compareAt > price;
+    var round2 = function (n) { return Math.round(n * 100) / 100; };
+
+    return {
+      item_id: tile.getAttribute('data-product-id'),
+      item_variant: tile.getAttribute('data-variant-id') || null,
+      item_name: tile.getAttribute('data-product-title') || null,
+      item_handle: tile.getAttribute('data-product-handle') || null,
+      // `price` is what the shopper sees; `discount` is the GA4 standard per-unit reduction.
+      price: isNaN(price) ? null : price,
+      compare_at_price: isNaN(compareAt) ? null : compareAt,
+      discount: onSale ? round2(compareAt - price) : 0,
+      discount_pct: onSale ? Math.round(((compareAt - price) / compareAt) * 100) : 0,
+      on_sale: onSale,
+      index: shown,
+      item_list_name: LIST_NAME,
+      item_list_id: LIST_ID,
+      position_served: isNaN(served) ? null : served,
+      position_shown: shown,
+      personalized: shown !== null && !isNaN(served) && shown !== served,
+      page: parseInt(tile.getAttribute('data-page'), 10) || 1
+    };
+  }
+
+  function tileFor(node) {
+    while (node && node !== document.body) {
+      if (node.classList && node.classList.contains('product-grid__item')) return node;
+      node = node.parentNode;
+    }
+    return null;
+  }
+
+  function tileByProductId(id) {
+    var g = grid();
+    return g ? g.querySelector('.product-grid__item[data-product-id="' + String(id) + '"]') : null;
+  }
+
+  function ready(fn) {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
+    else fn();
+  }
+
+  var boundGrid = null;
+  var seen = {};
+
+  function init() {
+    var g = grid();
+    if (!g || g === boundGrid) return;
+    boundGrid = g;
+
+    // visitor-personalization reshuffles on DOMContentLoaded; let it finish before we read
+    // positions, so position_shown is what the shopper actually saw.
+    setTimeout(function () {
+
+      // --- impressions: fire once per tile per page view, when it is genuinely on screen ---
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            var tile = entry.target;
+            var id = tile.getAttribute('data-product-id');
+            if (!id || seen[id]) return;
+            seen[id] = true;
+            io.unobserve(tile);
+            push('tile_impression', itemFrom(tile));
+          });
+        }, { threshold: 0.5 });
+
+        var observeAll = function (root) {
+          Array.prototype.forEach.call(
+            root.querySelectorAll('.product-grid__item[data-product-id]'),
+            function (tile) { if (!seen[tile.getAttribute('data-product-id')]) io.observe(tile); }
+          );
+        };
+        observeAll(g);
+
+        // Infinite scroll appends/prepends straight into this grid (paginated-list.js), so tiles
+        // that arrive after init must be picked up or impressions stop at the first page.
+        if ('MutationObserver' in window) {
+          new MutationObserver(function (mutations) {
+            mutations.forEach(function (m) {
+              Array.prototype.forEach.call(m.addedNodes, function (node) {
+                if (node.nodeType !== 1) return;
+                if (node.classList && node.classList.contains('product-grid__item')) {
+                  if (!seen[node.getAttribute('data-product-id')]) io.observe(node);
+                } else if (node.querySelectorAll) {
+                  observeAll(node);
+                }
+              });
+            });
+          }).observe(g, { childList: true });
+        }
+      }
+
+      // --- clicks: any navigation into a PDP from a tile ---
+      //
+      // The card's <a> is a visually-hidden accessibility link that is a SIBLING of the visible
+      // content, not a wrapper - clicking the image or title never passes through it. The theme
+      // navigates from product-card.js `navigateToProduct`, which fires unless the click landed on
+      // an interactive element other than that link. Mirror that predicate exactly, so we count a
+      // click-through when and only when the theme actually navigates.
+      var lastClick = { id: null, at: 0 };
+
+      function trackClick(e) {
+        var tile = tileFor(e.target);
+        if (!tile || !e.target.closest) return;
+
+        var interactive = e.target.closest('button, input, label, select, a, [tabindex="1"]');
+        var cardLink = tile.querySelector('a.product-card__link');
+        if (interactive && interactive !== cardLink) return; // quick-add, swatch, slideshow arrow
+
+        var id = tile.getAttribute('data-product-id');
+        var now = new Date().getTime();
+        if (lastClick.id === id && now - lastClick.at < 1000) return; // click + keydown double-fire
+        lastClick = { id: id, at: now };
+
+        push('select_item', itemFrom(tile));
+      }
+
+      g.addEventListener('click', trackClick, true);
+      g.addEventListener('auxclick', function (e) { if (e.button === 1) trackClick(e); }, true);
+      g.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') trackClick(e);
+      }, true);
+
+    }, 0);
+  }
+
+  // --- quick-add: the theme fires cart:update with the product id of the card. Bound to the
+  //     document once, so it survives the grid being re-rendered.
+  document.addEventListener('cart:update', function (e) {
+    var d = (e.detail && e.detail.data) || {};
+    if (d.didError) return;
+    if (d.source !== 'product-form-component') return;
+    var tile = d.productId ? tileByProductId(d.productId) : null;
+    if (!tile) return; // not a collection-tile add
+    var item = itemFrom(tile);
+    if (d.variantId) item.item_variant = String(d.variantId);
+    push('tile_add_to_cart', item);
+  });
+
+  // A filter change re-renders the results section and can replace the grid node we bound to.
+  // Impressions dedupe on `seen`, so re-running init cannot double-count a tile.
+  document.addEventListener('filter:update', function () {
+    setTimeout(init, 300);
+  });
+
+  ready(init);
+
+  // --- wishlist: no app is wired yet. Whichever one lands, call this from its add handler:
+  //       window.NoritamyTiles.trackWishlist(productId)
+  //     Swym exposes swym.evtLayer; hook it here once Wishlist Plus is live on the storefront.
+  window.NoritamyTiles = {
+    trackWishlist: function (productId) {
+      var tile = tileByProductId(productId);
+      if (!tile) return;
+      push('add_to_wishlist', itemFrom(tile));
+    }
+  };
+})();
+</script>

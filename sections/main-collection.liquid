@@ -76,12 +76,24 @@
       {% paginate collection.products by 24 %}
         {% capture children %}
           {% for product in collection.products %}
+          {%- liquid
+            assign served_position = paginate.current_offset | plus: forloop.index
+            assign card_variant = product.selected_or_first_available_variant
+          -%}
           <li
             id="{{ section.id }}-{{ product.id }}"
             class="product-grid__item product-grid__item--{{ forloop.index0 }}"
             data-page="{{ paginate.current_page }}"
             data-product-id="{{ product.id }}"
             data-created="{{ product.created_at | date: '%Y-%m-%d' }}"
+            data-position-served="{{ served_position }}"
+            data-variant-id="{{ card_variant.id }}"
+            data-product-title="{{ product.title | escape }}"
+            data-product-handle="{{ product.handle }}"
+            data-product-price="{{ card_variant.price | divided_by: 100.0 }}"
+            {%- if card_variant.compare_at_price > card_variant.price %}
+              data-compare-at-price="{{ card_variant.compare_at_price | divided_by: 100.0 }}"
+            {%- endif %}
             ref="cards[]"
           >
             {% # theme-check-disable %}
@@ -102,6 +114,7 @@
   {% if collection.handle == 'bracelets' %}
     {% render 'visitor-personalization' %}
   {% endif %}
+  {% render 'collection-tile-tracking' %}
 </results-list>
 
 {% stylesheet %}
