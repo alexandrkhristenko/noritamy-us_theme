@@ -17,7 +17,7 @@ real rank #37 reports position 10. It never sends `select_item` at all, which is
 | `tile_impression` | tile 50% visible, once per page view | custom: reusing `view_item_list` would double-count against the Shopify pixel |
 | `select_item` | click on a tile (quick-add excluded) | GA4 standard - nothing else emits it, so `itemsClickedInList` / `itemListPosition` populate for free |
 | `tile_add_to_cart` | quick-add succeeds on a tile | custom: the Shopify pixel already sends `add_to_cart` |
-| `add_to_wishlist` | via `window.NoritamyTiles.trackWishlist(productId)` | GA4 standard - no app wired yet |
+| `add_to_wishlist` | shopper saves a product with the Swym heart on a tile (IL) | GA4 standard - nothing else emits it |
 
 Pushes use the GA4 ecommerce envelope, preceded by an `ecommerce: null` reset:
 
@@ -81,9 +81,16 @@ what the shopper actually saw rather than the served rank.
 
 ## Wishlist
 
-No app is live. IL has Swym installed (`swymstore-v3starter-01`, v3starter tier) but it renders no
-wishlist UI; US has no Swym at all. Once one is live, call
-`window.NoritamyTiles.trackWishlist(productId)` from its add handler, or hook `swym.evtLayer`.
+**Noritamy IL:** Swym Wishlist Plus renders a heart (`button.swym-advanced-wishlist-collections`) on
+every product tile. This Swym version fires no "added" event - a successful add re-renders the heart
+with `aria-pressed="true"`, sometimes seconds later behind a consent popup or variant picker, and page
+load renders already-saved products as pressed too. The snippet therefore arms on a click of an
+**unpressed** heart and reports `add_to_wishlist` when that tile's heart turns pressed (2 min window).
+Clicks on a pressed heart (removal, or opening the drawer) are not counted. The heart is a real
+`<button>`, so it never triggers `select_item`.
+
+**Noritamy US:** no wishlist app, the hook is inert. `window.NoritamyTiles.trackWishlist(productId)`
+remains available for any other integration.
 
 ## Not done here
 
