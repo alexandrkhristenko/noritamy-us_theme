@@ -50,13 +50,29 @@
     return document.querySelector('.product-grid');
   }
 
-  /** DOM index right now (1-based) - reflects any client-side reshuffle. */
+  /**
+   * Absolute rank right now (1-based), reflecting any client-side reshuffle.
+   *
+   * The DOM index alone is not enough. Themes differ in how they paginate: infinite scroll
+   * appends into the same grid so the index stays absolute, but button pagination re-renders the
+   * section with only the current page's tiles, restarting the index at 1 while position_served
+   * is 25, 26, ... Offsetting by the lowest served rank present makes both cases correct, and
+   * also covers a deep link where earlier pages get prepended later.
+   */
   function positionShown(tile) {
     var g = grid();
     if (!g) return null;
     var tiles = Array.prototype.slice.call(g.querySelectorAll('.product-grid__item[data-product-id]'));
     var i = tiles.indexOf(tile);
-    return i === -1 ? null : i + 1;
+    if (i === -1) return null;
+
+    var lowestServed = Infinity;
+    for (var j = 0; j < tiles.length; j++) {
+      var served = parseInt(tiles[j].getAttribute('data-position-served'), 10);
+      if (!isNaN(served) && served < lowestServed) lowestServed = served;
+    }
+    var offset = lowestServed === Infinity ? 0 : lowestServed - 1;
+    return offset + i + 1;
   }
 
   function itemFrom(tile) {
@@ -205,23 +221,90 @@
     push('tile_add_to_cart', item);
   });
 
-  // A filter change re-renders the results section and can replace the grid node we bound to.
-  // Impressions dedupe on `seen`, so re-running init cannot double-count a tile.
+  // The grid node can be swapped out from under us: a filter change re-renders the section, and
+  // button-pagination themes morph it on every page click without firing any event at all. Watch
+  // a stable ancestor and re-bind whenever a different grid appears. init() no-ops while the grid
+  // is unchanged, and impressions dedupe on `seen`, so this cannot double-count.
   document.addEventListener('filter:update', function () {
     setTimeout(init, 300);
   });
 
+  ready(function () {
+    if (!('MutationObserver' in window)) return;
+    var host = document.querySelector('results-list') || document.body;
+    var pending = null;
+    new MutationObserver(function () {
+      if (pending) clearTimeout(pending);
+      pending = setTimeout(init, 200);
+    }).observe(host, { childList: true, subtree: true });
+  });
+
   ready(init);
 
-  // --- wishlist: no app is wired yet. Whichever one lands, call this from its add handler:
-  //       window.NoritamyTiles.trackWishlist(productId)
-  //     Swym exposes swym.evtLayer; hook it here once Wishlist Plus is live on the storefront.
-  window.NoritamyTiles = {
-    trackWishlist: function (productId) {
-      var tile = tileByProductId(productId);
-      if (!tile) return;
-      push('add_to_wishlist', itemFrom(tile));
+  // --- wishlist ---------------------------------------------------------------------------------
+  //
+  // Swym Wishlist Plus injects <button class="swym-advanced-wishlist-collections"
+  // aria-pressed="false|true"> into each product-card. This version of Swym raises no "added to
+  // wishlist" event: a successful add just re-renders the heart with aria-pressed="true", and it can
+  // land seconds later (consent popup, variant picker). Page load also renders already-saved products
+  // as pressed, so a pressed heart on its own is not an add. So: arm on a click of an UNpressed
+  // heart, and report once that tile's heart turns pressed. A click on an already-pressed heart is a
+  // removal or opens the wishlist drawer and is not counted. Where Swym is absent this is inert.
+  //
+  // The heart is a real <button>, so trackClick() above already ignores it - saving a product never
+  // counts as a click-through.
+  var HEART = 'button.swym-advanced-wishlist-collections';
+  var ARM_WINDOW_MS = 120000;
+  var armedWishlist = {};
+
+  function reportWishlist(productId) {
+    var tile = tileByProductId(productId);
+    if (!tile) return;
+    push('add_to_wishlist', itemFrom(tile));
+  }
+
+  function hasArmedWishlist() {
+    for (var id in armedWishlist) {
+      if (Object.prototype.hasOwnProperty.call(armedWishlist, id)) return true;
     }
+    return false;
+  }
+
+  function settleArmedWishlist() {
+    var now = new Date().getTime();
+    for (var id in armedWishlist) {
+      if (!Object.prototype.hasOwnProperty.call(armedWishlist, id)) continue;
+      if (now - armedWishlist[id] > ARM_WINDOW_MS) { delete armedWishlist[id]; continue; }
+      var tile = tileByProductId(id);
+      var heart = tile ? tile.querySelector(HEART) : null;
+      if (heart && heart.getAttribute('aria-pressed') === 'true') {
+        delete armedWishlist[id];
+        reportWishlist(id);
+      }
+    }
+  }
+
+  // Document-level capture: survives the grid being morphed, and runs before Swym's own handler
+  // (which calls stopPropagation) so the pre-click state is still readable.
+  document.addEventListener('click', function (e) {
+    var heart = e.target && e.target.closest ? e.target.closest(HEART) : null;
+    if (!heart || heart.getAttribute('aria-pressed') === 'true') return;
+    var tile = tileFor(heart);
+    if (!tile) return;
+    armedWishlist[tile.getAttribute('data-product-id')] = new Date().getTime();
+  }, true);
+
+  ready(function () {
+    if (!('MutationObserver' in window)) return;
+    // Swym swaps the heart's innerHTML on every state change; only do work while an add is pending.
+    new MutationObserver(function () {
+      if (hasArmedWishlist()) settleArmedWishlist();
+    }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['aria-pressed'] });
+  });
+
+  window.NoritamyTiles = {
+    // Report a wishlist add directly, for any integration other than Swym's collection heart.
+    trackWishlist: reportWishlist
   };
 })();
 </script>
