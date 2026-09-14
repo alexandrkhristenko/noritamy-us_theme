@@ -14,6 +14,12 @@
   them, so GA4's item-scoped list dimensions populate for free. Impressions and add-to-cart use
   `tile_impression` / `tile_add_to_cart` on purpose: Shopify's Google & YouTube pixel already sends
   view_item_list and add_to_cart, and reusing those names would double-count store-wide totals.
+
+  Product fields ride twice: inside ecommerce.items[] (for GA4's built-in item reports) and again at
+  event level as tile_product_id / tile_collection / tile_price / tile_discount_pct / tile_on_sale.
+  GA4's reporting API cannot break a custom event down by anything inside items[] - itemId, itemName
+  and customItem:* all return 400 against eventCount for tile_impression, tile_add_to_cart and
+  add_to_wishlist. Event-scoped copies are the only way to get per-product impressions out of it.
 {% endcomment %}
 
 <script>
@@ -23,7 +29,8 @@
   var LIST_NAME = {{ collection.title | default: 'Collection' | json }};
   var LIST_ID   = {{ collection.handle | default: '' | json }};
   var CURRENCY  = {{ cart.currency.iso_code | json }};
-  var VERSION   = 'v1_tile_tracking';
+  // v2 (2026-09-14): adds the event-level tile_* product fields. Rows before v2 do not have them.
+  var VERSION   = 'v2_tile_tracking';
 
   var dl = function (payload) {
     window.dataLayer = window.dataLayer || [];
@@ -42,6 +49,15 @@
       position_served: item.position_served,
       position_shown: item.position_shown,
       personalized: item.personalized,
+      // Event-level copies of the item's product fields - see the header comment for why. Each
+      // event carries exactly one item, so these are the same values as items[0]. The tile_ prefix
+      // keeps them from colliding with GA4's built-in item dimensions and with the item-scoped
+      // discount_pct / on_sale custom dimensions already registered.
+      tile_product_id: item.item_id,
+      tile_collection: LIST_ID,
+      tile_price: item.price,
+      tile_discount_pct: item.discount_pct,
+      tile_on_sale: item.on_sale,
       ecommerce: { currency: CURRENCY, item_list_name: LIST_NAME, item_list_id: LIST_ID, items: [item] }
     });
   }

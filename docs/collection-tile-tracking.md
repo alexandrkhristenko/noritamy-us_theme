@@ -1,7 +1,7 @@
 # Collection tile tracking
 
 Per-product, per-position measurement of the collection grid: **impressions, clicks, quick-add
-add-to-carts, wishlist**. Theme side is done; **GTM still needs the tags** or nothing reaches GA4.
+add-to-carts, wishlist**. Live on Noritamy US and IL; GTM forwards the events to GA4.
 
 ## Why the theme and not the Shopify pixel
 
@@ -26,6 +26,7 @@ dataLayer.push({ ecommerce: null });
 dataLayer.push({
   event: 'select_item',
   feature_version, position_served, position_shown, personalized,
+  tile_product_id, tile_collection, tile_price, tile_discount_pct, tile_on_sale,
   ecommerce: { currency, item_list_name, item_list_id, items: [ /* below */ ] }
 });
 ```
@@ -51,9 +52,32 @@ page
 item parameters. `compare_at_price`, `discount_pct`, `on_sale`, `item_handle`, `position_served`,
 `position_shown` and `personalized` are custom and need registering as custom dimensions.
 
-**On measuring discount impact:** almost the whole US catalogue carries a compare-at price (287 of
-288 storefront-visible products), so `on_sale` is near-constant and useless as a split. The variable
-worth analysing is `discount_pct` - depth of discount against CTR and add-to-cart at equal position.
+## Event-level product fields (`feature_version: v2_tile_tracking`)
+
+GA4's reporting API **cannot break a custom event down by anything inside `items[]`**. Against
+`eventCount` for `tile_impression`, `tile_add_to_cart` or `add_to_wishlist`, the dimensions `itemId`,
+`itemName`, `itemListName` and every `customItem:*` return `400 incompatible` (verified 2026-09-10 and
+again 2026-09-14 on both properties). Item-scoped dimensions only combine with GA4's built-in item
+metrics, e.g. `itemsClickedInList` for `select_item`. Without event-level copies there is no way to get
+per-product impressions, and so no per-product CTR, out of the Data API.
+
+So every push also carries, at event level:
+
+| Parameter | Value |
+|---|---|
+| `tile_product_id` | `items[0].item_id` |
+| `tile_collection` | collection handle (`item_list_id`) - a stable key, unlike Hebrew list names |
+| `tile_price` | `items[0].price` |
+| `tile_discount_pct` | `items[0].discount_pct` |
+| `tile_on_sale` | `items[0].on_sale` |
+
+The `tile_` prefix avoids collisions with GA4's built-in item dimensions and with the item-scoped
+`discount_pct` / `on_sale` custom dimensions. Events before `v2_tile_tracking` do not have these.
+
+**On discount analysis:** check live pricing first. On 2026-09-08 nearly every US product carried a
+compare-at price; by 2026-09-10 most US compare-at prices had been removed (1 of the first 24 bracelets).
+Compare-at coverage changes with promotions, so `tile_on_sale` and `tile_discount_pct` are only
+meaningful against the pricing that was live on the day.
 
 ## The two positions
 
@@ -66,15 +90,20 @@ That feature has never been measured: its `view_recently_viewed_section` and
 Logging both positions fixes that as a side effect - `personalized: true` is the exposure flag, and
 CTR can finally be compared between shoppers who were reshuffled and shoppers who were not.
 
-## GTM setup still required
+## GTM and GA4 setup
 
-Container `GTM-MDXMWV7K` (US) / `GTM-NFXS7F5F` (IL). For each of the four events:
+Containers `GTM-MDXMWV7K` (US, `G-N35YQ67G69`), `GTM-NFXS7F5F` (IL, `G-ZPHRK4JN2R`),
+`GTM-KDV57Z6V` (Annoory, `G-564DGYR364`). In each:
 
-1. Custom Event trigger on the event name.
-2. GA4 Event tag, event name the same, with the `items` array mapped through and
-   `position_served` / `position_shown` / `personalized` / `feature_version` as event parameters.
-3. Register `position_served`, `position_shown`, `personalized`, `discount_pct`, `on_sale`,
-   `compare_at_price` and `item_handle` as custom dimensions in GA4 - the rest are built in.
+1. **Data Layer Variables** (version 2): `position_served`, `position_shown`, `personalized`,
+   `feature_version`, `tile_product_id`, `tile_collection`, `tile_price`, `tile_discount_pct`,
+   `tile_on_sale`.
+2. **One Custom Event trigger**, regex on:
+   `^(tile_impression|select_item|tile_add_to_cart|add_to_wishlist)$`
+3. **One GA4 Event tag**: Event Name `{{Event}}`, Send Ecommerce data from the Data Layer, the nine
+   variables above as event parameters.
+4. **GA4 custom dimensions**: event-scoped for the nine parameters above; item-scoped for
+   `compare_at_price`, `discount_pct`, `on_sale`, `item_handle`.
 
 `index` is already set to `position_shown` in `items[]`, so GA4's own `itemListPosition` reflects
 what the shopper actually saw rather than the served rank.
@@ -94,7 +123,5 @@ remains available for any other integration.
 
 ## Not done here
 
-- IL theme. It runs the same code but is a separate store (`hrmjtw-34`) and is not checked out
-  locally; the same two edits need porting.
-- GTM tags (above).
+- Annoory: Prestige 10.7.0 theme, different grid markup - needs its own implementation.
 - Search results and any other product grid outside `sections/main-collection.liquid`.
