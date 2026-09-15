@@ -166,6 +166,7 @@
       "settings": {
         "layout": "slider",
         "speed": 4,
+        "enable_sticky_announcement": true,
         "section_width": "full-width",
         "color_scheme": "scheme-4",
         "divider_width": 0,
