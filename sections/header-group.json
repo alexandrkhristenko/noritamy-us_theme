@@ -50,6 +50,7 @@
         "announcement_DKDV48": {
           "type": "_announcement",
           "name": "t:names.announcement",
+          "disabled": true,
           "settings": {
             "text": "Join Noritamy's Inner Circle And Get 10% Off Your First Order",
             "link": "",
