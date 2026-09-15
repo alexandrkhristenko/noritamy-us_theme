@@ -33,9 +33,8 @@
         "announcement_Ji78WG": {
           "type": "_announcement",
           "name": "t:names.announcement",
-          "disabled": true,
           "settings": {
-            "text": "15% OFF Site-wide for Labor Day!",
+            "text": "20% Off your Second Piece",
             "link": "",
             "enable_klaviyo_popup": false,
             "klaviyo_form_id": "",
