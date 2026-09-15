@@ -74,6 +74,28 @@ class HeaderComponent extends Component {
   });
 
   /**
+   * The offset the header sticks at, i.e. the height of a sticky announcement bar above it
+   * @returns {number}
+   */
+  get #stickyOffset() {
+    const value = parseFloat(getComputedStyle(document.body).getPropertyValue('--announcement-bar-height'));
+
+    return Number.isNaN(value) ? 0 : value;
+  }
+
+  /**
+   * Rebuilds the intersection observer when the sticky offset changes
+   */
+  #handleStickyOffsetChange = () => {
+    const stickyMode = this.getAttribute('sticky');
+    if (!stickyMode) return;
+
+    this.#intersectionObserver?.disconnect();
+    this.#intersectionObserver = null;
+    this.#observeStickyPosition(stickyMode === 'always');
+  };
+
+  /**
    * Observes the header while scrolling the viewport to track when its actively sticky
    * @param {Boolean} alwaysSticky - Determines if we need to observe when the header is offscreen
    */
@@ -82,6 +104,9 @@ class HeaderComponent extends Component {
 
     const config = {
       threshold: alwaysSticky ? 1 : 0,
+      // Shrink the root so a sticky announcement bar above the header doesn't
+      // keep the header permanently "fully visible"
+      rootMargin: `-${Math.round(this.#stickyOffset)}px 0px 0px 0px`,
     };
 
     this.#intersectionObserver = new IntersectionObserver(([entry]) => {
@@ -137,7 +162,7 @@ class HeaderComponent extends Component {
 
     if (stickyMode === 'always') {
       if (isScrollingUp) {
-        if (this.getBoundingClientRect().top >= 0) {
+        if (this.getBoundingClientRect().top >= this.#stickyOffset) {
           this.dataset.scrollDirection = 'none';
         } else {
           this.dataset.scrollDirection = 'up';
@@ -153,7 +178,7 @@ class HeaderComponent extends Component {
     if (isScrollingUp) {
       this.removeAttribute('data-animating');
 
-      if (this.getBoundingClientRect().top >= 0) {
+      if (this.getBoundingClientRect().top >= this.#stickyOffset) {
         // reset sticky state when header is scrolled up to natural position
         this.#offscreen = false;
         this.dataset.stickyState = 'inactive';
@@ -188,6 +213,7 @@ class HeaderComponent extends Component {
     const stickyMode = this.getAttribute('sticky');
     if (stickyMode) {
       this.#observeStickyPosition(stickyMode === 'always');
+      document.addEventListener('announcementbar:resize', this.#handleStickyOffsetChange);
 
       if (stickyMode === 'scroll-up' || stickyMode === 'always') {
         document.addEventListener('scroll', this.#handleWindowScroll);
@@ -201,6 +227,7 @@ class HeaderComponent extends Component {
     this.#intersectionObserver?.disconnect();
     this.removeEventListener('overflowMinimum', this.#handleOverflowMinimum);
     document.removeEventListener('scroll', this.#handleWindowScroll);
+    document.removeEventListener('announcementbar:resize', this.#handleStickyOffsetChange);
     document.body.style.setProperty('--header-height', '0px');
   }
 }

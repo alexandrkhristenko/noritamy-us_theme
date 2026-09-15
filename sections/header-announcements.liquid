@@ -2,6 +2,13 @@
 
 
 
+{%- liquid
+  assign sticky = section.settings.enable_sticky_announcement
+-%}
+{%- if sticky -%}
+  <script src="{{ 'sticky-announcement-bar.js' | asset_url }}" type="module"></script>
+  <sticky-announcement-bar>
+{%- endif -%}
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
 <aside
   class="announcement-bar spacing-style section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }}"
@@ -59,10 +66,36 @@
 {% endif %}
 <script src="{{ 'klaviyo-announcement.js' | asset_url }}" defer></script>
 </aside>
+{%- if sticky -%}
+  </sticky-announcement-bar>
+{%- endif -%}
 
 {% stylesheet %}
   .announcement-bar {
     border-block-end: var(--border-bottom-width) solid var(--color-border);
+  }
+
+  sticky-announcement-bar {
+    display: contents;
+  }
+
+  /* The section wrapper is what sticks, so the bar and its background stay together.
+     Scoped through #header-group to outweigh the `position: relative` base.css puts
+     on every section wrapper that has a color scheme background. */
+  #header-group > .announcement-bar-section:has(sticky-announcement-bar) {
+    position: sticky;
+    top: 0;
+    z-index: calc(var(--layer-sticky) + 1);
+  }
+
+  /* Let the bar escape the header group, even when the header itself isn't sticky */
+  #header-group:has(sticky-announcement-bar) {
+    display: contents;
+  }
+
+  /* Park the sticky header below the bar instead of underneath it */
+  #header-group:has(sticky-announcement-bar) .header-section:has(> #header-component[sticky]) {
+    top: calc(var(--announcement-bar-height, 0px) - 1px);
   }
 
   marquee-component {
@@ -206,6 +239,7 @@
 {% schema %}
 {
   "name": "t:names.announcement_bar",
+  "class": "announcement-bar-section",
   "blocks": [
     {
       "type": "_announcement"
@@ -242,6 +276,12 @@
       "max": 10,
       "default": 5,
       "unit": "sec"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sticky_announcement",
+      "label": "t:settings.sticky_announcement_bar",
+      "default": false
     },
     {
       "type": "header",
