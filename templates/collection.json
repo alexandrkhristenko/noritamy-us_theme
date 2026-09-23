@@ -104,7 +104,9 @@
       ],
       "custom_css": [
         ".image-block__image {aspect-ratio: 16/9;}",
-        "@media screen and (max-width: 749px) {.section-content-wrapper {padding-bottom: 0; } .image-block {margin-inline: -15px; width: calc(100% + 30px); max-width: none; }}"
+        ".section-content-wrapper {padding-bottom: 0;}",
+        "@media screen and (min-width: 750px) {.custom-section-content {margin-bottom: -28px; }}",
+        "@media screen and (max-width: 749px) {.image-block {margin-inline: -15px; width: calc(100% + 30px); max-width: none; }}"
       ],
       "settings": {
         "content_direction": "column",
