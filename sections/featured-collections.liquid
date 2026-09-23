@@ -33,7 +33,7 @@
                     {{ 'product-' | append: i | placeholder_svg_tag: 'placeholder-svg' }}
                   </div>
                   <h3 style="margin-top: 10px; margin-bottom: 5px; font-size: 14px;">Example Product</h3>
-                  <p style="margin: 0; font-weight: bold; font-size: 14px;">$19.99</p>
+                  <p style="margin: 0; font-weight: bold; font-size: 14px;">{{ 1999 | money }}</p>
                 </div>
               {% endfor %}
             </div>
