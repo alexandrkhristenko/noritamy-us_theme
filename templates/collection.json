@@ -103,7 +103,8 @@
         "metafield_media_cNQYiT"
       ],
       "custom_css": [
-        ".image-block__image{aspect-ratio: 16/9;}"
+        ".image-block__image {aspect-ratio: 16/9;}",
+        "@media screen and (max-width: 749px) {.section-content-wrapper {padding-bottom: 0; } .image-block {margin-inline: -15px; width: calc(100% + 30px); max-width: none; }}"
       ],
       "settings": {
         "content_direction": "column",
@@ -114,7 +115,7 @@
         "horizontal_alignment_flex_direction_column": "center",
         "vertical_alignment_flex_direction_column": "center",
         "gap": 12,
-        "section_width": "page-width",
+        "section_width": "full-width",
         "section_height": "",
         "section_height_custom": 50,
         "color_scheme": "scheme-1",
