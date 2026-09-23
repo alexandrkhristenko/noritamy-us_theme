@@ -58,16 +58,35 @@
                 {{ product.title }}
               </a>
               <div class="cart-upsell-popup__price">
-                {%- if section.settings.custom_price != blank or section.settings.custom_compare_at_price != blank -%}
+                {%- liquid
+                  # The custom price settings are plain numbers typed by the merchant, so they
+                  # only hold for the shop's own currency. In any other market the amount would
+                  # be shown unconverted next to that market's symbol, so fall back to the real
+                  # product price there instead.
+                  assign custom_price = ''
+                  assign custom_compare_at_price = ''
+                  if cart.currency.iso_code == shop.currency
+                    assign custom_price = section.settings.custom_price
+                    assign custom_compare_at_price = section.settings.custom_compare_at_price
+                  endif
+
+                  assign has_custom_price = false
+                  if custom_price != blank or custom_compare_at_price != blank
+                    assign has_custom_price = true
+                  endif
+                -%}
+                {%- if has_custom_price -%}
                   <div class="price" style="display: flex; gap: 8px;">
-                    {%- if section.settings.custom_compare_at_price != blank -%}
-                      <span class="compare-at-price">{{ cart.currency.symbol }}{{ section.settings.custom_compare_at_price }}</span>
+                    {%- if custom_compare_at_price != blank -%}
+                      {%- assign custom_compare_at_price_cents = custom_compare_at_price | times: 100 | round -%}
+                      <span class="compare-at-price">{{ custom_compare_at_price_cents | money }}</span>
                     {%- elsif product.compare_at_price > product.price -%}
                       <span class="compare-at-price">{{ product.compare_at_price | money }}</span>
                     {%- endif -%}
                     <span class="price-item">
-                      {%- if section.settings.custom_price != blank -%}
-                        {{ cart.currency.symbol }}{{ section.settings.custom_price }}
+                      {%- if custom_price != blank -%}
+                        {%- assign custom_price_cents = custom_price | times: 100 | round -%}
+                        {{ custom_price_cents | money }}
                       {%- else -%}
                         {{ product.price | money }}
                       {%- endif -%}
@@ -171,13 +190,13 @@
       "type": "text",
       "id": "custom_price",
       "label": "Custom Price",
-      "info": "Leave empty to use the product's regular price"
+      "info": "Amount in the shop's default currency, digits only. Ignored in markets that use another currency, where the product's real price is shown instead. Leave empty to always use the product's regular price."
     },
     {
       "type": "text",
       "id": "custom_compare_at_price",
       "label": "Custom Compare-at Price",
-      "info": "Display a crossed-out original price"
+      "info": "Display a crossed-out original price. Amount in the shop's default currency, digits only. Ignored in markets that use another currency."
     },
     {
       "type": "text",

@@ -30,14 +30,32 @@
     {% endif %}
   >
     <summary class="facets__summary">
+      {%- liquid
+        # shop.money_format always carries the shop's own currency symbol, so in a market that
+        # presents another currency the JS-rendered summary would disagree with the input
+        # labels below. Swap the shop symbol for the presentment one, keeping the format's
+        # placeholder and separator style intact.
+        assign shop_currency_symbol = ''
+        for available_country in localization.available_countries
+          if available_country.currency.iso_code == shop.currency
+            assign shop_currency_symbol = available_country.currency.symbol
+            break
+          endif
+        endfor
+
+        assign money_format = shop.money_format
+        if shop_currency_symbol != blank and cart.currency.symbol != blank
+          assign money_format = money_format | replace: shop_currency_symbol, cart.currency.symbol
+        endif
+      -%}
       <span class="facets__label">{{ filter.label }}</span>
       <facet-status-component class="facets__status">
-        <template ref="moneyFormat">{{ shop.money_format }}</template>
+        <template ref="moneyFormat">{{ money_format }}</template>
 
         <span
           class="hide-when-empty"
           ref="facetStatus"
-          data-currency="{{ localization.country.currency.iso_code }}"
+          data-currency="{{ cart.currency.iso_code }}"
           data-range-max="{{ filter.range_max }}"
         >
           {%- if filter.min_value.value != null or filter.max_value.value != null %}
