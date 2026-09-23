@@ -14,8 +14,6 @@
   {{ 'noto-sans-hebrew-v50-latin-regular.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
   {{ 'noto-sans-hebrew-v50-latin-500.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
   {{ 'noto-sans-hebrew-v50-latin-700.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
-  {{ 'rubik-v31-latin-regular.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
-
   <style>
     @font-face {
       font-family: 'Noto Sans Hebrew';
@@ -38,17 +36,21 @@
       font-display: swap;
       src: url('{{ "noto-sans-hebrew-v50-latin-700.woff2" | asset_url }}') format('woff2');
     }
-    @font-face {
-      font-family: 'Rubik';
-      font-style: normal;
-      font-weight: 400;
-      font-display: swap;
-      src: url('{{ "rubik-v31-latin-regular.woff2" | asset_url }}') format('woff2');
-    }
   </style>
 {% endif %}
 
-{% # theme-check-disable %}
+{{ 'rubik-v31-latin-regular.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+<style>
+  @font-face {
+    font-family: 'Rubik';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('{{ "rubik-v31-latin-regular.woff2" | asset_url }}') format('woff2');
+  }
+</style>
+
+theme-check-disable %}
 {%- unless settings.type_body_font.system? -%}
   <link
     rel="preload"
