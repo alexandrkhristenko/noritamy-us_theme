@@ -49,9 +49,8 @@
         "announcement_DKDV48": {
           "type": "_announcement",
           "name": "t:names.announcement",
-          "disabled": true,
           "settings": {
-            "text": "Join Noritamy's Inner Circle And Get 10% Off Your First Order",
+            "text": "15% OFF Neckalces",
             "link": "",
             "enable_klaviyo_popup": true,
             "klaviyo_form_id": "WhpzHA",
