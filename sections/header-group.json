@@ -50,8 +50,8 @@
           "type": "_announcement",
           "name": "t:names.announcement",
           "settings": {
-            "text": "15% OFF Neckalces",
-            "link": "",
+            "text": "15% OFF Initials collection&nbsp;",
+            "link": "shopify://collections/scripted",
             "enable_klaviyo_popup": true,
             "klaviyo_form_id": "WhpzHA",
             "font": "var(--font-body--family)",
