@@ -894,3 +894,15 @@ shopify-accelerated-checkout-cart {
   --shopify-accelerated-checkout-skeleton-animation-duration: 4s;
   --shopify-accelerated-checkout-skeleton-animation-timing-function: ease;
 }
+
+/* ---- Breadcrumbs: thin strip on desktop ---- */
+@media screen and (min-width: 750px) {
+  nav.breadcrumbs {
+    padding: 10px 40px !important;
+    max-width: none !important;
+  }
+
+  nav.breadcrumbs .breadcrumbs__list {
+    margin-bottom: 0 !important;
+  }
+}
