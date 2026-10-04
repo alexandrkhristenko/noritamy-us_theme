@@ -906,3 +906,11 @@ shopify-accelerated-checkout-cart {
     margin-bottom: 0 !important;
   }
 }
+
+/* ---- Collection header without a banner image: no pull-up into the grid ---- */
+@media screen and (min-width: 750px) {
+  main[data-template^="collection"] .custom-section-content:not(:has(.image-block img, .image-block video)) {
+    margin-bottom: 0 !important;
+    padding-bottom: 28px;
+  }
+}
