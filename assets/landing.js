@@ -202,11 +202,25 @@ class Gallery {
 // share GA4 dimensions and the existing GTM tags.
 const TRACKING_VERSION = 'v2_tile_tracking';
 
+// Tag Manager keeps the last value of every data layer key, so each event states all of the
+// page-specific fields, null when they do not apply, and none leaks into the next event.
+const EVENT_FIELDS = {
+  tile_material: null,
+  tile_letter: null,
+  tile_window: null,
+  image_index: null,
+  filter_value: null,
+  look_name: null,
+  look_pieces: null,
+  look_value: null,
+  look_saving: null,
+};
+
 /** @param {Record<string, unknown>} payload */
 function pushDataLayer(payload) {
   const host = /** @type {any} */ (window);
   host.dataLayer = host.dataLayer || [];
-  host.dataLayer.push(payload);
+  host.dataLayer.push(payload.event ? { ...EVENT_FIELDS, ...payload } : payload);
 }
 
 /** @param {number} cents */
