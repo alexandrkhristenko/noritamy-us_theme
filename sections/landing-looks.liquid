@@ -20,6 +20,7 @@
     data-landing-looks
     data-money-format="{{ shop.money_format | strip_html | escape }}"
     data-percent="{{ section.settings.percent }}"
+    data-currency="{{ cart.currency.iso_code }}"
     data-saving-text="{{ section.settings.saving_text | escape }}"
     data-show-separate="{% if section.settings.separately_label != blank %}true{% else %}false{% endif %}"
     data-label-add="{{ section.settings.add_label | escape }}"

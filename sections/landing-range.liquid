@@ -33,6 +33,8 @@
     data-landing-range
     data-money-format="{{ shop.money_format | strip_html | escape }}"
     data-list-name="{{ section.settings.list_name | escape }}"
+    data-list-id="{{ section.settings.list_name | handleize }}"
+    data-currency="{{ cart.currency.iso_code }}"
     data-label-add="{{ section.settings.add_label | escape }}"
     data-label-sold-out="{{ section.settings.sold_out_label | escape }}"
     data-label-choose="{{ section.settings.choose_letter_label | escape }}"

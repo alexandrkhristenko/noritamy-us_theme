@@ -198,6 +198,22 @@ class Gallery {
   }
 }
 
+// Same value as snippets/collection-tile-tracking.liquid, so landing cards and collection tiles
+// share GA4 dimensions and the existing GTM tags.
+const TRACKING_VERSION = 'v2_tile_tracking';
+
+/** @param {Record<string, unknown>} payload */
+function pushDataLayer(payload) {
+  const host = /** @type {any} */ (window);
+  host.dataLayer = host.dataLayer || [];
+  host.dataLayer.push(payload);
+}
+
+/** @param {number} cents */
+function toUnits(cents) {
+  return Math.round(cents) / 100;
+}
+
 /** @type {WeakMap<HTMLElement, { materials: any[], onPick: (index: number) => void }>} */
 const swatchState = new WeakMap();
 
@@ -349,10 +365,14 @@ class Card {
       this.slides,
       /** @type {HTMLElement} */ (element.querySelector('[data-dots]')),
       element.querySelector('[data-prev]'),
-      element.querySelector('[data-next]')
+      element.querySelector('[data-next]'),
+      (index) => range.track('tile_image_swipe', this, { image_index: index + 1 })
     );
 
-    this.slides.addEventListener('click', () => range.zoom.open(this.material.images, this.gallery.index));
+    this.slides.addEventListener('click', () => {
+      range.zoom.open(this.material.images, this.gallery.index);
+      range.track('tile_image_zoom', this, { image_index: this.gallery.index + 1 });
+    });
     element.querySelectorAll('[data-open-quick-view]').forEach((opener) => {
       opener.addEventListener('click', (event) => {
         // The details link is a real link to the product page for when this script has not run.
@@ -373,6 +393,7 @@ class Card {
     if (index === this.selected || !this.materials[index]) return;
     this.selected = index;
     this.render();
+    this.range.track('tile_variant_select', this);
   }
 
   render() {
@@ -450,6 +471,7 @@ class QuickView {
     dialog.querySelector('[data-qv-more]')?.addEventListener('click', () => {
       dialog.dataset.mode = 'details';
       this.title.focus();
+      if (this.card) range.track('select_item', this.card, { item_variant: this.#variant()?.id });
     });
     dialog.addEventListener('click', (event) => {
       if (event.target === dialog) dialog.close();
@@ -469,6 +491,11 @@ class QuickView {
       const detail = /** @type {any} */ (event).detail;
       if (detail?.data?.didError) return;
       if (this.letter) storeLetter(this.letter);
+      range.track('tile_add_to_cart', this.card, {
+        item_variant: this.#variant()?.id,
+        tile_letter: this.letter || null,
+        tile_window: dialog.dataset.mode || null,
+      });
       dialog.close();
     };
     // A refused add (sold out meanwhile, quantity limit) only reaches the theme's hidden live region.
@@ -498,7 +525,8 @@ class QuickView {
     this.render(true);
     this.dialog.showModal();
     document.documentElement.setAttribute('scroll-lock', '');
-    this.range.track('view_item', card, { item_variant: this.#variant()?.id });
+    // "See details" is this page's click-through; the short window is the quick add.
+    this.range.track(mode === 'details' ? 'select_item' : 'tile_quick_add_open', card, { item_variant: this.#variant()?.id });
   }
 
   /** Puts the card's form back where it lives and resets it for the next open. */
@@ -614,6 +642,8 @@ class Range {
     this.root = root;
     this.moneyFormat = root.dataset.moneyFormat || '${{amount}}';
     this.listName = root.dataset.listName || 'Landing';
+    this.listId = root.dataset.listId || 'landing';
+    this.currency = root.dataset.currency || 'USD';
     this.labels = {
       add: root.dataset.labelAdd || 'Add to cart',
       soldOut: root.dataset.labelSoldOut || 'Sold out',
@@ -643,8 +673,15 @@ class Range {
         this.cards.forEach((card) => {
           card.element.hidden = group !== '' && card.element.dataset.group !== group;
         });
+        pushDataLayer({
+          event: 'landing_filter',
+          feature_version: TRACKING_VERSION,
+          tile_collection: this.listId,
+          filter_value: group || 'all',
+        });
       });
     });
+    this.#watchImpressions();
   }
 
   /**
@@ -659,12 +696,77 @@ class Range {
   }
 
   /**
-   * Hook for analytics; filled in by the tracking work.
-   * @param {string} _event
-   * @param {Card} _card
-   * @param {Record<string, unknown>} [_extra]
+   * Pushes one card event to the dataLayer in the same shape the collection tiles use, so
+   * tile_impression, select_item and tile_add_to_cart need no new GTM tags. The other event names
+   * are specific to this page.
+   * @param {string} event
+   * @param {Card} card
+   * @param {Record<string, unknown>} [extra]
    */
-  track(_event, _card, _extra) {}
+  track(event, card, extra = {}) {
+    const material = card.material;
+    if (!material) return;
+    const { product } = material;
+    // item_variant belongs inside the item; every other extra field rides at event level.
+    const { item_variant: chosenVariant, ...fields } = extra;
+    const variantId = chosenVariant ?? firstVariant(material)?.id ?? null;
+    const variant = product.variants.find((/** @type {any} */ entry) => entry.id === variantId);
+    const price = toUnits(variant ? variant.p : material.price);
+    const compareAt = toUnits(variant ? variant.c : material.compare);
+    const onSale = compareAt > price;
+    const position = Number(card.element.dataset.position) || null;
+    const item = {
+      item_id: String(product.id),
+      item_variant: variantId ? String(variantId) : null,
+      item_name: product.title,
+      item_handle: String(product.url).split('/').pop()?.split('?')[0] || null,
+      price,
+      compare_at_price: compareAt || null,
+      discount: onSale ? Math.round((compareAt - price) * 100) / 100 : 0,
+      discount_pct: onSale ? Math.round(((compareAt - price) / compareAt) * 100) : 0,
+      on_sale: onSale,
+      index: position,
+      item_list_name: this.listName,
+      item_list_id: this.listId,
+      position_served: position,
+      position_shown: position,
+      personalized: false,
+      page: 1,
+    };
+    pushDataLayer({ ecommerce: null });
+    pushDataLayer({
+      event,
+      feature_version: TRACKING_VERSION,
+      position_served: position,
+      position_shown: position,
+      personalized: false,
+      tile_product_id: item.item_id,
+      tile_collection: this.listId,
+      tile_price: price,
+      tile_discount_pct: item.discount_pct,
+      tile_on_sale: onSale,
+      tile_material: material.label || null,
+      ...fields,
+      ecommerce: { currency: this.currency, item_list_name: this.listName, item_list_id: this.listId, items: [item] },
+    });
+  }
+
+  /** One impression per card per page view, once at least half of it is on screen. */
+  #watchImpressions() {
+    if (!('IntersectionObserver' in window)) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          observer.unobserve(entry.target);
+          const card = this.cards.find((candidate) => candidate.element === entry.target);
+          if (card) this.track('tile_impression', card);
+        });
+      },
+      { threshold: 0.5 }
+    );
+    this.cards.forEach((card) => observer.observe(card.element));
+  }
 }
 
 /**
@@ -685,6 +787,8 @@ class Looks {
     this.moneyFormat = root.dataset.moneyFormat || '${{amount}}';
     this.percent = Number(root.dataset.percent) || 0;
     this.savingText = root.dataset.savingText || '';
+    this.currency = root.dataset.currency || 'USD';
+    this.lookName = '';
     this.showSeparate = root.dataset.showSeparate !== 'false';
     this.labels = {
       add: root.dataset.labelAdd || 'Add the look to cart',
@@ -769,11 +873,43 @@ class Looks {
       });
     });
     this.title.textContent = look.name;
+    this.lookName = look.name;
     this.error.hidden = true;
     this.rows.replaceChildren(...this.pieces.map((piece) => this.#buildRow(piece)));
     this.#update();
+    this.#track('look_open');
     this.dialog.showModal();
     document.documentElement.setAttribute('scroll-lock', '');
+  }
+
+  /** @param {'look_open' | 'look_add_to_cart'} event */
+  #track(event) {
+    const variants = this.pieces.map((piece) => this.#variantOf(piece));
+    const prices = this.pieces.map((piece, index) => variants[index]?.p ?? piece.materials[piece.selected].price);
+    const totals = lookTotals(prices, this.percent);
+    pushDataLayer({ ecommerce: null });
+    pushDataLayer({
+      event,
+      feature_version: TRACKING_VERSION,
+      look_name: this.lookName,
+      look_pieces: this.pieces.length,
+      look_value: toUnits(totals.together),
+      look_saving: toUnits(totals.saving),
+      ecommerce: {
+        currency: this.currency,
+        value: toUnits(totals.together),
+        items: this.pieces.map((piece, index) => {
+          const material = piece.materials[piece.selected];
+          return {
+            item_id: String(material.product.id),
+            item_variant: variants[index] ? String(variants[index].id) : null,
+            item_name: material.product.title,
+            price: toUnits(prices[index]),
+            quantity: 1,
+          };
+        }),
+      },
+    });
   }
 
   /** @param {LookPiece} piece */
@@ -911,6 +1047,7 @@ class Looks {
 
       const letter = this.pieces.find((piece) => piece.letter)?.letter;
       if (letter) storeLetter(letter);
+      this.#track('look_add_to_cart');
 
       this.dialog.close();
       this.root.dispatchEvent(
