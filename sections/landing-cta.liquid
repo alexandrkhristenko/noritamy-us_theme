@@ -1,0 +1,68 @@
+{% comment %}
+  Landing page closing band: a main link to the full collection, an optional note and a second link.
+{% endcomment %}
+
+{{ 'section-landing.css' | asset_url | stylesheet_tag }}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div class="section section--page-width color-{{ section.settings.color_scheme }}">
+  <div class="landing-cta">
+    {%- if section.settings.button_label != blank -%}
+      <a class="button button-secondary landing-cta__button" href="{{ section.settings.button_link }}">
+        {{- section.settings.button_label | escape -}}
+      </a>
+    {%- endif -%}
+    {%- if section.settings.note != blank -%}
+      <p class="landing-cta__note">{{ section.settings.note | escape }}</p>
+    {%- endif -%}
+    {%- if section.settings.link_label != blank -%}
+      <a class="landing-link h6" href="{{ section.settings.link }}">{{ section.settings.link_label | escape }}</a>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Landing closing links",
+  "class": "section-wrapper",
+  "settings": [
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "The full Initials collection"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "text",
+      "id": "note",
+      "label": "Note"
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Second link label"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Second link"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-3"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Landing closing links"
+    }
+  ]
+}
+{% endschema %}

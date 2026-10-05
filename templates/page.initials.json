@@ -1,0 +1,306 @@
+{
+  "sections": {
+    "hero": {
+      "type": "landing-hero",
+      "settings": {
+        "heading": "The Initials",
+        "text": "<p>Twenty six letters realized in a custom designed NORITAMY font.</p>",
+        "image_product": "anchor-link-bracelet",
+        "image_product_media": 4,
+        "caption": "A signature, not a trend",
+        "caption_link_label": "See the range",
+        "caption_link": "#landing-range",
+        "button_label": "See the range",
+        "button_link": "#landing-range",
+        "button_2_label": "Layer it with",
+        "button_2_link": "#landing-looks",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "range": {
+      "type": "landing-range",
+      "blocks": {
+        "large": {
+          "type": "product",
+          "settings": {
+            "product": "initial-necklace-l-l",
+            "group": "Necklaces",
+            "lead_media": 2
+          }
+        },
+        "small": {
+          "type": "product",
+          "settings": {
+            "product": "initials-necklace-sterling-silver-lr-n-200",
+            "group": "Necklaces",
+            "lead_media": 2
+          }
+        },
+        "oval": {
+          "type": "product",
+          "settings": {
+            "product": "oval-links-initial-necklace",
+            "group": "Necklaces",
+            "lead_media": 3
+          }
+        },
+        "earring": {
+          "type": "product",
+          "settings": {
+            "product": "initials-earring-l-lr-e-103",
+            "group": "Earrings",
+            "lead_media": 1,
+            "main_label": "24k Gold plated",
+            "alt_product": "initials-earring-silver-lr-e-102",
+            "alt_label": "Sterling silver 925"
+          }
+        },
+        "bracelet": {
+          "type": "product",
+          "settings": {
+            "product": "anchor-link-bracelet",
+            "group": "Bracelets",
+            "lead_media": 4
+          }
+        },
+        "wall": {
+          "type": "product",
+          "settings": {
+            "product": "wall-letter-number-small-19210",
+            "group": "At home",
+            "lead_media": 1,
+            "main_label": "Brass"
+          }
+        }
+      },
+      "block_order": [
+        "large",
+        "small",
+        "oval",
+        "earring",
+        "bracelet",
+        "wall"
+      ],
+      "settings": {
+        "heading": "Five ways to wear your letter",
+        "subheading": "And one for the wall. Choose the piece first, then your letter.",
+        "bundle_note": "Add a second piece to get [percent]% off.",
+        "list_name": "Initials landing",
+        "show_filters": true,
+        "all_label": "All",
+        "filter_label": "Filter products",
+        "details_label": "See details",
+        "cta_label": "Add to cart",
+        "photo_note": "Photo shows",
+        "material_label": "Material",
+        "letter_label": "Letter",
+        "remember_note": "We'll remember it for your next piece",
+        "choose_letter_label": "Choose your letter",
+        "add_label": "Add to cart",
+        "sold_out_label": "Sold out",
+        "show_express_checkout": true,
+        "quick_view_bundle_note": "Add a second piece to get [percent]% off.",
+        "materials_heading": "Materials + Care",
+        "materials_text": "<p><strong>Care Instructions for Your Plated or full gold Jewelry</strong><br/><br/>Our pieces are crafted to make a statement - and to stay with you for years. To keep their shine and spirit alive, a little mindful care goes a long way.<br/><br/>Here’s how to love them back:<br/><br/><strong>Last on, first off.</strong><br/>Put your jewelry on after applying perfume, lotion, or makeup - and take it off before undressing, showering, or sleeping.<br/><br/><strong>Keep it dry.</strong><br/>Water, humidity, and plating don’t mix. Avoid wearing your piece while swimming, bathing, or sweating.<br/><br/><strong>Soft touch only.</strong><br/>Clean gently with a soft, dry cloth after each wear to remove any natural oils or residue. No chemicals, no abrasives - just a little love.<br/><br/><strong>Store with intention.</strong><br/>Keep your piece in its Noritamy pouch or box, away from sunlight and other jewelry to prevent scratching or fading.<br/><br/><strong>Time to replate?</strong><br/>Over time, gold plating may naturally fade depending on wear. When that moment comes, we offer a re-plating service to bring your piece back to life.<br/><br/><strong>Materials: </strong></p>",
+        "shipping_heading": "Shipping + Returns",
+        "shipping_text": "<p>From the moment you place your order, please allow <strong>2-8 business days</strong> for our team to craft and quality-check your piece. All orders are shipped from our studio at Herzl 20, Israel. To ensure a seamless experience, we cover all related customs taxes and charges.</p><h2>Shipping Options</h2><p><strong>Economy Service (USPS in the USA):</strong> 5-14 business days once sent — Fully traceable — <strong>Free</strong></p><p><strong>DHL Express:</strong> 2-6 business days once sent — Fully traceable — <strong>$15 USD</strong></p><h2>Returns &amp; Exchanges</h2><p>Returns are accepted within 30 days of delivery, provided the item is unworn and in its original condition. For your convenience, returns are sent to our US-based address. For full details and instructions, please refer to our <a href=\"/pages/shipping-returns\">complete shipping and returns policy</a>.</p>",
+        "full_page_label": "View the full page",
+        "color_scheme": "scheme-1",
+        "preferred_material": "gold"
+      }
+    },
+    "standard": {
+      "type": "landing-standard",
+      "blocks": {
+        "studio": {
+          "type": "line",
+          "settings": {
+            "icon": "check",
+            "text": "Drawn and finished by hand in our studio"
+          }
+        },
+        "metal": {
+          "type": "line",
+          "settings": {
+            "icon": "check",
+            "text": "24K gold plated letter, on a 14K gold-filled chain"
+          }
+        },
+        "silver": {
+          "type": "line",
+          "settings": {
+            "icon": "check",
+            "text": "Available in 925 Sterling silver or Silver tone"
+          }
+        },
+        "nickel": {
+          "type": "line",
+          "settings": {
+            "icon": "shield",
+            "text": "Nickel and lead free"
+          }
+        },
+        "returns": {
+          "type": "line",
+          "settings": {
+            "icon": "returns",
+            "text": "Returns accepted within 30 days"
+          }
+        },
+        "packaging": {
+          "type": "line",
+          "settings": {
+            "icon": "box",
+            "text": "Every order in our signature packaging"
+          }
+        },
+        "shipping": {
+          "type": "line",
+          "settings": {
+            "icon": "truck",
+            "text": "Free shipping, price includes all taxes & duties"
+          }
+        }
+      },
+      "block_order": [
+        "studio",
+        "metal",
+        "silver",
+        "nickel",
+        "returns",
+        "packaging",
+        "shipping"
+      ],
+      "settings": {
+        "heading": "The Noritamy Standard",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "looks": {
+      "type": "landing-looks",
+      "blocks": {
+        "layered": {
+          "type": "look",
+          "settings": {
+            "name": "The layered",
+            "note": "Large and small, worn together.",
+            "products": [
+              "initial-necklace-l-l",
+              "initials-necklace-sterling-silver-lr-n-200"
+            ],
+            "image_product": "initial-necklace-l-l",
+            "image_product_media": 2
+          }
+        },
+        "statement": {
+          "type": "look",
+          "settings": {
+            "name": "The statement",
+            "note": "Earring and bracelet, for a bolder day.",
+            "products": [
+              "initials-earring-l-lr-e-103",
+              "anchor-link-bracelet"
+            ],
+            "image_product": "anchor-link-bracelet",
+            "image_product_media": 2,
+            "image_focus_y": 50
+          }
+        }
+      },
+      "block_order": [
+        "layered",
+        "statement"
+      ],
+      "settings": {
+        "heading": "Layer it with",
+        "subheading": "Pieces worn together cost less together.",
+        "percent": 20,
+        "separately_label": "",
+        "together_label": "Together",
+        "saving_text": "",
+        "discount_tag": "[percent]% off the second piece",
+        "cta_label": "Shop the look",
+        "dialog_note": "Choose a letter for each piece.",
+        "letter_label": "Letter",
+        "choose_label": "Choose your letters",
+        "add_label": "Add the look to cart",
+        "sold_out_label": "Sold out",
+        "error_label": "Something went wrong. Please try again.",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "chapters": {
+      "type": "landing-chapters",
+      "blocks": {
+        "line": {
+          "type": "chapter",
+          "settings": {
+            "number": "_01",
+            "title": "The line",
+            "text": "<p>Every letter begins as a few drawn lines, and nothing more.</p>",
+            "image_product": "initial-necklace-l-l",
+            "image_product_media": 6,
+            "contain": true
+          }
+        },
+        "metal": {
+          "type": "chapter",
+          "settings": {
+            "number": "_02",
+            "title": "The metal",
+            "text": "<p>925 sterling silver or 24K gold plated brass.</p>",
+            "image_product": "initial-necklace-l-l",
+            "image_product_media": 8,
+            "contain": false
+          }
+        }
+      },
+      "block_order": [
+        "line",
+        "metal"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1"
+      }
+    },
+    "review": {
+      "type": "landing-quote",
+      "settings": {
+        "quote": "“This necklace has been my signature for 8+ years… I still get asked ‘where is it from?!’”",
+        "author": "Verified customer",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "packaging": {
+      "type": "landing-feature",
+      "settings": {
+        "heading": "In our signature packaging",
+        "text": "<p>Every order arrives the same way. Free shipping, and the price includes all taxes and duties.</p>",
+        "image_product": "initial-necklace-l-l",
+        "image_product_media": 11,
+        "color_scheme": "scheme-1"
+      }
+    },
+    "closing": {
+      "type": "landing-cta",
+      "settings": {
+        "button_label": "The full Initials collection",
+        "button_link": "shopify://collections/scripted",
+        "note": "Including our LOVE pieces",
+        "link_label": "Discover all of Noritamy",
+        "link": "shopify://collections/shop-all",
+        "color_scheme": "scheme-3"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "range",
+    "standard",
+    "looks",
+    "chapters",
+    "review",
+    "packaging",
+    "closing"
+  ]
+}

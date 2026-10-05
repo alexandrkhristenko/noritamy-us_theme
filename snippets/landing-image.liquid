@@ -1,0 +1,40 @@
+{%- doc -%}
+  Renders an image for the landing page sections.
+
+  Uses the picked image when there is one. Otherwise it falls back to a product's own photo, so the
+  page can be built entirely from product media without uploading separate files.
+
+  @param {object} [image] - Image from an image_picker setting
+  @param {object} [product] - Fallback product
+  @param {number} [media_index] - 1-based index of the fallback product's media (default 1)
+  @param {string} [sizes] - sizes attribute
+  @param {string} [class] - CSS class
+  @param {boolean} [eager] - Load eagerly with high priority (first screen only)
+{%- enddoc -%}
+
+{%- liquid
+  assign source = image
+  assign alt = image.alt
+  if source == blank and product
+    assign index = media_index | default: 1 | minus: 1
+    assign media = product.media[index] | default: product.featured_media
+    assign source = media.preview_image
+    assign alt = media.alt | default: product.title
+  endif
+  assign loading = 'lazy'
+  assign priority = 'auto'
+  if eager
+    assign loading = 'eager'
+    assign priority = 'high'
+  endif
+-%}
+
+{%- if source != blank -%}
+  {{
+    source
+    | image_url: width: 1600
+    | image_tag: loading: loading, fetchpriority: priority, widths: '400, 600, 800, 1200, 1600', sizes: sizes, alt: alt, class: class
+  }}
+{%- else -%}
+  {{ 'image' | placeholder_svg_tag: class }}
+{%- endif -%}

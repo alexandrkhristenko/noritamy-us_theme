@@ -1,0 +1,552 @@
+{% comment %}
+  Landing page range: hand-picked product cards with material swatches, a swipeable photo row and a
+  quick view where the shopper picks a letter and adds to cart.
+
+  Each block points at a product, so name, prices, variants and photos always come from Shopify. A block
+  can point at a second product ("also available in") for pieces sold as two products, such as the
+  gold and the sterling silver Initial Earring; it shows as one more swatch on the same card.
+
+  Adding to cart goes through the theme's own product-form-component, so the cart drawer, the cart
+  icon and every tracking pixel behave exactly as they do on a product page.
+{% endcomment %}
+
+{{ 'section-landing.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'landing.js' | asset_url }}" type="module"></script>
+
+{%- liquid
+  assign groups = section.blocks | map: 'settings' | map: 'group' | compact | uniq
+  assign group_count = 0
+  for group in groups
+    if group != blank
+      assign group_count = group_count | plus: 1
+    endif
+  endfor
+-%}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="section section--page-width color-{{ section.settings.color_scheme }}"
+  id="landing-range"
+>
+  <div
+    class="landing-range"
+    data-landing-range
+    data-money-format="{{ shop.money_format | strip_html | escape }}"
+    data-list-name="{{ section.settings.list_name | escape }}"
+    data-list-id="{{ section.settings.list_name | handleize }}"
+    data-currency="{{ cart.currency.iso_code }}"
+    data-label-add="{{ section.settings.add_label | escape }}"
+    data-label-sold-out="{{ section.settings.sold_out_label | escape }}"
+    data-label-choose="{{ section.settings.choose_letter_label | escape }}"
+    data-label-photo-note="{{ section.settings.photo_note | escape }}"
+    data-label-letter="{{ section.settings.letter_label | escape }}"
+    data-label-error="{{ section.settings.error_label | escape }}"
+  >
+    <div class="landing-range__head">
+      <div class="landing-range__titles">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="landing-heading h2">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subheading != blank -%}
+          <p class="landing-sub">{{ section.settings.subheading | escape }}</p>
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.show_filters and group_count > 1 -%}
+        <div class="landing-filters" role="group" aria-label="{{ section.settings.filter_label | escape }}">
+          <button type="button" class="landing-filter" data-filter="" aria-pressed="true">
+            {{- section.settings.all_label | escape -}}
+          </button>
+          {%- for group in groups -%}
+            {%- if group == blank -%}
+              {%- continue -%}
+            {%- endif -%}
+            <button type="button" class="landing-filter" data-filter="{{ group | handleize }}" aria-pressed="false">
+              {{- group | escape -}}
+            </button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="landing-grid">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign product = block.settings.product
+          if product == blank
+            continue
+          endif
+          assign alt_product = block.settings.alt_product
+          assign first_variant = product.selected_or_first_available_variant
+          assign lead_index = block.settings.lead_media | minus: 1
+          assign lead = product.media[lead_index] | default: product.featured_media
+        -%}
+        <article
+          class="landing-card"
+          data-landing-card
+          data-group="{{ block.settings.group | handleize }}"
+          data-group-label="{{ block.settings.group | escape }}"
+          data-product-id="{{ product.id }}"
+          data-position="{{ forloop.index }}"
+          {{ block.shopify_attributes }}
+        >
+          <div class="landing-card__media">
+            <div class="landing-card__slides" data-slides tabindex="0" role="group" aria-label="{{ product.title | escape }}">
+              {%- if lead != blank -%}
+                <img
+                  src="{{ lead.preview_image | image_url: width: 800 }}"
+                  alt="{{ lead.alt | default: product.title | escape }}"
+                  loading="lazy"
+                  width="800"
+                  height="{{ 800 | divided_by: lead.preview_image.aspect_ratio | round }}"
+                >
+              {%- endif -%}
+            </div>
+            <button type="button" class="landing-card__arrow landing-card__arrow--prev" data-prev hidden aria-label="{{ 'accessibility.slideshow_previous' | t }}">
+              {%- render 'icon-chevron-left' -%}
+            </button>
+            <button type="button" class="landing-card__arrow landing-card__arrow--next" data-next hidden aria-label="{{ 'accessibility.slideshow_next' | t }}">
+              {%- render 'icon-chevron-right' -%}
+            </button>
+            <div class="landing-card__dots" data-dots aria-hidden="true"></div>
+            <span class="landing-card__photo-note" data-photo-note hidden></span>
+          </div>
+
+          {%- if block.settings.group != blank -%}
+            <p class="landing-card__group h6">{{ block.settings.group | escape }}</p>
+          {%- endif -%}
+          <h3 class="landing-card__title h5">
+            <button type="button" class="button-unstyled landing-card__title-button" data-open-quick-view="details">
+              {{- product.title | escape -}}
+            </button>
+          </h3>
+
+          <div class="landing-card__swatches" data-swatches hidden></div>
+          <p class="landing-card__material" data-material-label></p>
+
+          {%- if product.metafields.custom.card_note.value != blank -%}
+            <p class="landing-card__note">{{ product.metafields.custom.card_note.value | escape }}</p>
+          {%- endif -%}
+
+          {%- if section.settings.details_label != blank -%}
+            <a class="landing-link landing-card__details h6" href="{{ product.url }}" data-details-link data-open-quick-view="details">
+              {{- section.settings.details_label | escape -}}
+            </a>
+          {%- endif -%}
+
+          <div class="landing-card__buy">
+            <p class="landing-card__price" data-price>
+              {%- if first_variant.compare_at_price > first_variant.price -%}
+                <s class="compare-at-price">{{ first_variant.compare_at_price | money_without_trailing_zeros }}</s>
+              {%- endif -%}
+              <span>{{ first_variant.price | money_without_trailing_zeros }}</span>
+            </p>
+            <button type="button" class="button button-secondary landing-card__cta" data-open-quick-view="quick">
+              {{- section.settings.cta_label | escape -}}
+            </button>
+          </div>
+
+          <script type="application/json" data-card-json>
+            {
+              "mainLabel": {{ block.settings.main_label | json }},
+              "products": [
+                {%- render 'landing-product-data', product: product, default_label: block.settings.main_label, lead_media: block.settings.lead_media, preferred: section.settings.preferred_material -%}
+                {%- if alt_product != blank -%}
+                  ,{%- render 'landing-product-data', product: alt_product, default_label: block.settings.alt_label -%}
+                {%- endif -%}
+              ]
+            }
+          </script>
+
+          {%- comment -%}
+            One real product form per card. The quick view moves it into the dialog while open, so the
+            add to cart and the express checkout button are the theme's own and need no custom cart code.
+          {%- endcomment -%}
+          <div class="landing-card__form-home" data-form-home hidden>
+            <product-form-component
+              class="landing-form"
+              data-section-id="{{ section.id }}"
+              data-product-id="{{ product.id }}"
+              data-product-url="{{ product.url }}"
+              on:submit="/handleSubmit"
+              data-quantity-default="1"
+            >
+              <div class="visually-hidden" aria-live="assertive" role="status" aria-atomic="true" ref="liveRegion"></div>
+              {%- assign product_form_id = 'LandingForm-' | append: section.id | append: '-' | append: block.id -%}
+              {%- form 'product', product, id: product_form_id, class: 'landing-form__form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+                <input type="hidden" name="id" ref="variantId" value="{{ first_variant.id }}">
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" name="add" class="button landing-form__add" data-add-button disabled>
+                  <span data-add-label>{{ section.settings.choose_letter_label | escape }}</span>
+                </button>
+                {%- if section.settings.show_express_checkout -%}
+                  <div class="landing-form__express" data-express hidden>
+                    {{ form | payment_button }}
+                  </div>
+                {%- endif -%}
+              {%- endform -%}
+            </product-form-component>
+          </div>
+        </article>
+      {%- endfor -%}
+    </div>
+
+    {%- if section.settings.bundle_note != blank -%}
+      {%- comment -%}
+        "[percent]" is filled in by landing.js from the "Landing looks" section on the same page, so the
+        offer is typed in one place only. The line stays hidden when that percentage is 0.
+      {%- endcomment -%}
+      <p
+        class="landing-sub landing-range__bundle"
+        {% if section.settings.bundle_note contains '[percent]' %}
+          data-percent-note="{{ section.settings.bundle_note | escape }}" hidden
+        {% endif %}
+      >
+        {{- section.settings.bundle_note | escape -}}
+      </p>
+    {%- endif -%}
+
+    <dialog
+      class="landing-qv color-{{ settings.popover_color_scheme }}"
+      data-quick-view
+      aria-labelledby="LandingQuickViewTitle-{{ section.id }}"
+    >
+      <div class="landing-qv__panel">
+        <button type="button" class="button-unstyled landing-qv__close" data-close aria-label="{{ 'accessibility.close_dialog' | t }}">
+          {{- 'icon-close.svg' | inline_asset_content -}}
+        </button>
+
+        <div class="landing-qv__media">
+          <div class="landing-card__slides landing-qv__slides" data-qv-slides tabindex="0" role="group" aria-labelledby="LandingQuickViewTitle-{{ section.id }}"></div>
+          <button type="button" class="landing-card__arrow landing-card__arrow--prev" data-qv-prev hidden aria-label="{{ 'accessibility.slideshow_previous' | t }}">
+            {%- render 'icon-chevron-left' -%}
+          </button>
+          <button type="button" class="landing-card__arrow landing-card__arrow--next" data-qv-next hidden aria-label="{{ 'accessibility.slideshow_next' | t }}">
+            {%- render 'icon-chevron-right' -%}
+          </button>
+          <div class="landing-card__dots" data-qv-dots aria-hidden="true"></div>
+          <span class="landing-card__photo-note" data-qv-photo-note hidden></span>
+        </div>
+
+        <div class="landing-qv__body">
+          <p class="landing-card__group h6" data-qv-group></p>
+          <h2 class="landing-qv__title h3" id="LandingQuickViewTitle-{{ section.id }}" data-qv-title tabindex="-1"></h2>
+          <p class="landing-card__note" data-qv-note></p>
+          <p class="landing-card__price landing-qv__price" data-qv-price></p>
+
+          <div class="landing-qv__option" data-qv-material-block>
+            <p class="landing-qv__option-label">
+              <span>{{ section.settings.material_label | escape }} · <span data-qv-material-label></span></span>
+            </p>
+            <div class="landing-card__swatches" data-qv-swatches></div>
+          </div>
+
+          <div class="landing-qv__option" data-qv-letter-block>
+            <p class="landing-qv__option-label">
+              <span><span data-qv-letter-name></span><span data-qv-letter-value></span></span>
+              <span class="landing-qv__hint">{{ section.settings.remember_note | escape }}</span>
+            </p>
+            <div class="landing-letters" data-qv-letters role="group"></div>
+          </div>
+
+          <div class="landing-qv__form" data-qv-form-slot></div>
+          <p class="landing-look-error" data-qv-error role="alert" hidden></p>
+
+          {%- if section.settings.quick_view_bundle_note != blank -%}
+            <p
+              class="landing-sub landing-qv__bundle"
+              {% if section.settings.quick_view_bundle_note contains '[percent]' %}
+                data-percent-note="{{ section.settings.quick_view_bundle_note | escape }}" hidden
+              {% endif %}
+            >
+              {{- section.settings.quick_view_bundle_note | escape -}}
+            </p>
+          {%- endif -%}
+
+          {%- comment -%} Filled by landing.js with a copy of the "Landing standard" section on this page. {%- endcomment -%}
+          <div class="landing-qv__standard" data-qv-standard hidden></div>
+
+          <div class="landing-qv__details">
+            <details class="landing-details" data-qv-materials>
+              <summary class="h6">{{ section.settings.materials_heading | escape }}</summary>
+              <div class="rte">
+                {{ section.settings.materials_text }}
+                <div data-qv-materials-product></div>
+              </div>
+            </details>
+            <details class="landing-details">
+              <summary class="h6">{{ section.settings.shipping_heading | escape }}</summary>
+              <div class="rte">{{ section.settings.shipping_text }}</div>
+            </details>
+          </div>
+
+          {%- if section.settings.details_label != blank -%}
+            <button type="button" class="button-unstyled landing-link h6 landing-qv__more" data-qv-more>
+              {{- section.settings.details_label | escape -}}
+            </button>
+          {%- endif -%}
+
+          <a class="landing-link h6 landing-qv__full" href="#" data-qv-full-link>
+            {{- section.settings.full_page_label | escape -}}
+          </a>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="landing-zoom" data-zoom aria-label="{{ section.settings.zoom_label | escape }}">
+      <button type="button" class="button-unstyled landing-qv__close" data-close aria-label="{{ 'accessibility.close_dialog' | t }}">
+        {{- 'icon-close.svg' | inline_asset_content -}}
+      </button>
+      <div class="landing-zoom__slides" data-zoom-slides tabindex="0"></div>
+      <button type="button" class="landing-card__arrow landing-card__arrow--prev" data-zoom-prev hidden aria-label="{{ 'accessibility.slideshow_previous' | t }}">
+        {%- render 'icon-chevron-left' -%}
+      </button>
+      <button type="button" class="landing-card__arrow landing-card__arrow--next" data-zoom-next hidden aria-label="{{ 'accessibility.slideshow_next' | t }}">
+        {%- render 'icon-chevron-right' -%}
+      </button>
+      <div class="landing-card__dots" data-zoom-dots aria-hidden="true"></div>
+    </dialog>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Landing range",
+  "class": "section-wrapper",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Five ways to wear your letter"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+    {
+      "type": "text",
+      "id": "bundle_note",
+      "label": "Note under the grid",
+      "info": "[percent] is replaced by the percentage set in the Landing looks section, and the line hides when that is 0."
+    },
+    {
+      "type": "text",
+      "id": "list_name",
+      "label": "List name for analytics",
+      "default": "Initials landing"
+    },
+    {
+      "type": "text",
+      "id": "preferred_material",
+      "label": "Material cards open on",
+      "info": "A card opens on the first material whose name contains this word.",
+      "default": "gold"
+    },
+    {
+      "type": "header",
+      "content": "Filters"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_filters",
+      "label": "Show filter buttons",
+      "info": "One button per group used on the cards.",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "all_label",
+      "label": "Label for all products",
+      "default": "All"
+    },
+    {
+      "type": "text",
+      "id": "filter_label",
+      "label": "Filter group name (screen readers)",
+      "default": "Filter products"
+    },
+    {
+      "type": "header",
+      "content": "Card labels"
+    },
+    {
+      "type": "text",
+      "id": "details_label",
+      "label": "Details link",
+      "info": "Opens the quick view with photos, materials and shipping. The card button opens only the letter picker. Leave empty to hide it.",
+      "default": "See details"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Card button",
+      "info": "Opens a short window with only the material and letter choice.",
+      "default": "Add to cart"
+    },
+    {
+      "type": "text",
+      "id": "photo_note",
+      "label": "Note when a material has no photo",
+      "info": "The material shown in the photo is added after this text.",
+      "default": "Photo shows"
+    },
+    {
+      "type": "header",
+      "content": "Quick view"
+    },
+    {
+      "type": "text",
+      "id": "material_label",
+      "label": "Material label",
+      "default": "Material"
+    },
+    {
+      "type": "text",
+      "id": "letter_label",
+      "label": "Letter label",
+      "default": "Letter"
+    },
+    {
+      "type": "text",
+      "id": "remember_note",
+      "label": "Note beside the letter",
+      "default": "We'll remember it for your next piece"
+    },
+    {
+      "type": "text",
+      "id": "choose_letter_label",
+      "label": "Button before a letter is chosen",
+      "default": "Choose your letter"
+    },
+    {
+      "type": "text",
+      "id": "add_label",
+      "label": "Add to cart button",
+      "default": "Add to cart"
+    },
+    {
+      "type": "text",
+      "id": "sold_out_label",
+      "label": "Sold out button",
+      "default": "Sold out"
+    },
+    {
+      "type": "text",
+      "id": "zoom_label",
+      "label": "Name of the enlarged photo window (screen readers)",
+      "default": "Enlarged photos"
+    },
+    {
+      "type": "text",
+      "id": "error_label",
+      "label": "Error message",
+      "default": "Something went wrong. Please try again."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_express_checkout",
+      "label": "Show express checkout button (Shop Pay)",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "quick_view_bundle_note",
+      "label": "Note under the buttons",
+      "info": "[percent] works here too."
+    },
+    {
+      "type": "text",
+      "id": "materials_heading",
+      "label": "First details heading",
+      "default": "Materials + Care"
+    },
+    {
+      "type": "richtext",
+      "id": "materials_text",
+      "label": "First details text",
+      "info": "The product's own materials field is added under this text."
+    },
+    {
+      "type": "text",
+      "id": "shipping_heading",
+      "label": "Second details heading",
+      "default": "Shipping + Returns"
+    },
+    {
+      "type": "richtext",
+      "id": "shipping_text",
+      "label": "Second details text"
+    },
+    {
+      "type": "text",
+      "id": "full_page_label",
+      "label": "Link to the full product page",
+      "default": "View the full page"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product card",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "text",
+          "id": "group",
+          "label": "Group",
+          "info": "Shown above the name and used for the filter buttons, e.g. Necklaces."
+        },
+        {
+          "type": "range",
+          "id": "lead_media",
+          "label": "First photo on the card",
+          "info": "Which of the product's photos opens the card. Use the worn photo.",
+          "min": 1,
+          "max": 12,
+          "step": 1,
+          "default": 1
+        },
+        {
+          "type": "text",
+          "id": "main_label",
+          "label": "Material name",
+          "info": "Only needed when the product has no material option, e.g. Gold-plated."
+        },
+        {
+          "type": "header",
+          "content": "Also available in"
+        },
+        {
+          "type": "product",
+          "id": "alt_product",
+          "label": "Second product",
+          "info": "For a piece sold as two products. Shows as one more swatch on this card."
+        },
+        {
+          "type": "text",
+          "id": "alt_label",
+          "label": "Material name of the second product",
+          "default": "Sterling silver 925"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Landing range"
+    }
+  ]
+}
+{% endschema %}

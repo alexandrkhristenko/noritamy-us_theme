@@ -1,0 +1,362 @@
+{% comment %}
+  Landing page looks ("Layer it with"): each block is a photo and two or three products that are
+  worn together, with the price apart, the price together and the saving.
+
+  The saving is display only. The discount itself is the shop's automatic "second piece" discount in
+  Shopify admin (the lower-priced piece of each pair gets a percentage off), and the percentage below
+  must match it. Prices are read live from the products.
+
+  "Add the look to cart" opens a dialog where the shopper picks a material and a letter for each
+  piece; the pieces are then added in one request to Shopify's cart (see assets/landing.js).
+{% endcomment %}
+
+{{ 'section-landing.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'landing.js' | asset_url }}" type="module"></script>
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div class="section section--page-width color-{{ section.settings.color_scheme }}" id="landing-looks">
+  <div
+    class="landing-looks"
+    data-landing-looks
+    data-money-format="{{ shop.money_format | strip_html | escape }}"
+    data-percent="{{ section.settings.percent }}"
+    data-currency="{{ cart.currency.iso_code }}"
+    data-saving-text="{{ section.settings.saving_text | escape }}"
+    data-show-separate="{% if section.settings.separately_label != blank %}true{% else %}false{% endif %}"
+    data-label-add="{{ section.settings.add_label | escape }}"
+    data-label-choose="{{ section.settings.choose_label | escape }}"
+    data-label-sold-out="{{ section.settings.sold_out_label | escape }}"
+    data-label-letter="{{ section.settings.letter_label | escape }}"
+    data-label-error="{{ section.settings.error_label | escape }}"
+  >
+    <div class="landing-looks__head">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="landing-heading h2">{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subheading != blank -%}
+        <p class="landing-sub">{{ section.settings.subheading | escape }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="landing-looks__grid">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign products = block.settings.products
+          if products.size == 0
+            continue
+          endif
+          assign separate = 0
+          for product in products
+            assign separate = separate | plus: product.selected_or_first_available_variant.price
+          endfor
+          comment
+            Same rule as lookTotals() in assets/landing.js, which repaints these once the page loads.
+          endcomment
+          assign discounted_count = products.size | divided_by: 2
+          assign by_price = products | sort: 'price'
+          assign saving = 0
+          for product in by_price limit: discounted_count
+            assign piece_saving = product.selected_or_first_available_variant.price | times: section.settings.percent | divided_by: 100.0 | round
+            assign saving = saving | plus: piece_saving
+          endfor
+          assign together = separate | minus: saving
+          assign saving_money = saving | money_without_trailing_zeros
+          assign discount_tag = section.settings.discount_tag | escape | replace: '[percent]', section.settings.percent
+          assign image_product = block.settings.image_product | default: products.first
+        -%}
+        <article class="landing-look" data-landing-look {{ block.shopify_attributes }}>
+          <div
+            class="landing-look__media"
+            style="--landing-zoom: {{ block.settings.image_zoom | divided_by: 100.0 }}; --landing-focus: {{ block.settings.image_focus_x }}% {{ block.settings.image_focus_y }}%;"
+          >
+            {%- render 'landing-image',
+              image: block.settings.image,
+              product: image_product,
+              media_index: block.settings.image_product_media,
+              sizes: '(min-width: 750px) 50vw, 100vw',
+              class: 'landing-look__image'
+            -%}
+          </div>
+
+          <div class="landing-look__title-row">
+            <h3 class="h4">{{ block.settings.name | escape }}</h3>
+            {%- if block.settings.note != blank -%}
+              <p class="landing-sub">{{ block.settings.note | escape }}</p>
+            {%- endif -%}
+          </div>
+
+          <ul class="landing-look__items list-unstyled">
+            {%- for product in products -%}
+              <li>
+                <span>{{ product.title | escape }}</span>
+                <span data-look-card-item>{{ product.selected_or_first_available_variant.price | money_without_trailing_zeros }}</span>
+              </li>
+            {%- endfor -%}
+          </ul>
+
+          <div class="landing-look__totals">
+            <div class="landing-look__math">
+              <p class="landing-look__separate" data-look-card-separate-row {% if saving == 0 or section.settings.separately_label == blank %}hidden{% endif %}>
+                {{ section.settings.separately_label | escape }}
+                <s data-look-card-separate>{{ separate | money_without_trailing_zeros }}</s>
+              </p>
+              <p class="landing-look__together">
+                {{ section.settings.together_label | escape }}
+                <span data-look-card-together>{{ together | money_without_trailing_zeros }}</span>
+                {%- if discount_tag != blank and saving > 0 -%}
+                  <span class="landing-look__tag">{{ discount_tag }}</span>
+                {%- endif -%}
+              </p>
+              <p class="landing-sub" data-look-card-saving {% if saving == 0 or section.settings.saving_text == blank %}hidden{% endif %}>
+                {{- section.settings.saving_text | escape | replace: '[amount]', saving_money -}}
+              </p>
+            </div>
+            <button type="button" class="button landing-look__cta" data-open-look>
+              {{- section.settings.cta_label | escape -}}
+            </button>
+          </div>
+
+          <script type="application/json" data-look-json>
+            {
+              "name": {{ block.settings.name | json }},
+              "products": [
+                {%- for product in products -%}
+                  {%- render 'landing-product-data', product: product, preferred: 'gold' -%}
+                  {%- unless forloop.last -%},{%- endunless -%}
+                {%- endfor -%}
+              ]
+            }
+          </script>
+        </article>
+      {%- endfor -%}
+    </div>
+
+    <dialog class="landing-qv landing-qv--look color-{{ settings.popover_color_scheme }}" data-look-dialog aria-labelledby="LandingLookTitle-{{ section.id }}">
+      <div class="landing-qv__panel landing-qv__panel--look">
+        <button type="button" class="button-unstyled landing-qv__close" data-close aria-label="{{ 'accessibility.close_dialog' | t }}">
+          {{- 'icon-close.svg' | inline_asset_content -}}
+        </button>
+        <div class="landing-qv__body">
+          <h2 class="landing-qv__title h3" id="LandingLookTitle-{{ section.id }}" data-look-title></h2>
+          <p class="landing-sub">{{ section.settings.dialog_note | escape }}</p>
+          <div class="landing-look-rows" data-look-rows></div>
+          <div class="landing-look-summary">
+            <p class="landing-look__separate" data-look-separate-row>
+              {{ section.settings.separately_label | escape }} <s data-look-separate></s>
+            </p>
+            <p class="landing-look__together">
+              {{ section.settings.together_label | escape }} <span data-look-together></span>
+              {%- assign dialog_tag = section.settings.discount_tag | escape | replace: '[percent]', section.settings.percent -%}
+              {%- if dialog_tag != blank and section.settings.percent > 0 -%}
+                <span class="landing-look__tag">{{ dialog_tag }}</span>
+              {%- endif -%}
+            </p>
+          </div>
+          <p class="landing-look-error" data-look-error role="alert" hidden></p>
+          <button type="button" class="button landing-look-add" data-look-add disabled>
+            <span data-look-add-label>{{ section.settings.choose_label | escape }}</span>
+          </button>
+        </div>
+      </div>
+    </dialog>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Landing looks",
+  "class": "section-wrapper",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Layer it with"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+    {
+      "type": "header",
+      "content": "Worn-together saving",
+      "info": "Display only. It must match the automatic discount in Shopify admin (20% Off 2nd item)."
+    },
+    {
+      "type": "range",
+      "id": "percent",
+      "label": "Percent off the second piece",
+      "info": "Applied to the lower-priced piece of each pair, the way the Shopify discount does.",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "%",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Labels"
+    },
+    {
+      "type": "text",
+      "id": "separately_label",
+      "label": "Price apart",
+      "info": "Leave empty to hide the crossed-out price apart."
+    },
+    {
+      "type": "text",
+      "id": "together_label",
+      "label": "Price together",
+      "default": "Together"
+    },
+    {
+      "type": "text",
+      "id": "saving_text",
+      "label": "Saving line",
+      "info": "[amount] is replaced by the saving. Leave empty to hide it."
+    },
+    {
+      "type": "text",
+      "id": "discount_tag",
+      "label": "Offer shown next to the price together",
+      "info": "[percent] is replaced by the percentage above.",
+      "default": "[percent]% off the second piece"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Look button",
+      "default": "Shop the look"
+    },
+    {
+      "type": "text",
+      "id": "dialog_note",
+      "label": "Note in the dialog",
+      "default": "Choose a letter for each piece."
+    },
+    {
+      "type": "text",
+      "id": "letter_label",
+      "label": "Letter label",
+      "default": "Letter"
+    },
+    {
+      "type": "text",
+      "id": "choose_label",
+      "label": "Button before letters are chosen",
+      "default": "Choose your letters"
+    },
+    {
+      "type": "text",
+      "id": "add_label",
+      "label": "Add button",
+      "default": "Add the look to cart"
+    },
+    {
+      "type": "text",
+      "id": "sold_out_label",
+      "label": "Sold out",
+      "default": "Sold out"
+    },
+    {
+      "type": "text",
+      "id": "error_label",
+      "label": "Error message",
+      "default": "Something went wrong. Please try again."
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "look",
+      "name": "Look",
+      "settings": [
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "The layered"
+        },
+        {
+          "type": "text",
+          "id": "note",
+          "label": "Short line"
+        },
+        {
+          "type": "product_list",
+          "id": "products",
+          "label": "Pieces",
+          "limit": 3
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "Leave empty to use a product photo instead."
+        },
+        {
+          "type": "product",
+          "id": "image_product",
+          "label": "Product photo to use",
+          "info": "Defaults to the first piece."
+        },
+        {
+          "type": "range",
+          "id": "image_product_media",
+          "label": "Which photo of the product",
+          "min": 1,
+          "max": 12,
+          "step": 1,
+          "default": 1
+        },
+        {
+          "type": "header",
+          "content": "Crop",
+          "info": "Zoom in to cut the edges of the photo, then choose which part stays in view."
+        },
+        {
+          "type": "range",
+          "id": "image_zoom",
+          "label": "Zoom",
+          "min": 100,
+          "max": 250,
+          "step": 5,
+          "unit": "%",
+          "default": 100
+        },
+        {
+          "type": "range",
+          "id": "image_focus_x",
+          "label": "Keep in view, left to right",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "unit": "%",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "image_focus_y",
+          "label": "Keep in view, top to bottom",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "unit": "%",
+          "default": 25
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Landing looks"
+    }
+  ]
+}
+{% endschema %}
