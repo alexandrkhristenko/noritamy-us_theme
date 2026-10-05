@@ -148,6 +148,8 @@ class Gallery {
     this.next = next;
     this.onSwipe = onSwipe;
     this.index = 0;
+    /** @type {ReturnType<typeof setTimeout> | undefined} */
+    this.settle = undefined;
 
     let frame = 0;
     slides.addEventListener(
@@ -166,6 +168,7 @@ class Gallery {
   refresh() {
     const count = this.slides.children.length;
     this.index = 0;
+    clearTimeout(this.settle);
     this.dots.replaceChildren(
       ...Array.from({ length: count > 1 ? count : 0 }, () => document.createElement('span'))
     );
@@ -188,7 +191,9 @@ class Gallery {
     if (index === this.index) return;
     this.index = index;
     this.#paintDots();
-    this.onSwipe?.(index);
+    // Report once the row has come to rest, so a fling or a wrap-around counts as one swipe.
+    clearTimeout(this.settle);
+    this.settle = setTimeout(() => this.onSwipe?.(this.index), 200);
   }
 
   #paintDots() {
@@ -205,6 +210,13 @@ const TRACKING_VERSION = 'v2_tile_tracking';
 // Tag Manager keeps the last value of every data layer key, so each event states all of the
 // page-specific fields, null when they do not apply, and none leaks into the next event.
 const EVENT_FIELDS = {
+  position_served: null,
+  position_shown: null,
+  personalized: null,
+  tile_product_id: null,
+  tile_price: null,
+  tile_discount_pct: null,
+  tile_on_sale: null,
   tile_material: null,
   tile_letter: null,
   tile_window: null,
@@ -308,18 +320,20 @@ class Zoom {
   /**
    * @param {{ s: string, l: string, a: string }[]} images
    * @param {number} index
+   * @returns {boolean} whether the viewer opened
    */
   open(images, index) {
-    if (!images.length) return;
+    if (!images.length) return false;
     this.slides.replaceChildren(
-      ...images.map((image) => {
+      ...images.map((image, position) => {
         const frame = document.createElement('div');
         frame.className = 'landing-zoom__frame';
         const img = document.createElement('img');
         // Ask Shopify's image CDN for a larger copy, so the photo stays sharp at twice the size.
-        img.src = image.l.replace(/([?&]width=)\d+/, '$12400');
+        img.src = image.l.replace(/([?&]width=)\d+/, (_match, prefix) => `${prefix}2400`);
         img.alt = image.a;
         img.decoding = 'async';
+        img.loading = position === index ? 'eager' : 'lazy';
         frame.append(img);
         return frame;
       })
@@ -328,6 +342,7 @@ class Zoom {
     document.documentElement.setAttribute('scroll-lock', '');
     this.gallery.refresh();
     this.slides.scrollLeft = index * this.slides.clientWidth;
+    return true;
   }
 
   #reset() {
@@ -383,13 +398,22 @@ class Card {
       (index) => range.track('tile_image_swipe', this, { image_index: index + 1 })
     );
 
-    this.slides.addEventListener('click', () => {
-      range.zoom.open(this.material.images, this.gallery.index);
+    const zoom = () => {
+      if (!range.zoom.open(this.material.images, this.gallery.index)) return;
       range.track('tile_image_zoom', this, { image_index: this.gallery.index + 1 });
+    };
+    this.slides.addEventListener('click', zoom);
+    this.slides.addEventListener('keydown', (event) => {
+      if (event.target !== this.slides || (event.key !== 'Enter' && event.key !== ' ')) return;
+      event.preventDefault();
+      zoom();
     });
     element.querySelectorAll('[data-open-quick-view]').forEach((opener) => {
       opener.addEventListener('click', (event) => {
-        // The details link is a real link to the product page for when this script has not run.
+        // The details link is a real link to the product page: for when this script has not run,
+        // and for opening the product in a new tab.
+        const mouse = /** @type {MouseEvent} */ (event);
+        if (mouse.metaKey || mouse.ctrlKey || mouse.shiftKey || mouse.altKey) return;
         event.preventDefault();
         const mode = /** @type {HTMLElement} */ (opener).dataset.openQuickView === 'details' ? 'details' : 'quick';
         range.quickView.open(this, mode);
@@ -468,6 +492,10 @@ class QuickView {
     const standardSlot = find('standard');
     if (standard && standardSlot) {
       standardSlot.replaceChildren(...Array.from(standard.children).map((child) => child.cloneNode(true)));
+      // The copies must not look like editable blocks to the theme editor.
+      standardSlot.querySelectorAll('[data-shopify-editor-block]').forEach((element) => {
+        element.removeAttribute('data-shopify-editor-block');
+      });
       standardSlot.hidden = false;
     }
 
@@ -479,8 +507,14 @@ class QuickView {
     );
 
     dialog.querySelector('[data-close]')?.addEventListener('click', () => dialog.close());
-    this.slides.addEventListener('click', () => {
+    const zoom = () => {
       if (this.card) range.zoom.open(this.card.material.images, this.gallery.index);
+    };
+    this.slides.addEventListener('click', zoom);
+    this.slides.addEventListener('keydown', (event) => {
+      if (event.target !== this.slides || (event.key !== 'Enter' && event.key !== ' ')) return;
+      event.preventDefault();
+      zoom();
     });
     dialog.querySelector('[data-qv-more]')?.addEventListener('click', () => {
       dialog.dataset.mode = 'details';
@@ -687,6 +721,7 @@ class Range {
         this.cards.forEach((card) => {
           card.element.hidden = group !== '' && card.element.dataset.group !== group;
         });
+        pushDataLayer({ ecommerce: null });
         pushDataLayer({
           event: 'landing_filter',
           feature_version: TRACKING_VERSION,
