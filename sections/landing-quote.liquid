@@ -1,0 +1,47 @@
+{% comment %}
+  Landing page quote: one centred customer or founder quote with a small attribution line.
+{% endcomment %}
+
+{{ 'section-landing.css' | asset_url | stylesheet_tag }}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div class="section section--page-width color-{{ section.settings.color_scheme }}">
+  <figure class="landing-quote">
+    <blockquote class="landing-quote__text">{{ section.settings.quote | escape }}</blockquote>
+    {%- if section.settings.author != blank -%}
+      <figcaption class="h6">{{ section.settings.author | escape }}</figcaption>
+    {%- endif -%}
+  </figure>
+</div>
+
+{% schema %}
+{
+  "name": "Landing quote",
+  "class": "section-wrapper",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "quote",
+      "label": "Quote",
+      "info": "Customer reviews must be quoted word for word."
+    },
+    {
+      "type": "text",
+      "id": "author",
+      "label": "Attribution",
+      "default": "Verified customer"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Landing quote"
+    }
+  ]
+}
+{% endschema %}

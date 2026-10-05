@@ -1,0 +1,193 @@
+{%- doc -%}
+  Emits one product as JSON for the landing page cards, quick view and looks (see assets/landing.js).
+
+  The landing page lets the shopper pick a material (gold / silver / ...) on the card and a letter in the
+  quick view, so everything the script needs is rendered once here and nothing is fetched afterwards.
+
+  The "letter" option is the one whose name contains "letter" or "initial". The "material" option is the
+  first other option with more than one value. A product without a material option still gets a single
+  material entry, labelled with `default_label`, so cards and looks can treat every product the same way.
+
+  @param {object} product - The product
+  @param {string} [default_label] - Material label when the product has no material option
+  @param {number} [lead_media] - 1-based index of the product media to show first for the default material
+  @param {string} [preferred] - Material to open on when the product has it, e.g. "gold"
+{%- enddoc -%}
+
+{%- liquid
+  assign letter_option = nil
+  assign material_option = nil
+  for option in product.options_with_values
+    assign option_name = option.name | downcase
+    if option_name contains 'letter' or option_name contains 'initial'
+      assign letter_option = option
+    elsif material_option == nil and option.values.size > 1
+      assign material_option = option
+    endif
+  endfor
+
+  assign material_index = -1
+  if material_option
+    assign material_index = material_option.position | minus: 1
+  endif
+  assign letter_index = -1
+  if letter_option
+    assign letter_index = letter_option.position | minus: 1
+  endif
+
+  comment
+    Media attached to a variant belongs to that variant's material. Everything else is shared.
+  endcomment
+  assign variant_media_ids = ','
+  for variant in product.variants
+    if variant.featured_media
+      assign variant_media_ids = variant_media_ids | append: variant.featured_media.id | append: ','
+    endif
+  endfor
+
+  assign lead_index = lead_media | default: 1 | minus: 1
+  assign lead_override = product.media[lead_index]
+
+  comment
+    The card opens on the preferred material when the product has it, otherwise on the first one.
+    The chosen first photo belongs to that material.
+  endcomment
+  assign default_material = nil
+  if material_option
+    assign preferred_material = preferred | default: '' | downcase
+    for value in material_option.values
+      assign value_name = value.name | default: value
+      assign value_lower = value_name | downcase
+      if default_material == nil
+        assign default_material = value_name
+      endif
+      if preferred_material != '' and value_lower contains preferred_material
+        assign default_material = value_name
+        break
+      endif
+    endfor
+  endif
+-%}
+
+{%- capture shared_images -%}
+  {%- assign shared_count = 0 -%}
+  {%- for media in product.media -%}
+    {%- assign media_key = ',' | append: media.id | append: ',' -%}
+    {%- if media.media_type != 'image' or variant_media_ids contains media_key or shared_count >= 4 -%}
+      {%- continue -%}
+    {%- endif -%}
+    {%- if lead_override and media.id == lead_override.id -%}
+      {%- continue -%}
+    {%- endif -%}
+    {%- assign shared_count = shared_count | plus: 1 -%}
+    ,{"s": {{ media.preview_image | image_url: width: 800 | json }}, "l": {{ media.preview_image | image_url: width: 1400 | json }}, "a": {{ media.alt | default: product.title | json }}}
+  {%- endfor -%}
+{%- endcapture -%}
+
+{
+  "id": {{ product.id | json }},
+  "title": {{ product.title | json }},
+  "url": {{ product.url | json }},
+  "note": {{ product.metafields.custom.card_note.value | default: '' | json }},
+  "materialsCare": {{ product.metafields.custom.materials | metafield_tag | default: '' | json }},
+  "letterOption": {{ letter_option.name | default: '' | json }},
+  "letters": [
+    {%- if letter_option -%}
+      {%- for value in letter_option.values -%}
+        {{ value.name | default: value | json }}{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    {%- endif -%}
+  ],
+  "materials": [
+    {%- if material_option -%}
+      {%- for value in material_option.values -%}
+        {%- liquid
+          assign value_name = value.name | default: value
+          assign representative = nil
+          for variant in product.variants
+            if variant.options[material_index] == value_name
+              assign representative = variant
+              break
+            endif
+          endfor
+          assign lead = representative.featured_media
+          assign no_photo = false
+          if lead == blank
+            assign no_photo = true
+            assign lead = product.featured_media
+          endif
+          assign own_media = nil
+          assign is_default = false
+          if value_name == default_material
+            assign is_default = true
+          endif
+          if is_default and lead_override
+            if representative.featured_media and representative.featured_media.id != lead_override.id
+              assign own_media = representative.featured_media
+            endif
+            assign lead = lead_override
+            assign no_photo = false
+          endif
+        -%}
+        {%- capture lead_image -%}
+          {%- if lead != blank -%}
+            ,{"s": {{ lead.preview_image | image_url: width: 800 | json }}, "l": {{ lead.preview_image | image_url: width: 1400 | json }}, "a": {{ lead.alt | default: product.title | json }}}
+          {%- endif -%}
+        {%- endcapture -%}
+        {%- capture own_image -%}
+          {%- if own_media -%}
+            ,{"s": {{ own_media.preview_image | image_url: width: 800 | json }}, "l": {{ own_media.preview_image | image_url: width: 1400 | json }}, "a": {{ own_media.alt | default: product.title | json }}}
+          {%- endif -%}
+        {%- endcapture -%}
+        {
+          "value": {{ value_name | json }},
+          "label": {{ value_name | json }},
+          "swatch": {% render 'landing-swatch-color', name: value_name, swatch: value.swatch %},
+          "noPhoto": {{ no_photo | json }},
+          "default": {{ is_default | json }},
+          "price": {{ representative.price | default: product.price | json }},
+          "compare": {{ representative.compare_at_price | default: 0 | json }},
+          "images": [{{ lead_image | append: own_image | append: shared_images | strip | remove_first: ',' }}]
+        }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    {%- else -%}
+      {%- liquid
+        assign lead = product.featured_media
+        if lead_override
+          assign lead = lead_override
+        endif
+        assign variant = product.selected_or_first_available_variant
+      -%}
+      {%- capture lead_image -%}
+        {%- if lead != blank -%}
+          ,{"s": {{ lead.preview_image | image_url: width: 800 | json }}, "l": {{ lead.preview_image | image_url: width: 1400 | json }}, "a": {{ lead.alt | default: product.title | json }}}
+        {%- endif -%}
+      {%- endcapture -%}
+      {
+        "value": "",
+        "label": {{ default_label | default: '' | json }},
+        "swatch": {% render 'landing-swatch-color', name: default_label %},
+        "noPhoto": false,
+        "default": true,
+        "price": {{ variant.price | json }},
+        "compare": {{ variant.compare_at_price | default: 0 | json }},
+        "images": [{{ lead_image | append: shared_images | strip | remove_first: ',' }}]
+      }
+    {%- endif -%}
+  ],
+  "variants": [
+    {%- for variant in product.variants -%}
+      {%- liquid
+        assign variant_material = ''
+        if material_index >= 0
+          assign variant_material = variant.options[material_index]
+        endif
+        assign variant_letter = ''
+        if letter_index >= 0
+          assign variant_letter = variant.options[letter_index]
+        endif
+      -%}
+      {"id": {{ variant.id | json }}, "m": {{ variant_material | json }}, "l": {{ variant_letter | json }}, "a": {{ variant.available | json }}, "p": {{ variant.price | json }}, "c": {{ variant.compare_at_price | default: 0 | json }}}{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ]
+}
