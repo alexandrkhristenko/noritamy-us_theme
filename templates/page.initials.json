@@ -25,7 +25,7 @@
           "settings": {
             "product": "initial-necklace-l-l",
             "group": "Necklaces",
-            "lead_media": 3
+            "lead_media": 2
           }
         },
         "small": {
@@ -84,7 +84,7 @@
       "settings": {
         "heading": "Five ways to wear your letter",
         "subheading": "And one for the wall. Choose the piece first, then your letter.",
-        "bundle_note": "Add a second piece and it is [percent]% off.",
+        "bundle_note": "Add a second piece to get [percent]% off.",
         "list_name": "Initials landing",
         "show_filters": true,
         "all_label": "All",
@@ -99,7 +99,7 @@
         "add_label": "Add to cart",
         "sold_out_label": "Sold out",
         "show_express_checkout": true,
-        "quick_view_bundle_note": "Add a second piece and it is [percent]% off.",
+        "quick_view_bundle_note": "Add a second piece to get [percent]% off.",
         "materials_heading": "Materials + Care",
         "materials_text": "<p><strong>Care Instructions for Your Plated or full gold Jewelry</strong><br/><br/>Our pieces are crafted to make a statement - and to stay with you for years. To keep their shine and spirit alive, a little mindful care goes a long way.<br/><br/>Here’s how to love them back:<br/><br/><strong>Last on, first off.</strong><br/>Put your jewelry on after applying perfume, lotion, or makeup - and take it off before undressing, showering, or sleeping.<br/><br/><strong>Keep it dry.</strong><br/>Water, humidity, and plating don’t mix. Avoid wearing your piece while swimming, bathing, or sweating.<br/><br/><strong>Soft touch only.</strong><br/>Clean gently with a soft, dry cloth after each wear to remove any natural oils or residue. No chemicals, no abrasives - just a little love.<br/><br/><strong>Store with intention.</strong><br/>Keep your piece in its Noritamy pouch or box, away from sunlight and other jewelry to prevent scratching or fading.<br/><br/><strong>Time to replate?</strong><br/>Over time, gold plating may naturally fade depending on wear. When that moment comes, we offer a re-plating service to bring your piece back to life.<br/><br/><strong>Materials: </strong></p>",
         "shipping_heading": "Shipping + Returns",
@@ -189,10 +189,7 @@
               "initials-necklace-sterling-silver-lr-n-200"
             ],
             "image_product": "initial-necklace-l-l",
-            "image_product_media": 2,
-            "image_zoom": 170,
-            "image_focus_x": 55,
-            "image_focus_y": 0
+            "image_product_media": 2
           }
         },
         "statement": {
