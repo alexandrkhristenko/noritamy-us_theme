@@ -165,7 +165,8 @@ function warmSlideVideo(slides, level) {
   slides.querySelectorAll('video').forEach((video) => {
     if (video.preload === 'auto' || video.preload === level) return;
     video.preload = level;
-    if (level === 'auto') video.load();
+    // Never restart a video that is already playing or has data.
+    if (level === 'auto' && video.paused && video.readyState < 2) video.load();
   });
 }
 
@@ -235,6 +236,18 @@ class Gallery {
     this.#paintDots();
   }
 
+  /**
+   * Shows a given slide straight away, without counting it as a swipe.
+   * @param {number} index
+   */
+  jumpTo(index) {
+    this.slides.scrollLeft = index * this.slides.clientWidth;
+    this.index = index;
+    clearTimeout(this.settle);
+    this.#paintDots();
+    playSlideVideo(this.slides, index);
+  }
+
   /** @param {number} direction */
   #step(direction) {
     const count = this.slides.children.length;
@@ -280,6 +293,7 @@ const EVENT_FIELDS = {
   tile_letter: null,
   tile_window: null,
   tile_click_source: null,
+  tile_collection: null,
   media_type: null,
   details_name: null,
   section_name: null,
@@ -418,8 +432,7 @@ class Zoom {
     this.dialog.showModal();
     document.documentElement.setAttribute('scroll-lock', '');
     this.gallery.refresh();
-    this.slides.scrollLeft = index * this.slides.clientWidth;
-    playSlideVideo(this.slides, index);
+    this.gallery.jumpTo(index);
     return true;
   }
 
@@ -619,6 +632,7 @@ class QuickView {
     this.fullLink.addEventListener('click', () => {
       if (!this.card) return;
       range.track('landing_link_click', this.card, {
+        item_variant: this.#variant()?.id,
         section_name: 'quick_view',
         link_text: (this.fullLink.textContent || '').trim().slice(0, 60),
         link_url: this.fullLink.getAttribute('href'),
@@ -642,6 +656,7 @@ class QuickView {
     });
     dialog.querySelector('[data-qv-more]')?.addEventListener('click', () => {
       dialog.dataset.mode = 'details';
+      warmSlideVideo(this.slides, 'auto');
       this.title.focus();
       if (this.card) {
         range.track('select_item', this.card, { item_variant: this.#variant()?.id, tile_click_source: 'quick_add_window' });
@@ -707,10 +722,7 @@ class QuickView {
     this.render(true);
     this.dialog.showModal();
     document.documentElement.setAttribute('scroll-lock', '');
-    if (mode === 'details') warmSlideVideo(this.slides, 'auto');
-    if (photo > 0) {
-      this.slides.scrollLeft = photo * this.slides.clientWidth;
-    }
+    if (photo > 0) this.gallery.jumpTo(photo);
     // "See details" is this page's click-through; the short window is the quick add.
     this.range.track(mode === 'details' ? 'select_item' : 'tile_quick_add_open', card, {
       item_variant: this.#variant()?.id,
@@ -722,7 +734,10 @@ class QuickView {
   #release() {
     playSlideVideo(this.slides, -1);
     releaseScrollLock();
+    this.dialog.querySelectorAll('details[open]').forEach((details) => details.removeAttribute('open'));
     if (!this.card) return;
+    // The card's own video was paused while the dialog was open.
+    playSlideVideo(this.card.slides, this.card.gallery.index);
     this.card.formHome.append(this.card.form);
     this.card = null;
   }
@@ -743,6 +758,7 @@ class QuickView {
 
     if (resetPhotos) {
       fillSlides(this.slides, material.images, 'l', true);
+      if (this.dialog.dataset.mode === 'details') warmSlideVideo(this.slides, 'auto');
       this.gallery.refresh();
       range.paintPhotoNote(this.photoNote, material, card.materials[defaultIndex(card.materials)]);
     }
@@ -851,6 +867,11 @@ class Range {
     };
     this.zoom = new Zoom(/** @type {HTMLDialogElement} */ (root.querySelector('[data-zoom]')));
     this.quickView = new QuickView(this);
+    // The quick view's video was paused while the zoom was open.
+    this.zoom.dialog.addEventListener('close', () => {
+      const quickView = this.quickView;
+      if (quickView.dialog.open) playSlideVideo(quickView.slides, quickView.gallery.index);
+    });
     /** @type {Card[]} */
     this.cards = [];
     root.querySelectorAll('[data-landing-card]').forEach((element) => {
@@ -967,12 +988,11 @@ class Range {
     );
     this.cards.forEach((card) => observer.observe(card.element));
 
-    // A card's video stops once the card has scrolled away.
+    // A card's video stops once the card has scrolled away, and picks up again when it is back.
     const offScreen = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) return;
         const card = this.cards.find((candidate) => candidate.element === entry.target);
-        if (card) playSlideVideo(card.slides, -1);
+        if (card) playSlideVideo(card.slides, entry.isIntersecting ? card.gallery.index : -1);
       });
     });
     this.cards.forEach((card) => offScreen.observe(card.element));
@@ -1101,6 +1121,7 @@ class Looks {
     pushDataLayer({
       event,
       feature_version: TRACKING_VERSION,
+      tile_collection: pageListId(),
       look_name: this.lookName,
       look_pieces: this.pieces.length,
       look_value: toUnits(totals.together),
@@ -1275,6 +1296,7 @@ class Looks {
       pushDataLayer({
         event: 'landing_error',
         feature_version: TRACKING_VERSION,
+        tile_collection: pageListId(),
         look_name: this.lookName,
         error_message: String(reason || 'look add failed').slice(0, 100),
       });
@@ -1298,6 +1320,11 @@ function fillPercentNotes() {
   });
 }
 
+/** The list id page-level events share with the card events, so they can be filtered together. */
+function pageListId() {
+  return /** @type {HTMLElement | null} */ (document.querySelector('[data-landing-range]'))?.dataset.listId || null;
+}
+
 /**
  * How far down the page a visit got: one event per section, the first time it is properly on
  * screen.
@@ -1315,6 +1342,7 @@ function watchSections() {
         pushDataLayer({
           event: 'landing_section_view',
           feature_version: TRACKING_VERSION,
+          tile_collection: pageListId(),
           section_name: /** @type {HTMLElement} */ (entry.target).dataset.landingSection,
           section_index: all.indexOf(entry.target) + 1,
         });
@@ -1336,13 +1364,17 @@ function watchLinks() {
   document.addEventListener('click', (event) => {
     const link = event.target instanceof Element ? event.target.closest('a[href]') : null;
     const section = link?.closest('[data-landing-section]');
-    // Card links open the quick view (select_item); links inside a dialog are reported by the dialog.
-    if (!link || !section || link.hasAttribute('data-open-quick-view') || link.closest('dialog')) return;
+    // Card links open the quick view (select_item); "View the full page" reports itself, with its product.
+    if (!link || !section || link.hasAttribute('data-open-quick-view') || link.hasAttribute('data-qv-full-link')) return;
+    const dialog = link.closest('dialog');
     pushDataLayer({ ecommerce: null });
     pushDataLayer({
       event: 'landing_link_click',
       feature_version: TRACKING_VERSION,
-      section_name: /** @type {HTMLElement} */ (section).dataset.landingSection,
+      tile_collection: pageListId(),
+      section_name: dialog
+        ? dialog.hasAttribute('data-look-dialog') ? 'look_window' : 'quick_view'
+        : /** @type {HTMLElement} */ (section).dataset.landingSection,
       link_text: (link.textContent || '').trim().slice(0, 60),
       link_url: link.getAttribute('href'),
     });
