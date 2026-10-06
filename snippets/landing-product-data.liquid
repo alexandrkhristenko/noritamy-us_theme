@@ -69,6 +69,41 @@
   endif
 -%}
 
+{%- comment -%}
+  The product's first hosted video, shown as the second slide. The mp4 nearest to 720p keeps it light
+  on mobile; the poster is what shows until the slide is opened.
+{%- endcomment -%}
+{%- capture first_video -%}
+  {%- for media in product.media -%}
+    {%- if media.media_type != 'video' -%}
+      {%- continue -%}
+    {%- endif -%}
+    {%- liquid
+      assign video_url = ''
+      assign video_height = 0
+      for source in media.sources
+        if source.format != 'mp4'
+          continue
+        endif
+        if video_url == ''
+          assign video_url = source.url
+          assign video_height = source.height
+        elsif source.height <= 720 and source.height > video_height
+          assign video_url = source.url
+          assign video_height = source.height
+        elsif video_height > 720 and source.height < video_height
+          assign video_url = source.url
+          assign video_height = source.height
+        endif
+      endfor
+    -%}
+    {%- if video_url != '' -%}
+      ,{"v": {{ video_url | json }}, "s": {{ media.preview_image | image_url: width: 800 | json }}, "l": {{ media.preview_image | image_url: width: 1400 | json }}, "a": {{ media.alt | default: product.title | json }}}
+      {%- break -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
 {%- capture shared_images -%}
   {%- assign shared_count = 0 -%}
   {%- for media in product.media -%}
@@ -147,7 +182,7 @@
           "default": {{ is_default | json }},
           "price": {{ representative.price | default: product.price | json }},
           "compare": {{ representative.compare_at_price | default: 0 | json }},
-          "images": [{{ lead_image | append: own_image | append: shared_images | strip | remove_first: ',' }}]
+          "images": [{{ lead_image | append: first_video | append: own_image | append: shared_images | strip | remove_first: ',' }}]
         }{% unless forloop.last %},{% endunless %}
       {%- endfor -%}
     {%- else -%}
@@ -171,7 +206,7 @@
         "default": true,
         "price": {{ variant.price | json }},
         "compare": {{ variant.compare_at_price | default: 0 | json }},
-        "images": [{{ lead_image | append: shared_images | strip | remove_first: ',' }}]
+        "images": [{{ lead_image | append: first_video | append: shared_images | strip | remove_first: ',' }}]
       }
     {%- endif -%}
   ],

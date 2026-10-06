@@ -163,13 +163,13 @@
         }
       },
       "block_order": [
+        "shipping",
+        "returns",
         "studio",
         "metal",
         "silver",
         "nickel",
-        "returns",
-        "packaging",
-        "shipping"
+        "packaging"
       ],
       "settings": {
         "heading": "The Noritamy Standard",

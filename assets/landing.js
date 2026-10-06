@@ -118,6 +118,11 @@ function firstVariant(material) {
 function fillSlides(container, images, size, eagerFirst = false) {
   container.replaceChildren(
     ...images.map((image, index) => {
+      if (image.v) {
+        const video = slideVideo(image, size);
+        video.dataset.index = String(index);
+        return video;
+      }
       const img = document.createElement('img');
       img.src = image[size];
       img.alt = image.a;
@@ -128,6 +133,39 @@ function fillSlides(container, images, size, eagerFirst = false) {
     })
   );
   container.scrollLeft = 0;
+}
+
+/**
+ * A product video as a slide: silent and looping, and it downloads nothing until its slide is the
+ * one on screen (see Gallery).
+ * @param {{ v: string, s: string, l: string, a: string }} media
+ * @param {'s' | 'l'} size - poster size
+ */
+function slideVideo(media, size) {
+  const video = document.createElement('video');
+  video.muted = true;
+  video.loop = true;
+  video.playsInline = true;
+  video.preload = 'none';
+  video.poster = media[size];
+  video.src = media.v;
+  video.setAttribute('muted', '');
+  video.setAttribute('aria-label', media.a);
+  return video;
+}
+
+/**
+ * Plays the video on the given slide and pauses every other one in the row.
+ * @param {HTMLElement} slides
+ * @param {number} active - index of the slide on screen, or -1 to pause them all
+ */
+function playSlideVideo(slides, active) {
+  Array.from(slides.children).forEach((slide, index) => {
+    const video = slide instanceof HTMLVideoElement ? slide : slide.querySelector('video');
+    if (!video) return;
+    if (index === active) video.play().catch(() => {});
+    else video.pause();
+  });
 }
 
 /**
@@ -191,6 +229,7 @@ class Gallery {
     if (index === this.index) return;
     this.index = index;
     this.#paintDots();
+    playSlideVideo(this.slides, index);
     // Report once the row has come to rest, so a fling or a wrap-around counts as one swipe.
     clearTimeout(this.settle);
     this.settle = setTimeout(() => this.onSwipe?.(this.index), 200);
@@ -220,6 +259,7 @@ const EVENT_FIELDS = {
   tile_material: null,
   tile_letter: null,
   tile_window: null,
+  tile_click_source: null,
   image_index: null,
   filter_value: null,
   look_name: null,
@@ -313,7 +353,10 @@ class Zoom {
       () => this.#reset()
     );
     dialog.querySelector('[data-close]')?.addEventListener('click', () => dialog.close());
-    dialog.addEventListener('close', releaseScrollLock);
+    dialog.addEventListener('close', () => {
+      playSlideVideo(this.slides, -1);
+      releaseScrollLock();
+    });
     this.slides.addEventListener('click', (event) => this.#toggle(/** @type {MouseEvent} */ (event)));
   }
 
@@ -328,6 +371,13 @@ class Zoom {
       ...images.map((image, position) => {
         const frame = document.createElement('div');
         frame.className = 'landing-zoom__frame';
+        if (image.v) {
+          const video = slideVideo(/** @type {any} */ (image), 'l');
+          video.controls = true;
+          frame.classList.add('landing-zoom__frame--video');
+          frame.append(video);
+          return frame;
+        }
         const img = document.createElement('img');
         // Ask Shopify's image CDN for a larger copy, so the photo stays sharp at twice the size.
         img.src = image.l.replace(/([?&]width=)\d+/, (_match, prefix) => `${prefix}2400`);
@@ -342,6 +392,7 @@ class Zoom {
     document.documentElement.setAttribute('scroll-lock', '');
     this.gallery.refresh();
     this.slides.scrollLeft = index * this.slides.clientWidth;
+    playSlideVideo(this.slides, index);
     return true;
   }
 
@@ -354,7 +405,7 @@ class Zoom {
     const frame = /** @type {HTMLElement | null} */ (
       event.target instanceof Element ? event.target.closest('.landing-zoom__frame') : null
     );
-    if (!frame) return;
+    if (!frame || frame.classList.contains('landing-zoom__frame--video')) return;
     if (frame.classList.contains('is-zoomed')) {
       frame.classList.remove('is-zoomed');
       return;
@@ -398,15 +449,13 @@ class Card {
       (index) => range.track('tile_image_swipe', this, { image_index: index + 1 })
     );
 
-    const zoom = () => {
-      if (!range.zoom.open(this.material.images, this.gallery.index)) return;
-      range.track('tile_image_zoom', this, { image_index: this.gallery.index + 1 });
-    };
-    this.slides.addEventListener('click', zoom);
+    // A photo opens the full quick view, where it can be enlarged; the same as "See details".
+    const openFromPhoto = () => range.quickView.open(this, 'details', 'image', this.gallery.index);
+    this.slides.addEventListener('click', openFromPhoto);
     this.slides.addEventListener('keydown', (event) => {
       if (event.target !== this.slides || (event.key !== 'Enter' && event.key !== ' ')) return;
       event.preventDefault();
-      zoom();
+      openFromPhoto();
     });
     element.querySelectorAll('[data-open-quick-view]').forEach((opener) => {
       opener.addEventListener('click', (event) => {
@@ -416,7 +465,7 @@ class Card {
         if (mouse.metaKey || mouse.ctrlKey || mouse.shiftKey || mouse.altKey) return;
         event.preventDefault();
         const mode = /** @type {HTMLElement} */ (opener).dataset.openQuickView === 'details' ? 'details' : 'quick';
-        range.quickView.open(this, mode);
+        range.quickView.open(this, mode, /** @type {HTMLElement} */ (opener).dataset.clickSource || 'button');
       });
     });
     this.render();
@@ -508,7 +557,9 @@ class QuickView {
 
     dialog.querySelector('[data-close]')?.addEventListener('click', () => dialog.close());
     const zoom = () => {
-      if (this.card) range.zoom.open(this.card.material.images, this.gallery.index);
+      if (!this.card || !range.zoom.open(this.card.material.images, this.gallery.index)) return;
+      playSlideVideo(this.slides, -1);
+      range.track('tile_image_zoom', this.card, { image_index: this.gallery.index + 1 });
     };
     this.slides.addEventListener('click', zoom);
     this.slides.addEventListener('keydown', (event) => {
@@ -519,7 +570,9 @@ class QuickView {
     dialog.querySelector('[data-qv-more]')?.addEventListener('click', () => {
       dialog.dataset.mode = 'details';
       this.title.focus();
-      if (this.card) range.track('select_item', this.card, { item_variant: this.#variant()?.id });
+      if (this.card) {
+        range.track('select_item', this.card, { item_variant: this.#variant()?.id, tile_click_source: 'quick_add_window' });
+      }
     });
     dialog.addEventListener('click', (event) => {
       if (event.target === dialog) dialog.close();
@@ -562,23 +615,33 @@ class QuickView {
    * @param {Card} card
    * @param {'quick' | 'details'} mode - 'quick' is only the material and letter choice; 'details'
    *   adds the photos, materials and shipping.
+   * @param {string} [source] - what was clicked: 'image', 'button' or 'title'
+   * @param {number} [photo] - photo to open on (the one showing on the card)
    */
-  open(card, mode) {
+  open(card, mode, source = 'button', photo = 0) {
     this.card = card;
     this.dialog.dataset.mode = mode;
     this.letter = rememberedLetter(card.material);
     this.error.hidden = true;
 
     this.formSlot.append(card.form);
+    playSlideVideo(card.slides, -1);
     this.render(true);
     this.dialog.showModal();
     document.documentElement.setAttribute('scroll-lock', '');
+    if (photo > 0) {
+      this.slides.scrollLeft = photo * this.slides.clientWidth;
+    }
     // "See details" is this page's click-through; the short window is the quick add.
-    this.range.track(mode === 'details' ? 'select_item' : 'tile_quick_add_open', card, { item_variant: this.#variant()?.id });
+    this.range.track(mode === 'details' ? 'select_item' : 'tile_quick_add_open', card, {
+      item_variant: this.#variant()?.id,
+      tile_click_source: source,
+    });
   }
 
   /** Puts the card's form back where it lives and resets it for the next open. */
   #release() {
+    playSlideVideo(this.slides, -1);
     releaseScrollLock();
     if (!this.card) return;
     this.card.formHome.append(this.card.form);
@@ -815,6 +878,16 @@ class Range {
       { threshold: 0.5 }
     );
     this.cards.forEach((card) => observer.observe(card.element));
+
+    // A card's video stops once the card has scrolled away.
+    const offScreen = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) return;
+        const card = this.cards.find((candidate) => candidate.element === entry.target);
+        if (card) playSlideVideo(card.slides, -1);
+      });
+    });
+    this.cards.forEach((card) => offScreen.observe(card.element));
   }
 }
 
