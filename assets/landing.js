@@ -157,7 +157,7 @@ function slideVideo(media, size) {
 /**
  * Starts fetching a row's video ahead of the swipe, so it plays at once when its slide arrives.
  * 'metadata' is a few kilobytes (used when a card comes on screen); 'auto' buffers the video itself
- * (used once the shopper touches or points at the card, or opens the quick view).
+ * (used once a card's photo row starts to move or a mouse rests on the card, and in the quick view).
  * @param {HTMLElement} slides
  * @param {'metadata' | 'auto'} level
  */
@@ -495,10 +495,27 @@ class Card {
     );
     /** @type {'' | 'metadata' | 'auto'} */
     this.warm = '';
+    // Buffer the video only on a real sign that its slide is next: the photo row starts to move
+    // (a swipe, the arrow keys), an arrow is pressed, or a mouse rests on the card. A finger landing
+    // on the card is not one, since on a phone that is how every page scroll starts.
     const warmUp = () => this.warmVideo('auto');
-    element.addEventListener('pointerenter', warmUp);
-    element.addEventListener('touchstart', warmUp, { passive: true });
-    element.addEventListener('focusin', warmUp);
+    this.slides.addEventListener(
+      'scroll',
+      () => {
+        if (this.slides.scrollLeft !== 0) warmUp();
+      },
+      { passive: true }
+    );
+    element.querySelectorAll('[data-prev], [data-next]').forEach((arrow) => {
+      arrow.addEventListener('pointerdown', warmUp);
+    });
+    /** @type {ReturnType<typeof setTimeout> | undefined} */
+    let hover;
+    element.addEventListener('pointerenter', (event) => {
+      if (/** @type {PointerEvent} */ (event).pointerType !== 'mouse') return;
+      hover = setTimeout(warmUp, 200);
+    });
+    element.addEventListener('pointerleave', () => clearTimeout(hover));
 
     // A photo opens the full quick view, where it can be enlarged; the same as "See details".
     const openFromPhoto = () => range.quickView.open(this, 'details', 'image', this.gallery.index);
