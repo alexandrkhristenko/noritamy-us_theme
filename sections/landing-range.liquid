@@ -31,6 +31,7 @@
   <div
     class="landing-range"
     data-landing-range
+    data-landing-section="products"
     data-money-format="{{ shop.money_format | strip_html | escape }}"
     data-list-name="{{ section.settings.list_name | escape }}"
     data-list-id="{{ section.settings.list_name | handleize }}"
@@ -267,14 +268,14 @@
           <div class="landing-qv__standard" data-qv-standard hidden></div>
 
           <div class="landing-qv__details">
-            <details class="landing-details" data-qv-materials>
+            <details class="landing-details" data-qv-materials data-details-name="materials">
               <summary class="h6">{{ section.settings.materials_heading | escape }}</summary>
               <div class="rte">
                 {{ section.settings.materials_text }}
                 <div data-qv-materials-product></div>
               </div>
             </details>
-            <details class="landing-details">
+            <details class="landing-details" data-details-name="shipping">
               <summary class="h6">{{ section.settings.shipping_heading | escape }}</summary>
               <div class="rte">{{ section.settings.shipping_text }}</div>
             </details>

@@ -70,8 +70,8 @@
 -%}
 
 {%- comment -%}
-  The product's first hosted video, shown as the second slide. The mp4 nearest to 720p keeps it light
-  on mobile; the poster is what shows until the slide is opened.
+  The product's first hosted video, shown as the second slide. Two renditions: "vs" (up to 480p) for
+  the small card, "v" (up to 720p) for the quick view and the zoom. The poster shows until it plays.
 {%- endcomment -%}
 {%- capture first_video -%}
   {%- for media in product.media -%}
@@ -81,6 +81,8 @@
     {%- liquid
       assign video_url = ''
       assign video_height = 0
+      assign small_url = ''
+      assign small_height = 0
       for source in media.sources
         if source.format != 'mp4'
           continue
@@ -95,10 +97,20 @@
           assign video_url = source.url
           assign video_height = source.height
         endif
+        if small_url == ''
+          assign small_url = source.url
+          assign small_height = source.height
+        elsif source.height <= 480 and source.height > small_height
+          assign small_url = source.url
+          assign small_height = source.height
+        elsif small_height > 480 and source.height < small_height
+          assign small_url = source.url
+          assign small_height = source.height
+        endif
       endfor
     -%}
     {%- if video_url != '' -%}
-      ,{"v": {{ video_url | json }}, "s": {{ media.preview_image | image_url: width: 800 | json }}, "l": {{ media.preview_image | image_url: width: 1400 | json }}, "a": {{ media.alt | default: product.title | json }}}
+      ,{"v": {{ video_url | json }}, "vs": {{ small_url | json }}, "s": {{ media.preview_image | image_url: width: 800 | json }}, "l": {{ media.preview_image | image_url: width: 1400 | json }}, "a": {{ media.alt | default: product.title | json }}}
       {%- break -%}
     {%- endif -%}
   {%- endfor -%}

@@ -6,7 +6,7 @@
 
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
 <div class="section section--page-width color-{{ section.settings.color_scheme }}">
-  <div class="landing-cta">
+  <div class="landing-cta" data-landing-section="closing">
     {%- if section.settings.button_label != blank -%}
       <a class="button button-secondary landing-cta__button" href="{{ section.settings.button_link }}">
         {{- section.settings.button_label | escape -}}

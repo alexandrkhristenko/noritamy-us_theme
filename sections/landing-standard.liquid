@@ -7,7 +7,7 @@
 
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
 <div class="section section--page-width color-{{ section.settings.color_scheme }}">
-  <div class="landing-standard" data-landing-standard>
+  <div class="landing-standard" data-landing-standard data-landing-section="standard">
     {%- if section.settings.heading != blank -%}
       <h2 class="landing-standard__title h4">{{ section.settings.heading | escape }}</h2>
     {%- endif -%}

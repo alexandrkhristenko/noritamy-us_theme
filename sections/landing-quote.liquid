@@ -6,7 +6,7 @@
 
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
 <div class="section section--page-width color-{{ section.settings.color_scheme }}">
-  <figure class="landing-quote">
+  <figure class="landing-quote" data-landing-section="review">
     <blockquote class="landing-quote__text">{{ section.settings.quote | escape }}</blockquote>
     {%- if section.settings.author != blank -%}
       <figcaption class="h6">{{ section.settings.author | escape }}</figcaption>

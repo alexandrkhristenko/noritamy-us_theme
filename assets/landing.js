@@ -148,10 +148,30 @@ function slideVideo(media, size) {
   video.playsInline = true;
   video.preload = 'none';
   video.poster = media[size];
-  video.src = media.v;
+  video.src = (size === 's' && media.vs) || media.v;
   video.setAttribute('muted', '');
   video.setAttribute('aria-label', media.a);
   return video;
+}
+
+/**
+ * Starts fetching a row's video ahead of the swipe, so it plays at once when its slide arrives.
+ * 'metadata' is a few kilobytes (used when a card comes on screen); 'auto' buffers the video itself
+ * (used once the shopper touches or points at the card, or opens the quick view).
+ * @param {HTMLElement} slides
+ * @param {'metadata' | 'auto'} level
+ */
+function warmSlideVideo(slides, level) {
+  slides.querySelectorAll('video').forEach((video) => {
+    if (video.preload === 'auto' || video.preload === level) return;
+    video.preload = level;
+    if (level === 'auto') video.load();
+  });
+}
+
+/** @param {any[]} images @param {number} index */
+function mediaType(images, index) {
+  return images[index]?.v ? 'video' : 'photo';
 }
 
 /**
@@ -260,6 +280,13 @@ const EVENT_FIELDS = {
   tile_letter: null,
   tile_window: null,
   tile_click_source: null,
+  media_type: null,
+  details_name: null,
+  section_name: null,
+  section_index: null,
+  link_text: null,
+  link_url: null,
+  error_message: null,
   image_index: null,
   filter_value: null,
   look_name: null,
@@ -446,8 +473,19 @@ class Card {
       /** @type {HTMLElement} */ (element.querySelector('[data-dots]')),
       element.querySelector('[data-prev]'),
       element.querySelector('[data-next]'),
-      (index) => range.track('tile_image_swipe', this, { image_index: index + 1 })
+      (index) =>
+        range.track('tile_image_swipe', this, {
+          image_index: index + 1,
+          media_type: mediaType(this.material.images, index),
+          tile_window: 'card',
+        })
     );
+    /** @type {'' | 'metadata' | 'auto'} */
+    this.warm = '';
+    const warmUp = () => this.warmVideo('auto');
+    element.addEventListener('pointerenter', warmUp);
+    element.addEventListener('touchstart', warmUp, { passive: true });
+    element.addEventListener('focusin', warmUp);
 
     // A photo opens the full quick view, where it can be enlarged; the same as "See details".
     const openFromPhoto = () => range.quickView.open(this, 'details', 'image', this.gallery.index);
@@ -475,6 +513,13 @@ class Card {
     return this.materials[this.selected];
   }
 
+  /** @param {'metadata' | 'auto'} level */
+  warmVideo(level) {
+    if (this.warm === 'auto' || this.warm === level) return;
+    this.warm = level;
+    warmSlideVideo(this.slides, level);
+  }
+
   /** @param {number} index */
   select(index) {
     if (index === this.selected || !this.materials[index]) return;
@@ -488,6 +533,7 @@ class Card {
     if (!material) return;
 
     fillSlides(this.slides, material.images, 's');
+    if (this.warm) warmSlideVideo(this.slides, this.warm);
     this.gallery.refresh();
     this.range.paintPhotoNote(this.photoNote, material, this.materials[defaultIndex(this.materials)]);
 
@@ -552,14 +598,41 @@ class QuickView {
       this.slides,
       find('dots'),
       /** @type {HTMLButtonElement} */ (find('prev')),
-      /** @type {HTMLButtonElement} */ (find('next'))
+      /** @type {HTMLButtonElement} */ (find('next')),
+      (index) => {
+        if (!this.card) return;
+        range.track('tile_image_swipe', this.card, {
+          image_index: index + 1,
+          media_type: mediaType(this.card.material.images, index),
+          tile_window: 'details',
+        });
+      }
     );
+
+    dialog.querySelectorAll('details[data-details-name]').forEach((details) => {
+      details.addEventListener('toggle', () => {
+        const element = /** @type {HTMLDetailsElement} */ (details);
+        if (!element.open || !this.card) return;
+        range.track('tile_details_open', this.card, { details_name: element.dataset.detailsName });
+      });
+    });
+    this.fullLink.addEventListener('click', () => {
+      if (!this.card) return;
+      range.track('landing_link_click', this.card, {
+        section_name: 'quick_view',
+        link_text: (this.fullLink.textContent || '').trim().slice(0, 60),
+        link_url: this.fullLink.getAttribute('href'),
+      });
+    });
 
     dialog.querySelector('[data-close]')?.addEventListener('click', () => dialog.close());
     const zoom = () => {
       if (!this.card || !range.zoom.open(this.card.material.images, this.gallery.index)) return;
       playSlideVideo(this.slides, -1);
-      range.track('tile_image_zoom', this.card, { image_index: this.gallery.index + 1 });
+      range.track('tile_image_zoom', this.card, {
+        image_index: this.gallery.index + 1,
+        media_type: mediaType(this.card.material.images, this.gallery.index),
+      });
     };
     this.slides.addEventListener('click', zoom);
     this.slides.addEventListener('keydown', (event) => {
@@ -606,6 +679,11 @@ class QuickView {
       const message = /** @type {any} */ (event).detail?.data?.message;
       this.error.textContent = message || range.labels.error;
       this.error.hidden = false;
+      range.track('landing_error', this.card, {
+        item_variant: this.#variant()?.id,
+        error_message: String(message || 'add to cart failed').slice(0, 100),
+        tile_window: dialog.dataset.mode || null,
+      });
     };
     document.addEventListener('cart:update', onCartUpdate);
     window.addEventListener('cart:error', onCartError);
@@ -629,6 +707,7 @@ class QuickView {
     this.render(true);
     this.dialog.showModal();
     document.documentElement.setAttribute('scroll-lock', '');
+    if (mode === 'details') warmSlideVideo(this.slides, 'auto');
     if (photo > 0) {
       this.slides.scrollLeft = photo * this.slides.clientWidth;
     }
@@ -701,6 +780,13 @@ class QuickView {
             this.letter = letter;
             this.error.hidden = true;
             this.render(false);
+            if (this.card) {
+              range.track('tile_letter_select', this.card, {
+                item_variant: this.#variant()?.id,
+                tile_letter: letter,
+                tile_window: this.dialog.dataset.mode || null,
+              });
+            }
           });
           return button;
         })
@@ -872,7 +958,9 @@ class Range {
           if (!entry.isIntersecting) return;
           observer.unobserve(entry.target);
           const card = this.cards.find((candidate) => candidate.element === entry.target);
-          if (card) this.track('tile_impression', card);
+          if (!card) return;
+          card.warmVideo('metadata');
+          this.track('tile_impression', card);
         });
       },
       { threshold: 0.5 }
@@ -1183,6 +1271,13 @@ class Looks {
       // Shopify's own reason ("only 1 left") is more useful than the generic line when there is one.
       const reason = error instanceof Error && error.message !== 'cart add failed' ? error.message : '';
       this.error.textContent = reason || this.labels.error;
+      pushDataLayer({ ecommerce: null });
+      pushDataLayer({
+        event: 'landing_error',
+        feature_version: TRACKING_VERSION,
+        look_name: this.lookName,
+        error_message: String(reason || 'look add failed').slice(0, 100),
+      });
       this.error.hidden = false;
       this.addButton.disabled = false;
     }
@@ -1200,6 +1295,57 @@ function fillPercentNotes() {
     const note = /** @type {HTMLElement} */ (element);
     note.textContent = (note.dataset.percentNote || '').replace('[percent]', String(percent));
     note.hidden = percent === 0;
+  });
+}
+
+/**
+ * How far down the page a visit got: one event per section, the first time it is properly on
+ * screen.
+ */
+function watchSections() {
+  if (!('IntersectionObserver' in window)) return;
+  const sections = Array.from(document.querySelectorAll('[data-landing-section]:not([data-section-watched])'));
+  const all = Array.from(document.querySelectorAll('[data-landing-section]'));
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        observer.unobserve(entry.target);
+        pushDataLayer({ ecommerce: null });
+        pushDataLayer({
+          event: 'landing_section_view',
+          feature_version: TRACKING_VERSION,
+          section_name: /** @type {HTMLElement} */ (entry.target).dataset.landingSection,
+          section_index: all.indexOf(entry.target) + 1,
+        });
+      });
+    },
+    // Counted once any part of the section is in the upper 60% of the screen.
+    { rootMargin: '0px 0px -40% 0px' }
+  );
+  sections.forEach((section) => {
+    section.setAttribute('data-section-watched', '');
+    observer.observe(section);
+  });
+}
+
+/** Clicks on the page's own links (hero buttons, closing links): where people go next. */
+function watchLinks() {
+  if (document.documentElement.hasAttribute('data-landing-links')) return;
+  document.documentElement.setAttribute('data-landing-links', '');
+  document.addEventListener('click', (event) => {
+    const link = event.target instanceof Element ? event.target.closest('a[href]') : null;
+    const section = link?.closest('[data-landing-section]');
+    // Card links open the quick view (select_item); links inside a dialog are reported by the dialog.
+    if (!link || !section || link.hasAttribute('data-open-quick-view') || link.closest('dialog')) return;
+    pushDataLayer({ ecommerce: null });
+    pushDataLayer({
+      event: 'landing_link_click',
+      feature_version: TRACKING_VERSION,
+      section_name: /** @type {HTMLElement} */ (section).dataset.landingSection,
+      link_text: (link.textContent || '').trim().slice(0, 60),
+      link_url: link.getAttribute('href'),
+    });
   });
 }
 
@@ -1221,6 +1367,8 @@ function init() {
     }
   });
   fillPercentNotes();
+  watchSections();
+  watchLinks();
 }
 
 init();

@@ -9,7 +9,7 @@
 
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
 <div class="section section--full-width color-{{ section.settings.color_scheme }}">
-  <div class="landing-hero">
+  <div class="landing-hero" data-landing-section="hero">
     <div class="landing-hero__intro">
       {%- if section.settings.heading != blank -%}
         <h1 class="landing-hero__title h1">{{ section.settings.heading | escape }}</h1>
