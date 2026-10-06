@@ -46,12 +46,21 @@
   endfor
 
   assign lead_index = lead_media | default: 1 | minus: 1
-  assign lead_override = product.media[lead_index]
   comment
-    Only a photo can lead. A video picked here would show twice: its still first, then itself.
+    Only a photo can lead. A video picked here would show twice: its still first, then itself. So a
+    missing or non-photo choice falls back to the product's first photo, the same as leaving the
+    setting at 1.
   endcomment
-  if lead_override and lead_override.media_type != 'image'
-    assign lead_override = nil
+  assign first_photo = nil
+  for media in product.media
+    if media.media_type == 'image'
+      assign first_photo = media
+      break
+    endif
+  endfor
+  assign lead_override = product.media[lead_index]
+  if lead_override == blank or lead_override.media_type != 'image'
+    assign lead_override = first_photo
   endif
 
   comment
@@ -167,7 +176,7 @@
           assign no_photo = false
           if lead == blank
             assign no_photo = true
-            assign lead = product.featured_media
+            assign lead = first_photo
           endif
           assign own_media = nil
           assign is_default = false
@@ -205,7 +214,7 @@
       {%- endfor -%}
     {%- else -%}
       {%- liquid
-        assign lead = product.featured_media
+        assign lead = first_photo
         if lead_override
           assign lead = lead_override
         endif

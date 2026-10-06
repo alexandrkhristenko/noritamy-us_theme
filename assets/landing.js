@@ -708,8 +708,7 @@ class QuickView {
    * @param {Card} card
    * @param {'quick' | 'details'} mode - 'quick' is only the material and letter choice; 'details'
    *   adds the photos, materials and shipping.
-   * @param {string} [source] - what was clicked: 'image', 'button' or 'title' ('quick_add' is the
-   *   "See details" link inside the quick add window)
+   * @param {string} [source] - what was clicked: 'image', 'button' or 'title'
    * @param {number} [photo] - photo to open on (the one showing on the card)
    */
   open(card, mode, source = 'button', photo = 0) {

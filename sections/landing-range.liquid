@@ -80,9 +80,18 @@
           assign alt_product = block.settings.alt_product
           assign first_variant = product.selected_or_first_available_variant
           assign lead_index = block.settings.lead_media | minus: 1
-          assign lead = product.media[lead_index] | default: product.featured_media
-          if lead.media_type != 'image'
-            assign lead = product.featured_media
+          comment
+            Same rule as snippets/landing-product-data.liquid: only a photo leads, else the first photo.
+          endcomment
+          assign lead = product.media[lead_index]
+          if lead == blank or lead.media_type != 'image'
+            assign lead = nil
+            for media in product.media
+              if media.media_type == 'image'
+                assign lead = media
+                break
+              endif
+            endfor
           endif
         -%}
         <article
