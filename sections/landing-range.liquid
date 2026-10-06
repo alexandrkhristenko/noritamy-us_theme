@@ -81,6 +81,9 @@
           assign first_variant = product.selected_or_first_available_variant
           assign lead_index = block.settings.lead_media | minus: 1
           assign lead = product.media[lead_index] | default: product.featured_media
+          if lead.media_type != 'image'
+            assign lead = product.featured_media
+          endif
         -%}
         <article
           class="landing-card"

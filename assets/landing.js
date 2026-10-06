@@ -617,7 +617,7 @@ class QuickView {
         range.track('tile_image_swipe', this.card, {
           image_index: index + 1,
           media_type: mediaType(this.card.material.images, index),
-          tile_window: 'details',
+          tile_window: this.windowName,
         });
       }
     );
@@ -659,7 +659,7 @@ class QuickView {
       warmSlideVideo(this.slides, 'auto');
       this.title.focus();
       if (this.card) {
-        range.track('select_item', this.card, { item_variant: this.#variant()?.id, tile_click_source: 'quick_add_window' });
+        range.track('select_item', this.card, { item_variant: this.#variant()?.id, tile_click_source: 'quick_add' });
       }
     });
     dialog.addEventListener('click', (event) => {
@@ -683,7 +683,7 @@ class QuickView {
       range.track('tile_add_to_cart', this.card, {
         item_variant: this.#variant()?.id,
         tile_letter: this.letter || null,
-        tile_window: dialog.dataset.mode || null,
+        tile_window: this.windowName,
       });
       dialog.close();
     };
@@ -697,7 +697,7 @@ class QuickView {
       range.track('landing_error', this.card, {
         item_variant: this.#variant()?.id,
         error_message: String(message || 'add to cart failed').slice(0, 100),
-        tile_window: dialog.dataset.mode || null,
+        tile_window: this.windowName,
       });
     };
     document.addEventListener('cart:update', onCartUpdate);
@@ -708,7 +708,8 @@ class QuickView {
    * @param {Card} card
    * @param {'quick' | 'details'} mode - 'quick' is only the material and letter choice; 'details'
    *   adds the photos, materials and shipping.
-   * @param {string} [source] - what was clicked: 'image', 'button' or 'title'
+   * @param {string} [source] - what was clicked: 'image', 'button' or 'title' ('quick_add' is the
+   *   "See details" link inside the quick add window)
    * @param {number} [photo] - photo to open on (the one showing on the card)
    */
   open(card, mode, source = 'button', photo = 0) {
@@ -728,6 +729,16 @@ class QuickView {
       item_variant: this.#variant()?.id,
       tile_click_source: source,
     });
+  }
+
+  /**
+   * Where the shopper is, as every event's tile_window reports it: 'quick_add' (the short window
+   * with only material and letter) or 'details' (the full quick view). Events on the page itself
+   * use 'card'.
+   * @returns {'quick_add' | 'details'}
+   */
+  get windowName() {
+    return this.dialog.dataset.mode === 'details' ? 'details' : 'quick_add';
   }
 
   /** Puts the card's form back where it lives and resets it for the next open. */
@@ -800,7 +811,7 @@ class QuickView {
               range.track('tile_letter_select', this.card, {
                 item_variant: this.#variant()?.id,
                 tile_letter: letter,
-                tile_window: this.dialog.dataset.mode || null,
+                tile_window: this.windowName,
               });
             }
           });

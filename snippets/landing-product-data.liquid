@@ -47,6 +47,12 @@
 
   assign lead_index = lead_media | default: 1 | minus: 1
   assign lead_override = product.media[lead_index]
+  comment
+    Only a photo can lead. A video picked here would show twice: its still first, then itself.
+  endcomment
+  if lead_override and lead_override.media_type != 'image'
+    assign lead_override = nil
+  endif
 
   comment
     The card opens on the preferred material when the product has it, otherwise on the first one.
