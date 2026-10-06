@@ -118,6 +118,11 @@ function firstVariant(material) {
 function fillSlides(container, images, size, eagerFirst = false) {
   container.replaceChildren(
     ...images.map((image, index) => {
+      if (image.v) {
+        const video = slideVideo(image, size);
+        video.dataset.index = String(index);
+        return video;
+      }
       const img = document.createElement('img');
       img.src = image[size];
       img.alt = image.a;
@@ -128,6 +133,60 @@ function fillSlides(container, images, size, eagerFirst = false) {
     })
   );
   container.scrollLeft = 0;
+}
+
+/**
+ * A product video as a slide: silent and looping, and it downloads nothing until its slide is the
+ * one on screen (see Gallery).
+ * @param {{ v: string, s: string, l: string, a: string }} media
+ * @param {'s' | 'l'} size - poster size
+ */
+function slideVideo(media, size) {
+  const video = document.createElement('video');
+  video.muted = true;
+  video.loop = true;
+  video.playsInline = true;
+  video.preload = 'none';
+  video.poster = media[size];
+  video.src = (size === 's' && media.vs) || media.v;
+  video.setAttribute('muted', '');
+  video.setAttribute('aria-label', media.a);
+  return video;
+}
+
+/**
+ * Starts fetching a row's video ahead of the swipe, so it plays at once when its slide arrives.
+ * 'metadata' is a few kilobytes (used when a card comes on screen); 'auto' buffers the video itself
+ * (used once a card's photo row starts to move or a mouse rests on the card, and in the quick view).
+ * @param {HTMLElement} slides
+ * @param {'metadata' | 'auto'} level
+ */
+function warmSlideVideo(slides, level) {
+  slides.querySelectorAll('video').forEach((video) => {
+    if (video.preload === 'auto' || video.preload === level) return;
+    video.preload = level;
+    // Never restart a video that is already playing or has data.
+    if (level === 'auto' && video.paused && video.readyState < 2) video.load();
+  });
+}
+
+/** @param {any[]} images @param {number} index */
+function mediaType(images, index) {
+  return images[index]?.v ? 'video' : 'photo';
+}
+
+/**
+ * Plays the video on the given slide and pauses every other one in the row.
+ * @param {HTMLElement} slides
+ * @param {number} active - index of the slide on screen, or -1 to pause them all
+ */
+function playSlideVideo(slides, active) {
+  Array.from(slides.children).forEach((slide, index) => {
+    const video = slide instanceof HTMLVideoElement ? slide : slide.querySelector('video');
+    if (!video) return;
+    if (index === active) video.play().catch(() => {});
+    else video.pause();
+  });
 }
 
 /**
@@ -177,6 +236,18 @@ class Gallery {
     this.#paintDots();
   }
 
+  /**
+   * Shows a given slide straight away, without counting it as a swipe.
+   * @param {number} index
+   */
+  jumpTo(index) {
+    this.slides.scrollLeft = index * this.slides.clientWidth;
+    this.index = index;
+    clearTimeout(this.settle);
+    this.#paintDots();
+    playSlideVideo(this.slides, index);
+  }
+
   /** @param {number} direction */
   #step(direction) {
     const count = this.slides.children.length;
@@ -191,6 +262,7 @@ class Gallery {
     if (index === this.index) return;
     this.index = index;
     this.#paintDots();
+    playSlideVideo(this.slides, index);
     // Report once the row has come to rest, so a fling or a wrap-around counts as one swipe.
     clearTimeout(this.settle);
     this.settle = setTimeout(() => this.onSwipe?.(this.index), 200);
@@ -220,6 +292,15 @@ const EVENT_FIELDS = {
   tile_material: null,
   tile_letter: null,
   tile_window: null,
+  tile_click_source: null,
+  tile_collection: null,
+  media_type: null,
+  details_name: null,
+  section_name: null,
+  section_index: null,
+  link_text: null,
+  link_url: null,
+  error_message: null,
   image_index: null,
   filter_value: null,
   look_name: null,
@@ -313,7 +394,10 @@ class Zoom {
       () => this.#reset()
     );
     dialog.querySelector('[data-close]')?.addEventListener('click', () => dialog.close());
-    dialog.addEventListener('close', releaseScrollLock);
+    dialog.addEventListener('close', () => {
+      playSlideVideo(this.slides, -1);
+      releaseScrollLock();
+    });
     this.slides.addEventListener('click', (event) => this.#toggle(/** @type {MouseEvent} */ (event)));
   }
 
@@ -328,6 +412,13 @@ class Zoom {
       ...images.map((image, position) => {
         const frame = document.createElement('div');
         frame.className = 'landing-zoom__frame';
+        if (image.v) {
+          const video = slideVideo(/** @type {any} */ (image), 'l');
+          video.controls = true;
+          frame.classList.add('landing-zoom__frame--video');
+          frame.append(video);
+          return frame;
+        }
         const img = document.createElement('img');
         // Ask Shopify's image CDN for a larger copy, so the photo stays sharp at twice the size.
         img.src = image.l.replace(/([?&]width=)\d+/, (_match, prefix) => `${prefix}2400`);
@@ -341,7 +432,7 @@ class Zoom {
     this.dialog.showModal();
     document.documentElement.setAttribute('scroll-lock', '');
     this.gallery.refresh();
-    this.slides.scrollLeft = index * this.slides.clientWidth;
+    this.gallery.jumpTo(index);
     return true;
   }
 
@@ -354,7 +445,7 @@ class Zoom {
     const frame = /** @type {HTMLElement | null} */ (
       event.target instanceof Element ? event.target.closest('.landing-zoom__frame') : null
     );
-    if (!frame) return;
+    if (!frame || frame.classList.contains('landing-zoom__frame--video')) return;
     if (frame.classList.contains('is-zoomed')) {
       frame.classList.remove('is-zoomed');
       return;
@@ -395,18 +486,44 @@ class Card {
       /** @type {HTMLElement} */ (element.querySelector('[data-dots]')),
       element.querySelector('[data-prev]'),
       element.querySelector('[data-next]'),
-      (index) => range.track('tile_image_swipe', this, { image_index: index + 1 })
+      (index) =>
+        range.track('tile_image_swipe', this, {
+          image_index: index + 1,
+          media_type: mediaType(this.material.images, index),
+          tile_window: 'card',
+        })
     );
+    /** @type {'' | 'metadata' | 'auto'} */
+    this.warm = '';
+    // Buffer the video only on a real sign that its slide is next: the photo row starts to move
+    // (a swipe, the arrow keys), an arrow is pressed, or a mouse rests on the card. A finger landing
+    // on the card is not one, since on a phone that is how every page scroll starts.
+    const warmUp = () => this.warmVideo('auto');
+    this.slides.addEventListener(
+      'scroll',
+      () => {
+        if (this.slides.scrollLeft !== 0) warmUp();
+      },
+      { passive: true }
+    );
+    element.querySelectorAll('[data-prev], [data-next]').forEach((arrow) => {
+      arrow.addEventListener('pointerdown', warmUp);
+    });
+    /** @type {ReturnType<typeof setTimeout> | undefined} */
+    let hover;
+    element.addEventListener('pointerenter', (event) => {
+      if (/** @type {PointerEvent} */ (event).pointerType !== 'mouse') return;
+      hover = setTimeout(warmUp, 200);
+    });
+    element.addEventListener('pointerleave', () => clearTimeout(hover));
 
-    const zoom = () => {
-      if (!range.zoom.open(this.material.images, this.gallery.index)) return;
-      range.track('tile_image_zoom', this, { image_index: this.gallery.index + 1 });
-    };
-    this.slides.addEventListener('click', zoom);
+    // A photo opens the full quick view, where it can be enlarged; the same as "See details".
+    const openFromPhoto = () => range.quickView.open(this, 'details', 'image', this.gallery.index);
+    this.slides.addEventListener('click', openFromPhoto);
     this.slides.addEventListener('keydown', (event) => {
       if (event.target !== this.slides || (event.key !== 'Enter' && event.key !== ' ')) return;
       event.preventDefault();
-      zoom();
+      openFromPhoto();
     });
     element.querySelectorAll('[data-open-quick-view]').forEach((opener) => {
       opener.addEventListener('click', (event) => {
@@ -416,7 +533,7 @@ class Card {
         if (mouse.metaKey || mouse.ctrlKey || mouse.shiftKey || mouse.altKey) return;
         event.preventDefault();
         const mode = /** @type {HTMLElement} */ (opener).dataset.openQuickView === 'details' ? 'details' : 'quick';
-        range.quickView.open(this, mode);
+        range.quickView.open(this, mode, /** @type {HTMLElement} */ (opener).dataset.clickSource || 'button');
       });
     });
     this.render();
@@ -424,6 +541,13 @@ class Card {
 
   get material() {
     return this.materials[this.selected];
+  }
+
+  /** @param {'metadata' | 'auto'} level */
+  warmVideo(level) {
+    if (this.warm === 'auto' || this.warm === level) return;
+    this.warm = level;
+    warmSlideVideo(this.slides, level);
   }
 
   /** @param {number} index */
@@ -439,6 +563,7 @@ class Card {
     if (!material) return;
 
     fillSlides(this.slides, material.images, 's');
+    if (this.warm) warmSlideVideo(this.slides, this.warm);
     this.gallery.refresh();
     this.range.paintPhotoNote(this.photoNote, material, this.materials[defaultIndex(this.materials)]);
 
@@ -503,12 +628,42 @@ class QuickView {
       this.slides,
       find('dots'),
       /** @type {HTMLButtonElement} */ (find('prev')),
-      /** @type {HTMLButtonElement} */ (find('next'))
+      /** @type {HTMLButtonElement} */ (find('next')),
+      (index) => {
+        if (!this.card) return;
+        range.track('tile_image_swipe', this.card, {
+          image_index: index + 1,
+          media_type: mediaType(this.card.material.images, index),
+          tile_window: this.windowName,
+        });
+      }
     );
+
+    dialog.querySelectorAll('details[data-details-name]').forEach((details) => {
+      details.addEventListener('toggle', () => {
+        const element = /** @type {HTMLDetailsElement} */ (details);
+        if (!element.open || !this.card) return;
+        range.track('tile_details_open', this.card, { details_name: element.dataset.detailsName });
+      });
+    });
+    this.fullLink.addEventListener('click', () => {
+      if (!this.card) return;
+      range.track('landing_link_click', this.card, {
+        item_variant: this.#variant()?.id,
+        section_name: 'quick_view',
+        link_text: (this.fullLink.textContent || '').trim().slice(0, 60),
+        link_url: this.fullLink.getAttribute('href'),
+      });
+    });
 
     dialog.querySelector('[data-close]')?.addEventListener('click', () => dialog.close());
     const zoom = () => {
-      if (this.card) range.zoom.open(this.card.material.images, this.gallery.index);
+      if (!this.card || !range.zoom.open(this.card.material.images, this.gallery.index)) return;
+      playSlideVideo(this.slides, -1);
+      range.track('tile_image_zoom', this.card, {
+        image_index: this.gallery.index + 1,
+        media_type: mediaType(this.card.material.images, this.gallery.index),
+      });
     };
     this.slides.addEventListener('click', zoom);
     this.slides.addEventListener('keydown', (event) => {
@@ -518,8 +673,11 @@ class QuickView {
     });
     dialog.querySelector('[data-qv-more]')?.addEventListener('click', () => {
       dialog.dataset.mode = 'details';
+      warmSlideVideo(this.slides, 'auto');
       this.title.focus();
-      if (this.card) range.track('select_item', this.card, { item_variant: this.#variant()?.id });
+      if (this.card) {
+        range.track('select_item', this.card, { item_variant: this.#variant()?.id, tile_click_source: 'quick_add' });
+      }
     });
     dialog.addEventListener('click', (event) => {
       if (event.target === dialog) dialog.close();
@@ -542,7 +700,7 @@ class QuickView {
       range.track('tile_add_to_cart', this.card, {
         item_variant: this.#variant()?.id,
         tile_letter: this.letter || null,
-        tile_window: dialog.dataset.mode || null,
+        tile_window: this.windowName,
       });
       dialog.close();
     };
@@ -553,6 +711,11 @@ class QuickView {
       const message = /** @type {any} */ (event).detail?.data?.message;
       this.error.textContent = message || range.labels.error;
       this.error.hidden = false;
+      range.track('landing_error', this.card, {
+        item_variant: this.#variant()?.id,
+        error_message: String(message || 'add to cart failed').slice(0, 100),
+        tile_window: this.windowName,
+      });
     };
     document.addEventListener('cart:update', onCartUpdate);
     window.addEventListener('cart:error', onCartError);
@@ -562,25 +725,46 @@ class QuickView {
    * @param {Card} card
    * @param {'quick' | 'details'} mode - 'quick' is only the material and letter choice; 'details'
    *   adds the photos, materials and shipping.
+   * @param {string} [source] - what was clicked: 'image', 'button' or 'title'
+   * @param {number} [photo] - photo to open on (the one showing on the card)
    */
-  open(card, mode) {
+  open(card, mode, source = 'button', photo = 0) {
     this.card = card;
     this.dialog.dataset.mode = mode;
     this.letter = rememberedLetter(card.material);
     this.error.hidden = true;
 
     this.formSlot.append(card.form);
+    playSlideVideo(card.slides, -1);
     this.render(true);
     this.dialog.showModal();
     document.documentElement.setAttribute('scroll-lock', '');
+    if (photo > 0) this.gallery.jumpTo(photo);
     // "See details" is this page's click-through; the short window is the quick add.
-    this.range.track(mode === 'details' ? 'select_item' : 'tile_quick_add_open', card, { item_variant: this.#variant()?.id });
+    this.range.track(mode === 'details' ? 'select_item' : 'tile_quick_add_open', card, {
+      item_variant: this.#variant()?.id,
+      tile_click_source: source,
+    });
+  }
+
+  /**
+   * Where the shopper is, as every event's tile_window reports it: 'quick_add' (the short window
+   * with only material and letter) or 'details' (the full quick view). Events on the page itself
+   * use 'card'.
+   * @returns {'quick_add' | 'details'}
+   */
+  get windowName() {
+    return this.dialog.dataset.mode === 'details' ? 'details' : 'quick_add';
   }
 
   /** Puts the card's form back where it lives and resets it for the next open. */
   #release() {
+    playSlideVideo(this.slides, -1);
     releaseScrollLock();
+    this.dialog.querySelectorAll('details[open]').forEach((details) => details.removeAttribute('open'));
     if (!this.card) return;
+    // The card's own video was paused while the dialog was open.
+    playSlideVideo(this.card.slides, this.card.gallery.index);
     this.card.formHome.append(this.card.form);
     this.card = null;
   }
@@ -601,6 +785,7 @@ class QuickView {
 
     if (resetPhotos) {
       fillSlides(this.slides, material.images, 'l', true);
+      if (this.dialog.dataset.mode === 'details') warmSlideVideo(this.slides, 'auto');
       this.gallery.refresh();
       range.paintPhotoNote(this.photoNote, material, card.materials[defaultIndex(card.materials)]);
     }
@@ -638,6 +823,13 @@ class QuickView {
             this.letter = letter;
             this.error.hidden = true;
             this.render(false);
+            if (this.card) {
+              range.track('tile_letter_select', this.card, {
+                item_variant: this.#variant()?.id,
+                tile_letter: letter,
+                tile_window: this.windowName,
+              });
+            }
           });
           return button;
         })
@@ -702,6 +894,11 @@ class Range {
     };
     this.zoom = new Zoom(/** @type {HTMLDialogElement} */ (root.querySelector('[data-zoom]')));
     this.quickView = new QuickView(this);
+    // The quick view's video was paused while the zoom was open.
+    this.zoom.dialog.addEventListener('close', () => {
+      const quickView = this.quickView;
+      if (quickView.dialog.open) playSlideVideo(quickView.slides, quickView.gallery.index);
+    });
     /** @type {Card[]} */
     this.cards = [];
     root.querySelectorAll('[data-landing-card]').forEach((element) => {
@@ -809,12 +1006,23 @@ class Range {
           if (!entry.isIntersecting) return;
           observer.unobserve(entry.target);
           const card = this.cards.find((candidate) => candidate.element === entry.target);
-          if (card) this.track('tile_impression', card);
+          if (!card) return;
+          card.warmVideo('metadata');
+          this.track('tile_impression', card);
         });
       },
       { threshold: 0.5 }
     );
     this.cards.forEach((card) => observer.observe(card.element));
+
+    // A card's video stops once the card has scrolled away, and picks up again when it is back.
+    const offScreen = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        const card = this.cards.find((candidate) => candidate.element === entry.target);
+        if (card) playSlideVideo(card.slides, entry.isIntersecting ? card.gallery.index : -1);
+      });
+    });
+    this.cards.forEach((card) => offScreen.observe(card.element));
   }
 }
 
@@ -940,6 +1148,7 @@ class Looks {
     pushDataLayer({
       event,
       feature_version: TRACKING_VERSION,
+      tile_collection: pageListId(),
       look_name: this.lookName,
       look_pieces: this.pieces.length,
       look_value: toUnits(totals.together),
@@ -1110,6 +1319,14 @@ class Looks {
       // Shopify's own reason ("only 1 left") is more useful than the generic line when there is one.
       const reason = error instanceof Error && error.message !== 'cart add failed' ? error.message : '';
       this.error.textContent = reason || this.labels.error;
+      pushDataLayer({ ecommerce: null });
+      pushDataLayer({
+        event: 'landing_error',
+        feature_version: TRACKING_VERSION,
+        tile_collection: pageListId(),
+        look_name: this.lookName,
+        error_message: String(reason || 'look add failed').slice(0, 100),
+      });
       this.error.hidden = false;
       this.addButton.disabled = false;
     }
@@ -1127,6 +1344,67 @@ function fillPercentNotes() {
     const note = /** @type {HTMLElement} */ (element);
     note.textContent = (note.dataset.percentNote || '').replace('[percent]', String(percent));
     note.hidden = percent === 0;
+  });
+}
+
+/** The list id page-level events share with the card events, so they can be filtered together. */
+function pageListId() {
+  return /** @type {HTMLElement | null} */ (document.querySelector('[data-landing-range]'))?.dataset.listId || null;
+}
+
+/**
+ * How far down the page a visit got: one event per section, the first time it is properly on
+ * screen.
+ */
+function watchSections() {
+  if (!('IntersectionObserver' in window)) return;
+  const sections = Array.from(document.querySelectorAll('[data-landing-section]:not([data-section-watched])'));
+  const all = Array.from(document.querySelectorAll('[data-landing-section]'));
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        observer.unobserve(entry.target);
+        pushDataLayer({ ecommerce: null });
+        pushDataLayer({
+          event: 'landing_section_view',
+          feature_version: TRACKING_VERSION,
+          tile_collection: pageListId(),
+          section_name: /** @type {HTMLElement} */ (entry.target).dataset.landingSection,
+          section_index: all.indexOf(entry.target) + 1,
+        });
+      });
+    },
+    // Counted once any part of the section is in the upper 60% of the screen.
+    { rootMargin: '0px 0px -40% 0px' }
+  );
+  sections.forEach((section) => {
+    section.setAttribute('data-section-watched', '');
+    observer.observe(section);
+  });
+}
+
+/** Clicks on the page's own links (hero buttons, closing links): where people go next. */
+function watchLinks() {
+  if (document.documentElement.hasAttribute('data-landing-links')) return;
+  document.documentElement.setAttribute('data-landing-links', '');
+  document.addEventListener('click', (event) => {
+    const link = event.target instanceof Element ? event.target.closest('a[href]') : null;
+    const section = link?.closest('[data-landing-section]');
+    // Card links open the quick view (select_item); "View the full page" reports itself, with its product.
+    if (!link || !section || link.hasAttribute('data-open-quick-view') || link.hasAttribute('data-qv-full-link')) return;
+    const dialog = link.closest('dialog');
+    pushDataLayer({ ecommerce: null });
+    pushDataLayer({
+      event: 'landing_link_click',
+      feature_version: TRACKING_VERSION,
+      tile_collection: pageListId(),
+      section_name: dialog
+        ? dialog.hasAttribute('data-look-dialog') ? 'look_window' : 'quick_view'
+        : /** @type {HTMLElement} */ (section).dataset.landingSection,
+      link_text: (link.textContent || '').trim().slice(0, 60),
+      link_url: link.getAttribute('href'),
+    });
   });
 }
 
@@ -1148,6 +1426,8 @@ function init() {
     }
   });
   fillPercentNotes();
+  watchSections();
+  watchLinks();
 }
 
 init();

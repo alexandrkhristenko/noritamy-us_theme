@@ -7,7 +7,7 @@
 
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
 <div class="section section--page-width color-{{ section.settings.color_scheme }}">
-  <div class="landing-chapters" style="--landing-chapter-count: {{ section.blocks.size | at_least: 1 }};">
+  <div class="landing-chapters" data-landing-section="chapters" style="--landing-chapter-count: {{ section.blocks.size | at_least: 1 }};">
     {%- for block in section.blocks -%}
       <div class="landing-chapter" {{ block.shopify_attributes }}>
         <p class="landing-chapter__head">

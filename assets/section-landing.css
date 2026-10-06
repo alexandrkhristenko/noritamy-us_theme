@@ -235,7 +235,8 @@
   display: none;
 }
 
-.landing-card__slides img {
+.landing-card__slides img,
+.landing-card__slides video {
   flex: 0 0 100%;
   width: 100%;
   height: 100%;
@@ -1159,7 +1160,13 @@
 
 /* ---------- enlarged photos ---------- */
 
-.landing-card__slides img {
+.landing-card__slides img,
+.landing-card__slides video {
+  cursor: pointer;
+}
+
+.landing-qv__slides img,
+.landing-qv__slides video {
   cursor: zoom-in;
 }
 
@@ -1198,7 +1205,12 @@
   cursor: zoom-in;
 }
 
-.landing-zoom__frame img {
+.landing-zoom__frame--video {
+  cursor: default;
+}
+
+.landing-zoom__frame img,
+.landing-zoom__frame video {
   display: block;
   width: 100%;
   height: 100%;

@@ -31,6 +31,7 @@
   <div
     class="landing-range"
     data-landing-range
+    data-landing-section="products"
     data-money-format="{{ shop.money_format | strip_html | escape }}"
     data-list-name="{{ section.settings.list_name | escape }}"
     data-list-id="{{ section.settings.list_name | handleize }}"
@@ -79,7 +80,19 @@
           assign alt_product = block.settings.alt_product
           assign first_variant = product.selected_or_first_available_variant
           assign lead_index = block.settings.lead_media | minus: 1
-          assign lead = product.media[lead_index] | default: product.featured_media
+          comment
+            Same rule as snippets/landing-product-data.liquid: only a photo leads, else the first photo.
+          endcomment
+          assign lead = product.media[lead_index]
+          if lead == blank or lead.media_type != 'image'
+            assign lead = nil
+            for media in product.media
+              if media.media_type == 'image'
+                assign lead = media
+                break
+              endif
+            endfor
+          endif
         -%}
         <article
           class="landing-card"
@@ -116,7 +129,7 @@
             <p class="landing-card__group h6">{{ block.settings.group | escape }}</p>
           {%- endif -%}
           <h3 class="landing-card__title h5">
-            <button type="button" class="button-unstyled landing-card__title-button" data-open-quick-view="details">
+            <button type="button" class="button-unstyled landing-card__title-button" data-open-quick-view="details" data-click-source="title">
               {{- product.title | escape -}}
             </button>
           </h3>
@@ -267,14 +280,14 @@
           <div class="landing-qv__standard" data-qv-standard hidden></div>
 
           <div class="landing-qv__details">
-            <details class="landing-details" data-qv-materials>
+            <details class="landing-details" data-qv-materials data-details-name="materials">
               <summary class="h6">{{ section.settings.materials_heading | escape }}</summary>
               <div class="rte">
                 {{ section.settings.materials_text }}
                 <div data-qv-materials-product></div>
               </div>
             </details>
-            <details class="landing-details">
+            <details class="landing-details" data-details-name="shipping">
               <summary class="h6">{{ section.settings.shipping_heading | escape }}</summary>
               <div class="rte">{{ section.settings.shipping_text }}</div>
             </details>

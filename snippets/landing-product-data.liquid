@@ -46,7 +46,22 @@
   endfor
 
   assign lead_index = lead_media | default: 1 | minus: 1
+  comment
+    Only a photo can lead. A video picked here would show twice: its still first, then itself. So a
+    missing or non-photo choice falls back to the product's first photo, the same as leaving the
+    setting at 1.
+  endcomment
+  assign first_photo = nil
+  for media in product.media
+    if media.media_type == 'image'
+      assign first_photo = media
+      break
+    endif
+  endfor
   assign lead_override = product.media[lead_index]
+  if lead_override == blank or lead_override.media_type != 'image'
+    assign lead_override = first_photo
+  endif
 
   comment
     The card opens on the preferred material when the product has it, otherwise on the first one.
@@ -68,6 +83,53 @@
     endfor
   endif
 -%}
+
+{%- comment -%}
+  The product's first hosted video, shown as the second slide. Two renditions: "vs" (up to 480p) for
+  the small card, "v" (up to 720p) for the quick view and the zoom. The poster shows until it plays.
+{%- endcomment -%}
+{%- capture first_video -%}
+  {%- for media in product.media -%}
+    {%- if media.media_type != 'video' -%}
+      {%- continue -%}
+    {%- endif -%}
+    {%- liquid
+      assign video_url = ''
+      assign video_height = 0
+      assign small_url = ''
+      assign small_height = 0
+      for source in media.sources
+        if source.format != 'mp4'
+          continue
+        endif
+        if video_url == ''
+          assign video_url = source.url
+          assign video_height = source.height
+        elsif source.height <= 720 and source.height > video_height
+          assign video_url = source.url
+          assign video_height = source.height
+        elsif video_height > 720 and source.height < video_height
+          assign video_url = source.url
+          assign video_height = source.height
+        endif
+        if small_url == ''
+          assign small_url = source.url
+          assign small_height = source.height
+        elsif source.height <= 480 and source.height > small_height
+          assign small_url = source.url
+          assign small_height = source.height
+        elsif small_height > 480 and source.height < small_height
+          assign small_url = source.url
+          assign small_height = source.height
+        endif
+      endfor
+    -%}
+    {%- if video_url != '' -%}
+      ,{"v": {{ video_url | json }}, "vs": {{ small_url | json }}, "s": {{ media.preview_image | image_url: width: 800 | json }}, "l": {{ media.preview_image | image_url: width: 1400 | json }}, "a": {{ media.alt | default: product.title | json }}}
+      {%- break -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
 
 {%- capture shared_images -%}
   {%- assign shared_count = 0 -%}
@@ -114,7 +176,7 @@
           assign no_photo = false
           if lead == blank
             assign no_photo = true
-            assign lead = product.featured_media
+            assign lead = first_photo
           endif
           assign own_media = nil
           assign is_default = false
@@ -147,12 +209,12 @@
           "default": {{ is_default | json }},
           "price": {{ representative.price | default: product.price | json }},
           "compare": {{ representative.compare_at_price | default: 0 | json }},
-          "images": [{{ lead_image | append: own_image | append: shared_images | strip | remove_first: ',' }}]
+          "images": [{{ lead_image | append: first_video | append: own_image | append: shared_images | strip | remove_first: ',' }}]
         }{% unless forloop.last %},{% endunless %}
       {%- endfor -%}
     {%- else -%}
       {%- liquid
-        assign lead = product.featured_media
+        assign lead = first_photo
         if lead_override
           assign lead = lead_override
         endif
@@ -171,7 +233,7 @@
         "default": true,
         "price": {{ variant.price | json }},
         "compare": {{ variant.compare_at_price | default: 0 | json }},
-        "images": [{{ lead_image | append: shared_images | strip | remove_first: ',' }}]
+        "images": [{{ lead_image | append: first_video | append: shared_images | strip | remove_first: ',' }}]
       }
     {%- endif -%}
   ],
