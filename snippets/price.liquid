@@ -40,6 +40,29 @@
     assign price = price | money
     assign compare_at_price = compare_at_price | money
   endif
+
+  # Single earrings: on a product card (not the product page), a listing that also sells a
+  # single earring shows "From <single price>", like Annoory. veridian.unit_type is the
+  # variant metafield Link reads; nothing else on the card changes.
+  assign from_prefix = ''
+  if product.handle != closest.product.handle
+    for v in product_resource.variants
+      if v.metafields.veridian.unit_type.value == 'SINGLE'
+        if request.locale.iso_code contains 'he'
+          assign from_prefix = 'החל מ-'
+        else
+          assign from_prefix = 'From '
+        endif
+        if settings.currency_code_enabled_product_cards
+          assign price = product_resource.price_min | money_with_currency
+        else
+          assign price = product_resource.price_min | money
+        endif
+        assign show_compare_price = false
+        break
+      endif
+    endfor
+  endif
 -%}
 
 <div ref="priceContainer">
@@ -56,7 +79,7 @@
       <span class="price">{{ price | default: '&nbsp;' }}</span>
     </span>
   {% else %}
-    <span class="price">{{ price | default: '&nbsp;' }}</span>
+    <span class="price">{{ from_prefix }}{{ price | default: '&nbsp;' }}</span>
   {% endif %}
 
   {% if show_sale_price_first == true and show_compare_price %}
