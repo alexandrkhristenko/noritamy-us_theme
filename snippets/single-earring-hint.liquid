@@ -1,0 +1,50 @@
+{%- doc -%}
+  Shown under the variant picker when the selected variant is a single earring
+  (variant metafield veridian.unit_type = SINGLE, written by Link). Points at the
+  matching pair (same SKU, unit_type PAIR) and what buying the pair saves.
+
+  @param {object} product_resource - The product object.
+{%- enddoc -%}
+{%- liquid
+  assign current = product_resource.selected_or_first_available_variant
+  assign pair = null
+  for v in product_resource.variants
+    if v.sku == current.sku and v.metafields.veridian.unit_type.value == 'PAIR'
+      assign pair = v
+      break
+    endif
+  endfor
+  assign he = false
+  if request.locale.iso_code contains 'he'
+    assign he = true
+  endif
+-%}
+{%- if current.metafields.veridian.unit_type.value == 'SINGLE' -%}
+<div class="single-earring-hint">
+  <p class="single-earring-hint__lead">
+    {%- if he -%}עגיל אחד. מושלם למיקס אנד מאץ' או לחור נוסף.{%- else -%}One earring, for mix &amp; match or a second piercing.{%- endif -%}
+  </p>
+  {%- if pair -%}
+    {%- assign saving = current.price | times: 2 | minus: pair.price -%}
+    <p class="single-earring-hint__pair">
+      {%- if he -%}זוג: {{ pair.price | money }}{% if saving > 0 %} (חוסכים {{ saving | money }}){% endif %}
+      {%- else -%}Pair: {{ pair.price | money }}{% if saving > 0 %} (save {{ saving | money }}){% endif %}{%- endif -%}
+    </p>
+  {%- endif -%}
+</div>
+{%- endif -%}
+
+{% stylesheet %}
+  .single-earring-hint {
+    margin-top: calc(var(--padding-sm) * -0.5);
+    font-size: 0.875em;
+    line-height: 1.5;
+    opacity: 0.85;
+  }
+  .single-earring-hint p {
+    margin: 0;
+  }
+  .single-earring-hint__pair {
+    font-weight: 500;
+  }
+{% endstylesheet %}
