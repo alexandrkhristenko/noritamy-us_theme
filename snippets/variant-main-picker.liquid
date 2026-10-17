@@ -180,6 +180,8 @@
         {%- endif -%}
       {%- endfor -%}
 
+      {% render 'single-earring-hint', product_resource: product_resource %}
+
       <script type="application/json">
         {{ product_resource.selected_or_first_available_variant | json }}
       </script>
