@@ -194,7 +194,7 @@
                 "text_Pnmqxg": {
                   "type": "text",
                   "settings": {
-                    "text": "<p>Orders are processed within <strong>1\u20133 business days</strong>. Standard shipping within the US typically takes <strong>5\u20138 business days</strong> after dispatch. Expedited shipping options are available at checkout. You\u2019ll receive a confirmation email with a tracking number once your order ships.</p>",
+                    "text": "<p>Each Noritamy piece is crafted by hand. Please allow <strong>4-8 business days</strong> for us to make your piece. Delivery then takes <strong>5-14 business days</strong> with Economy Service (free) or <strong>2-6 business days</strong> with DHL Express. You’ll receive a confirmation email with a tracking number once your order ships.</p>",
                     "text_uk": "<p>Each Noritamy piece is crafted by hand. Please allow <strong>4-8 business days</strong> for us to make your piece, then FedEx delivers it from Israel in <strong>2-6 business days</strong> with International Economy (free) or <strong>1-4 business days</strong> with International Priority. In total, expect your order within about 6-14 business days, or 5-12 with express. You will receive a tracking email once it ships.</p>",
                     "width": "100%",
                     "max_width": "normal",
@@ -234,6 +234,7 @@
                   "type": "text",
                   "settings": {
                     "text": "<p>All Noritamy jewelry is <strong>designed and handcrafted in our studio in Israel</strong> by skilled artisans. Each piece is made by hand, combining bold contemporary design with timeless craftsmanship. Because our jewelry is handmade, no two pieces are exactly alike.</p>",
+                    "text_uk": "<p>All Noritamy jewellery is <strong>designed and handcrafted in our studio in Israel</strong> by skilled artisans. Each piece is made by hand, combining bold contemporary design with timeless craftsmanship. Because our jewellery is handmade, no two pieces are exactly alike.</p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
@@ -272,6 +273,7 @@
                   "type": "text",
                   "settings": {
                     "text": "<p>We offer <strong>free standard shipping on all US orders</strong>. Expedited shipping options are available at checkout for an additional fee. All orders are carefully packaged to ensure your jewelry arrives safely.</p>",
+                    "text_uk": "<p>Standard delivery to the UK is <strong>free</strong>, and express delivery is available at checkout. All orders are sent by FedEx from our studio in Israel, <strong>delivered duty paid</strong> with nothing to pay on delivery, and carefully packaged to ensure your jewellery arrives safely.</p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
@@ -301,6 +303,7 @@
               "type": "_accordion-row",
               "settings": {
                 "heading": "What materials are your jewelry made from?",
+                "heading_uk": "What materials are your jewellery made from?",
                 "open_by_default": false,
                 "icon": "none",
                 "width": 20
@@ -310,6 +313,7 @@
                   "type": "text",
                   "settings": {
                     "text": "<p>Our collections feature pieces dipped in a heavy layer of <strong>24K gold</strong> or finished in <strong>silver tone</strong>, crafted from high-quality brass. We also offer <strong>sterling silver</strong> and <strong>full gold</strong> pieces in our premium lines. All our jewelry is nickel-free. For specific material details, please check the product description on each item\u2019s page.</p>",
+                    "text_uk": "<p>Our collections feature pieces dipped in a heavy layer of <strong>24K gold</strong> or finished in <strong>silver tone</strong>, crafted from high-quality brass. We also offer <strong>sterling silver</strong> and <strong>full gold</strong> pieces in our premium lines. All our jewellery is nickel-free. For specific material details, please check the product description on each item’s page.</p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
@@ -348,7 +352,7 @@
                   "type": "text",
                   "settings": {
                     "text": "<p>We use <strong>US ring sizes</strong> for our US store. If you\u2019re unsure of your size, we recommend visiting a local jeweler for a professional measurement. You can also check our <a href=\"/pages/size-guide\">Size Guide</a> page for help. If you need further assistance, contact us at <a href=\"mailto:info@noritamy.com\">info@noritamy.com</a>.</p>",
-                    "text_uk": "<p>Our rings are listed in <strong>US sizes</strong>. Our <a href=\"/pages/size-guide\">Size Guide</a> shows the matching UK letter size for each one (for example, US 6 is a UK L). If you are unsure, a local jeweller can measure your finger, or contact us at <a href=\"mailto:hey@noritamy.com\">hey@noritamy.com</a>.</p>",
+                    "text_uk": "<p>On our UK site, ring sizes are shown in <strong>UK sizes</strong> (letters, for example L or N). Our <a href=\"/pages/size-guide\">Size Guide</a> shows how they compare with US and European sizes. If you are unsure, a local jeweller can measure your finger, or contact us at <a href=\"mailto:hey@noritamy.com\">hey@noritamy.com</a>.</p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
@@ -378,6 +382,7 @@
               "type": "_accordion-row",
               "settings": {
                 "heading": "How do I care for my jewelry?",
+                "heading_uk": "How do I care for my jewellery?",
                 "open_by_default": false,
                 "icon": "none",
                 "width": 20
@@ -387,6 +392,7 @@
                   "type": "text",
                   "settings": {
                     "text": "<p>To keep your Noritamy jewelry looking its best:</p><ul><li><strong>Last on, first off.</strong> Put jewelry on after applying perfume, lotion, or makeup \u2014 and remove it before showering or sleeping.</li><li><strong>Keep it dry.</strong> Avoid wearing your pieces while swimming, bathing, or exercising.</li><li><strong>Soft touch only.</strong> Clean gently with a soft, dry cloth. No chemicals or abrasives.</li><li><strong>Store with care.</strong> Keep your piece in its Noritamy box or pouch, away from sunlight and other jewelry.</li><li><strong>Re-plating available.</strong> We offer a re-plating service when gold plating naturally fades over time.</li></ul>",
+                    "text_uk": "<p>To keep your Noritamy jewellery looking its best:</p><ul><li><strong>Last on, first off.</strong> Put jewellery on after applying perfume, lotion, or makeup — and remove it before showering or sleeping.</li><li><strong>Keep it dry.</strong> Avoid wearing your pieces while swimming, bathing, or exercising.</li><li><strong>Soft touch only.</strong> Clean gently with a soft, dry cloth. No chemicals or abrasives.</li><li><strong>Store with care.</strong> Keep your piece in its Noritamy box or pouch, away from sunlight and other jewellery.</li><li><strong>Re-plating available.</strong> We offer a re-plating service when gold plating naturally fades over time.</li></ul>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
@@ -425,6 +431,7 @@
                   "type": "text",
                   "settings": {
                     "text": "<p>Every Noritamy order comes in our <strong>signature branded packaging</strong>, making it gift-ready. Each piece is presented in a beautiful Noritamy jewelry box \u2014 perfect for gifting as-is.</p>",
+                    "text_uk": "<p>Every Noritamy order comes in our <strong>signature branded packaging</strong>, making it gift-ready. Each piece is presented in a beautiful Noritamy jewellery box — perfect for gifting as-is.</p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
@@ -657,6 +664,7 @@
                   "type": "text",
                   "settings": {
                     "text": "<p>There are two easy methods:</p><ul><li><strong>Use a ring you already own:</strong> Choose a ring that fits the finger you want to measure. Measure the inner diameter in millimeters and match it to our size chart on the <a href=\"/pages/size-guide\">Size Guide</a> page.</li><li><strong>Use a paper strip or string:</strong> Wrap a thin strip of paper or soft string around the base of your finger. Mark where it overlaps, then measure the length in millimeters to find your circumference.</li></ul><p><strong>Tip:</strong> Measure at the end of the day when fingers are at their largest, and avoid measuring when your hands are cold. If you\u2019re between sizes, we recommend sizing up.</p>",
+                    "text_uk": "<p>There are two easy methods:</p><ul><li><strong>Use a ring you already own:</strong> Choose a ring that fits the finger you want to measure. Measure the inner diameter in millimetres and match it to our size chart on the <a href=\"/pages/size-guide\">Size Guide</a> page.</li><li><strong>Use a paper strip or string:</strong> Wrap a thin strip of paper or soft string around the base of your finger. Mark where it overlaps, then measure the length in millimetres to find your circumference.</li></ul><p><strong>Tip:</strong> Measure at the end of the day when fingers are at their largest, and avoid measuring when your hands are cold. If you’re between sizes, we recommend sizing up.</p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
@@ -686,6 +694,7 @@
               "type": "_accordion-row",
               "settings": {
                 "heading": "Do you offer custom or personalized pieces?",
+                "heading_uk": "Do you offer custom or personalised pieces?",
                 "open_by_default": false,
                 "icon": "none",
                 "width": 20
@@ -725,6 +734,7 @@
               "type": "_accordion-row",
               "settings": {
                 "heading": "Are your jewelry pieces nickel-free?",
+                "heading_uk": "Are your jewellery pieces nickel-free?",
                 "open_by_default": false,
                 "icon": "none",
                 "width": 20
@@ -734,6 +744,7 @@
                   "type": "text",
                   "settings": {
                     "text": "<p>Yes. All Noritamy jewelry is <strong>100% nickel-free</strong>, making our pieces suitable for those with sensitive skin or nickel allergies.</p>",
+                    "text_uk": "<p>Yes. All Noritamy jewellery is <strong>100% nickel-free</strong>, making our pieces suitable for those with sensitive skin or nickel allergies.</p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",

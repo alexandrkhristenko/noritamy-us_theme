@@ -14,8 +14,14 @@
       {%- if section.settings.heading != blank -%}
         <h1 class="landing-hero__title h1">{{ section.settings.heading | escape }}</h1>
       {%- endif -%}
-      {%- if section.settings.text != blank -%}
-        <div class="landing-hero__text">{{ section.settings.text }}</div>
+      {%- liquid
+      assign section_text = section.settings.text
+      if localization.country.iso_code == 'GB' and section.settings.text_uk != blank
+        assign section_text = section.settings.text_uk
+      endif
+    -%}
+    {%- if section_text != blank -%}
+        <div class="landing-hero__text">{{ section_text }}</div>
       {%- endif -%}
     </div>
 
@@ -73,6 +79,12 @@
       "type": "richtext",
       "id": "text",
       "label": "Intro"
+    },
+    {
+      "type": "richtext",
+      "id": "text_uk",
+      "label": "UK version (UK visitors only)",
+      "info": "Optional. When filled in, visitors in the United Kingdom market see this instead of the text above."
     },
     {
       "type": "header",

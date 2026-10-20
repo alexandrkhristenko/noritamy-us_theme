@@ -17,7 +17,11 @@
         width: block.settings.width,
         class_name: 'details__icon'
       %}
-      {{ block.settings.heading }}
+      {%- if localization.country.iso_code == 'GB' and block.settings.heading_uk != blank -%}
+        {{ block.settings.heading_uk }}
+      {%- else -%}
+        {{ block.settings.heading }}
+      {%- endif -%}
       <span class="svg-wrapper icon-caret icon-animated">
         {{- 'icon-caret.svg' | inline_asset_content -}}
       </span>
@@ -57,6 +61,12 @@
       "id": "heading",
       "label": "t:settings.heading",
       "default": "t:text_defaults.accordion_heading"
+    },
+    {
+      "type": "text",
+      "id": "heading_uk",
+      "label": "Heading, UK version (UK visitors only)",
+      "info": "Optional. When filled in, visitors in the United Kingdom market see this instead of the heading above."
     },
     {
       "type": "checkbox",

@@ -23,8 +23,14 @@
       <h2 class="our-materials-feature__title">{{ section.settings.title }}</h2>
     {% endif %}
     
-    {% if section.settings.text != blank %}
-      <div class="our-materials-feature__text">{{ section.settings.text }}</div>
+    {%- liquid
+      assign section_text = section.settings.text
+      if localization.country.iso_code == 'GB' and section.settings.text_uk != blank
+        assign section_text = section.settings.text_uk
+      endif
+    -%}
+    {% if section_text != blank %}
+      <div class="our-materials-feature__text">{{ section_text }}</div>
     {% endif %}
   </div>
 </section>
@@ -76,6 +82,12 @@
       "id": "text",
       "label": "Text",
       "default": "<p>Description of the material highlighting its quality and source.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "text_uk",
+      "label": "UK version (UK visitors only)",
+      "info": "Optional. When filled in, visitors in the United Kingdom market see this instead of the text above."
     }
   ],
   "presets": [

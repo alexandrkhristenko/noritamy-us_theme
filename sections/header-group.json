@@ -118,6 +118,7 @@
           "disabled": true,
           "settings": {
             "text": "EXPLORE OUR HAND MADE JEWELRY",
+            "text_uk": "EXPLORE OUR HANDMADE JEWELLERY",
             "link": "shopify://collections",
             "enable_klaviyo_popup": false,
             "klaviyo_form_id": "",

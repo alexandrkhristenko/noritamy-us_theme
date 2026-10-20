@@ -11,9 +11,15 @@
   {% for block in section.blocks %}
     {% case block.type %}
       {% when 'heading' %}
-        {% if block.settings.text != blank %}
+        {%- liquid
+          assign heading_text = block.settings.text
+          if localization.country.iso_code == 'GB' and block.settings.text_uk != blank
+            assign heading_text = block.settings.text_uk
+          endif
+        -%}
+        {% if heading_text != blank %}
           <{{ block.settings.heading_tag }}>
-            {{ block.settings.text }}
+            {{ heading_text }}
           </{{ block.settings.heading_tag }}>
         {% endif %}
     {% endcase %}
@@ -73,6 +79,12 @@
           "label": "Text",
           "default": "Rich Text Heading"
         },
+          {
+            "type": "text",
+            "id": "text_uk",
+            "label": "UK version (UK visitors only)",
+            "info": "Optional. When filled in, visitors in the United Kingdom market see this instead of the text above."
+          },
         {
           "type": "select",
           "id": "heading_tag",

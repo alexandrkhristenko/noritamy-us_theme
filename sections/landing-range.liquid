@@ -283,13 +283,13 @@
             <details class="landing-details" data-qv-materials data-details-name="materials">
               <summary class="h6">{{ section.settings.materials_heading | escape }}</summary>
               <div class="rte">
-                {{ section.settings.materials_text }}
+                {%- if localization.country.iso_code == 'GB' and section.settings.materials_text_uk != blank -%}{{ section.settings.materials_text_uk }}{%- else -%}{{ section.settings.materials_text }}{%- endif -%}
                 <div data-qv-materials-product></div>
               </div>
             </details>
             <details class="landing-details" data-details-name="shipping">
               <summary class="h6">{{ section.settings.shipping_heading | escape }}</summary>
-              <div class="rte">{{ section.settings.shipping_text }}</div>
+              <div class="rte">{%- if localization.country.iso_code == 'GB' and section.settings.shipping_text_uk != blank -%}{{ section.settings.shipping_text_uk }}{%- else -%}{{ section.settings.shipping_text }}{%- endif -%}</div>
             </details>
           </div>
 
@@ -482,6 +482,12 @@
       "info": "The product's own materials field is added under this text."
     },
     {
+      "type": "richtext",
+      "id": "materials_text_uk",
+      "label": "First details text, UK version (UK visitors only)",
+      "info": "Optional. When filled in, visitors in the United Kingdom market see this instead of the text above."
+    },
+    {
       "type": "text",
       "id": "shipping_heading",
       "label": "Second details heading",
@@ -491,6 +497,12 @@
       "type": "richtext",
       "id": "shipping_text",
       "label": "Second details text"
+    },
+    {
+      "type": "richtext",
+      "id": "shipping_text_uk",
+      "label": "Second details text, UK version (UK visitors only)",
+      "info": "Optional. When filled in, visitors in the United Kingdom market see this instead of the text above."
     },
     {
       "type": "text",
