@@ -1,0 +1,26 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "parent": "footer-group.json",
+  "context": {
+    "market": "united-kingdom"
+  },
+  "sections": {
+    "section_t7A68H": {
+      "blocks": {
+        "text_XNPRHy": {
+          "settings": {
+            "text": "<p>Welcome to Noritamy where bold design meets timeless craftsmanship. </p><p>Join our inner circle and be the first to hear about exclusive drops, private events, and what's happening behind the scenes. </p><p>As a little something to say hello, enjoy 10% off your first purchase. Because great style begins with a good connection.</p>"
+          }
+        }
+      }
+    }
+  }
+}
