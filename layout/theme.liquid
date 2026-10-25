@@ -328,6 +328,11 @@
       {% render 'quick-add-modal' %}
     {% endif %}
 
+    {%- comment -%} UK market only: WhatsApp chat floater, same as the Israeli store. {%- endcomment -%}
+    {%- if localization.country.iso_code == 'GB' -%}
+      {% render 'floating-btn' %}
+    {%- endif -%}
+
     {% if settings.mobile_bottom_nav and request.page_type != 'product' %}
       {% render 'noritamy-mobile-nav' %}
     {% endif %}
