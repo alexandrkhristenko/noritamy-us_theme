@@ -25,6 +25,12 @@ class StickyAddToCart extends Component {
         this.handleSelectChangeBound = this.handleSelectChange.bind(this);
         this.select?.addEventListener('change', this.handleSelectChangeBound);
 
+        // Expose the bar height so other fixed elements (WhatsApp floater) can sit above it
+        this.resizeObserver = new ResizeObserver(() => {
+            document.documentElement.style.setProperty('--sticky-add-to-cart-height', `${this.offsetHeight}px`);
+        });
+        this.resizeObserver.observe(this);
+
         this.submitButton = this.querySelector('button[type="submit"]');
         this.handleSubmitClickBound = this.handleSubmitClick.bind(this);
         this.submitButton?.addEventListener('click', this.handleSubmitClickBound);
@@ -32,6 +38,7 @@ class StickyAddToCart extends Component {
 
     disconnectedCallback() {
         this.observer?.disconnect();
+        this.resizeObserver?.disconnect();
         this.section?.removeEventListener(ThemeEvents.variantUpdate, this.onVariantUpdateBound);
         this.select?.removeEventListener('change', this.handleSelectChangeBound);
         this.submitButton?.removeEventListener('click', this.handleSubmitClickBound);
