@@ -129,3 +129,87 @@
         min-height: 32px;
     }
 }
+/* Dynamic checkout (Shop Pay) button next to Add to cart */
+.sticky-add-to-cart__payment {
+    flex: 0 0 200px;
+    min-width: 0;
+}
+
+.sticky-add-to-cart__payment[hidden] {
+    display: none;
+}
+
+.sticky-add-to-cart__payment shopify-accelerated-checkout {
+    --shopify-accelerated-checkout-button-block-size: var(--height-buy-buttons);
+    --shopify-accelerated-checkout-button-border-radius: var(--style-border-radius-buttons-primary);
+}
+
+.sticky-add-to-cart__payment .shopify-payment-button__more-options {
+    display: none;
+}
+
+/* Mobile: title and price on one row, Add to cart and Shop Pay side by side below */
+@media screen and (max-width: 749px) {
+    .sticky-add-to-cart__container {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .sticky-add-to-cart__info {
+        flex: 1 1 100%;
+        min-width: 0;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--gap-sm);
+    }
+
+    .sticky-add-to-cart__title {
+        display: block;
+        margin: 0;
+        min-width: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        font-weight: normal;
+    }
+
+    .sticky-add-to-cart__price {
+        flex-shrink: 0;
+    }
+
+    /* !important to beat the PDP price sizes in noritamy-overrides.css */
+    .sticky-add-to-cart .sticky-add-to-cart__info .sticky-add-to-cart__price .price,
+    .sticky-add-to-cart .sticky-add-to-cart__info .sticky-add-to-cart__price .compare-at-price {
+        font-size: var(--font-size--sm) !important;
+    }
+
+    .sticky-add-to-cart__form {
+        flex: 1 1 100%;
+    }
+
+    .sticky-add-to-cart__form product-form-component {
+        flex: 1 1 auto;
+    }
+
+    .sticky-add-to-cart__controls add-to-cart-component,
+    .sticky-add-to-cart__payment {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+
+    .sticky-add-to-cart .sticky-add-to-cart__controls .sticky-add-to-cart__button {
+        width: 100%;
+        min-width: 0;
+        min-height: 44px;
+    }
+
+    .sticky-add-to-cart__payment shopify-accelerated-checkout {
+        --shopify-accelerated-checkout-button-block-size: 44px;
+    }
+}
+
+/* Keep the WhatsApp floater above the bar while it is showing */
+body:has(.sticky-add-to-cart.is-active) .floating__btn {
+    bottom: calc(var(--sticky-add-to-cart-height, 0px) + 12px);
+}

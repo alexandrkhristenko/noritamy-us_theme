@@ -133,6 +133,12 @@
               add_to_cart_text: add_to_cart_text
             %}
 
+            {% if block.settings.show_payment_button %}
+              <div class="sticky-add-to-cart__payment"{% unless can_add_to_cart %} hidden{% endunless %}>
+                {{ form | payment_button }}
+              </div>
+            {% endif %}
+
             <span class="product-form-text__error hidden" ref="addToCartTextError">
               <span class="svg-wrapper product-form-icon--error">
                 {{- 'icon-error.svg' | inline_asset_content -}}
@@ -177,6 +183,12 @@
       "type": "checkbox",
       "id": "show_variants",
       "label": "Show variants selector",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_button",
+      "label": "Show Shop Pay / dynamic checkout button",
       "default": true
     }
   ],
