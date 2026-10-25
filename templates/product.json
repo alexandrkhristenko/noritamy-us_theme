@@ -20,7 +20,8 @@
             "show_image": true,
             "show_title": true,
             "show_price": true,
-            "show_variants": true
+            "show_variants": true,
+            "show_payment_button": true
           },
           "blocks": {}
         },
@@ -78,37 +79,12 @@
             "padding-inline-end": 12
           },
           "blocks": {
-            "wishlist_plus_wishlist_pdp_button_gUff9D": {
-              "type": "shopify://apps/wishlist-plus/blocks/wishlist-pdp-button/80c3b1fc-3a8f-407e-8367-ffdeebb8b612",
-              "settings": {
-                "swym_atw_button_icon": "heart",
-                "swym_atw_icon_thickness": 1,
-                "swym_atw_display_btn_text": false,
-                "swym_button_position": "product_image_top_right",
-                "swym_atw_button_vertical_offset": 0,
-                "swym_atw_full_width": false,
-                "swym_atw_button_alignment": "center",
-                "swym_add_to_wishlist_color": "#000000",
-                "swym_added_to_wishlist_color": "#222222",
-                "swym_button_text_color": "#fff",
-                "swym_atw_border_color": "#000",
-                "swym_atw_border_thickness": 0,
-                "swym_atw_button_border_radius": 0,
-                "swym_enable_hover_customization": false,
-                "swym_hover_add_to_wishlist_color": "#000000",
-                "swym_hover_added_to_wishlist_color": "#222222",
-                "swym_hover_button_text_color": "#fff",
-                "swym_hover_atw_border_color": "#000",
-                "swym_hover_atw_border_thickness": 0,
-                "swym_hover_atw_button_border_radius": 0,
-                "swym_custom_css": ""
-              }
-            },
             "heading_m7KmQQ": {
               "type": "text",
               "name": "Title",
               "settings": {
                 "text": "<h1>{{ closest.product.title }}</h1>",
+                "text_uk": "",
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "left",
@@ -343,6 +319,7 @@
                       "type": "text",
                       "settings": {
                         "text": "<p>Free Shipping</p>",
+                        "text_uk": "",
                         "width": "100%",
                         "max_width": "normal",
                         "alignment": "left",
@@ -423,6 +400,7 @@
                       "type": "text",
                       "settings": {
                         "text": "<p>1 Year Warranty</p>",
+                        "text_uk": "",
                         "width": "100%",
                         "max_width": "normal",
                         "alignment": "left",
@@ -544,6 +522,7 @@
               "name": "t:names.product_description",
               "settings": {
                 "text": "{{ closest.product.description }}",
+                "text_uk": "",
                 "collapsed_height": 100,
                 "read_more_text": "Read more",
                 "read_less_text": "Read less",
@@ -592,6 +571,7 @@
                   "disabled": true,
                   "settings": {
                     "heading": "Have a question?",
+                    "heading_uk": "",
                     "open_by_default": true,
                     "icon": "none",
                     "width": 20
@@ -653,6 +633,7 @@
                           "name": "t:names.text",
                           "settings": {
                             "text": "<p><a href=\"https://api.whatsapp.com/send?phone=972544559091\" target=\"_blank\" title=\"https://api.whatsapp.com/send?phone=972544559091\">Whatsapp</a></p>",
+                            "text_uk": "",
                             "width": "fit-content",
                             "max_width": "normal",
                             "alignment": "left",
@@ -690,6 +671,7 @@
                   "disabled": true,
                   "settings": {
                     "heading": "Details",
+                    "heading_uk": "",
                     "open_by_default": true,
                     "icon": "none",
                     "width": 20
@@ -700,6 +682,7 @@
                       "name": "t:names.product_description",
                       "settings": {
                         "text": "<p>{{ closest.product.description }}</p>",
+                        "text_uk": "",
                         "collapsed_height": 100,
                         "read_more_text": "Read more",
                         "read_less_text": "Read less",
@@ -735,6 +718,7 @@
                   "disabled": true,
                   "settings": {
                     "heading": "measurements",
+                    "heading_uk": "",
                     "open_by_default": false,
                     "icon": "none",
                     "width": 20
@@ -744,6 +728,7 @@
                       "type": "text",
                       "settings": {
                         "text": "{{ closest.product.metafields.custom.measurements | metafield_tag }}",
+                        "text_uk": "",
                         "width": "100%",
                         "max_width": "normal",
                         "alignment": "left",
@@ -776,6 +761,7 @@
                   "disabled": true,
                   "settings": {
                     "heading": "SPECIFICATIONS",
+                    "heading_uk": "",
                     "open_by_default": false,
                     "icon": "none",
                     "width": 20
@@ -816,6 +802,7 @@
                   "type": "_accordion-row",
                   "settings": {
                     "heading": "Materials + Care",
+                    "heading_uk": "",
                     "open_by_default": false,
                     "icon": "none",
                     "width": 20
@@ -856,6 +843,7 @@
                   "type": "_accordion-row",
                   "settings": {
                     "heading": "Shipping + Returns",
+                    "heading_uk": "",
                     "open_by_default": false,
                     "icon": "none",
                     "width": 20
@@ -946,6 +934,7 @@
                   "name": "t:names.text",
                   "settings": {
                     "text": "<p>NEED HELP?</p>",
+                    "text_uk": "",
                     "width": "fit-content",
                     "max_width": "normal",
                     "alignment": "left",
@@ -1023,6 +1012,7 @@
                       "name": "t:names.text",
                       "settings": {
                         "text": "<p><a href=\"mailto:hey@noritamy.com\" target=\"_blank\" title=\"mailto:hey@noritamy.com\">Contact Us</a></p>",
+                        "text_uk": "",
                         "width": "fit-content",
                         "max_width": "normal",
                         "alignment": "left",
@@ -1107,6 +1097,7 @@
                       "name": "t:names.text",
                       "settings": {
                         "text": "<p><strong>In-Store pick up available</strong></p><p>Choose pick-up at checkout</p>",
+                        "text_uk": "",
                         "width": "fit-content",
                         "max_width": "normal",
                         "alignment": "left",
@@ -1152,7 +1143,6 @@
             }
           },
           "block_order": [
-            "wishlist_plus_wishlist_pdp_button_gUff9D",
             "heading_m7KmQQ",
             "judge_me_reviews_preview_badge_9hhHMy",
             "reviews",
@@ -1196,6 +1186,7 @@
           "name": "t:names.header",
           "settings": {
             "text": "<h5>Goes well with</h5>",
+            "text_uk": "",
             "width": "fit-content",
             "max_width": "normal",
             "alignment": "left",
@@ -1394,6 +1385,7 @@
           "name": "t:names.text",
           "settings": {
             "text": "<h3>{{ closest.product.metafields.custom.product_section_data.value.title.value }}</h3>",
+            "text_uk": "",
             "width": "fit-content",
             "max_width": "normal",
             "alignment": "left",
@@ -1420,6 +1412,7 @@
           "name": "t:names.text",
           "settings": {
             "text": "<p>{{ closest.product.metafields.custom.product_section_data.value.copy | metafield_tag }}</p>",
+            "text_uk": "",
             "width": "fit-content",
             "max_width": "normal",
             "alignment": "left",
@@ -1576,6 +1569,7 @@
           "name": "t:names.heading",
           "settings": {
             "text": "<h3>Frequently asked questions</h3>",
+            "text_uk": "",
             "width": "fit-content",
             "max_width": "narrow",
             "alignment": "left",
@@ -1620,6 +1614,7 @@
               "type": "_accordion-row",
               "settings": {
                 "heading": "What is the return policy?",
+                "heading_uk": "",
                 "open_by_default": false,
                 "icon": "none",
                 "width": 20
@@ -1629,6 +1624,7 @@
                   "type": "text",
                   "settings": {
                     "text": "<p>For Return policy please read <a href=\"/policies/refund-policy\" target=\"_blank\" title=\"Refund Policy\">here</a> </p><p></p><p></p>",
+                    "text_uk": "",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
@@ -1659,6 +1655,7 @@
               "type": "_accordion-row",
               "settings": {
                 "heading": "Are any purchases final sale?",
+                "heading_uk": "",
                 "open_by_default": false,
                 "icon": "none",
                 "width": 20
@@ -1700,6 +1697,7 @@
               "name": "t:names.accordion_dash_row",
               "settings": {
                 "heading": "When will I get my order?",
+                "heading_uk": "",
                 "open_by_default": false,
                 "icon": "none",
                 "width": 20
@@ -1742,6 +1740,7 @@
               "name": "t:names.accordion_dash_row",
               "settings": {
                 "heading": "Where are your products manufactured?",
+                "heading_uk": "",
                 "open_by_default": false,
                 "icon": "none",
                 "width": 20
@@ -1752,6 +1751,7 @@
                   "name": "t:names.text",
                   "settings": {
                     "text": "<p>Our products are manufactured in TLV and are hand made.</p>",
+                    "text_uk": "",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
@@ -1783,6 +1783,7 @@
               "name": "t:names.accordion_dash_row",
               "settings": {
                 "heading": "How much does shipping cost?",
+                "heading_uk": "",
                 "open_by_default": false,
                 "icon": "none",
                 "width": 20
