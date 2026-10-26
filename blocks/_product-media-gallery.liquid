@@ -10,7 +10,7 @@
   assign selected_variant_media = selected_product.selected_or_first_available_variant.featured_media
   assign first_3d_model = selected_product.media | where: 'media_type', 'model' | first
 
-  if block.settings.hide_variants
+  if block.settings.hide_variants or product.metafields.custom.hide_variants
     assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src'
   endif
 
