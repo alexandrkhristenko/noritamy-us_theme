@@ -83,7 +83,7 @@
     assign sorted_media = sorted_media | concat: selected_product.media | where: 'id', selected_variant_media.id
 
     for media in selected_product.media
-      if block.settings.hide_variants and variant_images contains media.src and sorted_media.size > 0
+  if block.settings.hide_variants or product.metafields.custom.hide_variants and variant_images contains media.src and sorted_media.size > 0
         continue
       endif
 
