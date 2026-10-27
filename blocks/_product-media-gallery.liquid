@@ -10,7 +10,12 @@
   assign selected_variant_media = selected_product.selected_or_first_available_variant.featured_media
   assign first_3d_model = selected_product.media | where: 'media_type', 'model' | first
 
-  if block.settings.hide_variants or product.metafields.custom.hide_variants
+  assign hide_variants = block.settings.hide_variants
+  if product.metafields.custom.hide_variants
+    assign hide_variants = true
+  endif
+
+  if hide_variants
     assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src'
   endif
 
@@ -83,7 +88,7 @@
     assign sorted_media = sorted_media | concat: selected_product.media | where: 'id', selected_variant_media.id
 
     for media in selected_product.media
-  if block.settings.hide_variants or product.metafields.custom.hide_variants and variant_images contains media.src and sorted_media.size > 0
+      if hide_variants and variant_images contains media.src and sorted_media.size > 0
         continue
       endif
 
