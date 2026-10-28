@@ -88,6 +88,14 @@ select {
     pointer-events: auto;
 }
 
+/* Until product-card.js has defined <product-card>, a tap on the image would land on the gallery,
+   which only navigates through that script. On a slow phone that took ~20s, so the first taps did
+   nothing. Before the element is defined, let taps on the gallery fall through to the card's
+   full-size link, which navigates natively. Swiping between images starts once the script is ready. */
+product-card:not(:defined) .product-card__content .card-gallery {
+    pointer-events: none;
+}
+
 .product-card__content .card-gallery {
     cursor: pointer;
 }
