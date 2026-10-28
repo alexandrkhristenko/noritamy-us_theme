@@ -28,6 +28,8 @@
   var S = window.Shopify || {};
   var shop = S.shop || '';
   if (!/^[a-z0-9-]+\.myshopify\.com$/.test(shop) || S.designMode) return;
+  // Only the live theme counts: previews of unpublished themes (QA, drafts) would inflate the numbers.
+  if (S.theme && S.theme.role && S.theme.role !== 'main') return;
 
   function send(outcome) {
     var body = JSON.stringify({ shop: shop, outcome: outcome });
@@ -72,6 +74,10 @@
   // Dispatched by Shopify when a choice is recorded (the banner calls setTrackingConsent).
   document.addEventListener('visitorConsentCollected', function (ev) {
     if (decided) return;
+    // Only count choices made in a region that gets the banner. Elsewhere (e.g. the US "Your privacy
+    // choices" opt-out) the same event fires without a banner and would show up as 'custom'.
+    var cp = window.Shopify && window.Shopify.customerPrivacy;
+    if (cp && cp.shouldShowBanner && !cp.shouldShowBanner()) return;
     decided = true;
     var d = (ev && ev.detail) || {};
     var choices = [!!d.analyticsAllowed, !!d.marketingAllowed, !!d.preferencesAllowed];
