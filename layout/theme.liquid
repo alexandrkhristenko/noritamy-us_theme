@@ -129,6 +129,9 @@
 
     {{ content_for_header }}
 
+    {%- comment -%} Cookie-banner accept-rate counts (LIN-325). Same file on every Noritamy theme; independent of consent, stores nothing on the device. {%- endcomment -%}
+    <script src="{{ 'consent-measure.js' | asset_url }}" defer></script>
+
     {%- comment -%}
       Consent gating for the UK, EEA and Switzerland (PECR + UK/EU GDPR). There, GTM, Contentsquare,
       Hotjar and Triple Whale load only after the visitor explicitly accepts in Shopify's cookie banner.
