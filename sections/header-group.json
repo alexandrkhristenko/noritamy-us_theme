@@ -17,13 +17,12 @@
         "announcement_countdown_aTY9VB": {
           "type": "_announcement-countdown",
           "name": "Countdown announcement",
-          "disabled": true,
           "settings": {
-            "end_date": "2026-06-13 23:59",
-            "text": "סופש גאווה ואהבה 15% הנחה על כל התכשיטים באתר",
+            "end_date": "2026-10-31 23:59",
+            "text": "<strong>Halloween Sale - 15% Off Store-Wide</strong>",
             "link": "shopify://collections/best-sellers",
             "font": "var(--font-body--family)",
-            "font_size": "1rem",
+            "font_size": "0.875rem",
             "weight": "",
             "letter_spacing": "normal",
             "case": "none"
@@ -35,6 +34,7 @@
           "name": "t:names.announcement",
           "settings": {
             "text": "20% Off your Second Piece",
+            "text_uk": "",
             "link": "",
             "enable_klaviyo_popup": false,
             "klaviyo_form_id": "",
@@ -49,8 +49,10 @@
         "announcement_DKDV48": {
           "type": "_announcement",
           "name": "t:names.announcement",
+          "disabled": true,
           "settings": {
             "text": "15% OFF Initials collection&nbsp;",
+            "text_uk": "",
             "link": "shopify://collections/scripted",
             "enable_klaviyo_popup": true,
             "klaviyo_form_id": "WhpzHA",
@@ -67,6 +69,7 @@
           "name": "t:names.announcement",
           "settings": {
             "text": "Free Shipping | Price Includes All Taxes & Duties",
+            "text_uk": "",
             "link": "",
             "enable_klaviyo_popup": false,
             "klaviyo_form_id": "",
@@ -84,6 +87,7 @@
           "disabled": true,
           "settings": {
             "text": "Free Shipping Worldwide",
+            "text_uk": "",
             "link": "",
             "enable_klaviyo_popup": false,
             "klaviyo_form_id": "",
@@ -101,6 +105,7 @@
           "disabled": true,
           "settings": {
             "text": "1 Year Warranty",
+            "text_uk": "",
             "link": "",
             "enable_klaviyo_popup": false,
             "klaviyo_form_id": "",
@@ -136,6 +141,7 @@
           "disabled": true,
           "settings": {
             "text": "<span style=\"text-decoration:underline\"><strong>20% Off</strong></span> for Orders Over 2000 NIS!",
+            "text_uk": "",
             "link": "shopify://collections/shop-all",
             "enable_klaviyo_popup": false,
             "klaviyo_form_id": "",
