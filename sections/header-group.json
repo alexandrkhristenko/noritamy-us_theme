@@ -32,6 +32,7 @@
         "announcement_Ji78WG": {
           "type": "_announcement",
           "name": "t:names.announcement",
+          "disabled": true,
           "settings": {
             "text": "20% Off your Second Piece",
             "text_uk": "",
