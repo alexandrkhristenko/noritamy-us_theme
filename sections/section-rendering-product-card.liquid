@@ -37,8 +37,15 @@
     {% render 'variant-quick-add', product_resource: product %}
     {% render 'variant-swatches', product_resource: product %}
 
-    <product-price>
+    <product-price data-sale-price-first="false">
       {% render 'price', product_resource: product, show_unit_price: true %}
+    </product-price>
+    {% comment %}
+      This section knows nothing about the card's price block settings, so both orders are rendered and
+      product-card.js picks the one matching each price on the card.
+    {% endcomment %}
+    <product-price data-sale-price-first="true">
+      {% render 'price', product_resource: product, show_unit_price: true, show_sale_price_first: true %}
     </product-price>
   </a>
 </product-card>

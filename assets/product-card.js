@@ -130,11 +130,20 @@ export class ProductCard extends Component {
    * @param {VariantUpdateEvent} event - The variant update event.
    */
   updatePrice(event) {
-    const priceContainer = this.querySelectorAll(`product-price [ref='priceContainer']`)[1];
-    const newPriceElement = event.detail.data.html.querySelector(`product-price [ref='priceContainer']`);
+    const html = event.detail.data.html;
 
-    if (newPriceElement && priceContainer) {
-      morph(priceContainer, newPriceElement);
+    // A card holds two prices: the zoomed-out grid one and the price block, which may show the sale price first.
+    // The rendered card returns both orders, so each price takes the markup matching its own order.
+    for (const productPrice of this.querySelectorAll('product-price')) {
+      const salePriceFirst = productPrice.dataset.salePriceFirst === 'true' ? 'true' : 'false';
+      const priceContainer = productPrice.querySelector(`[ref='priceContainer']`);
+      const newPriceElement =
+        html.querySelector(`product-price[data-sale-price-first='${salePriceFirst}'] [ref='priceContainer']`) ??
+        html.querySelector(`product-price [ref='priceContainer']`);
+
+      if (newPriceElement && priceContainer) {
+        morph(priceContainer, newPriceElement);
+      }
     }
   }
 
