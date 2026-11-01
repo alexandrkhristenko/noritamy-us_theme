@@ -17,6 +17,7 @@
         "announcement_countdown_aTY9VB": {
           "type": "_announcement-countdown",
           "name": "Countdown announcement",
+          "disabled": true,
           "settings": {
             "end_date": "2026-10-31 23:59",
             "text": "<strong>Halloween Sale - 15% Off Store-Wide</strong>",
