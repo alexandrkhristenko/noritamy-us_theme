@@ -224,7 +224,7 @@
               "settings": {
                 "text_prefix": "Handmade to order, Receive by",
                 "min_days": 6,
-                "max_days": 22
+                "max_days": 24
               },
               "blocks": {}
             },
