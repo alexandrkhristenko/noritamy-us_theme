@@ -244,20 +244,48 @@
   {% endif %}
 {% endcapture %}
 
+{% liquid
+  assign height_desktop = section.settings.section_height
+  assign height_mobile = section.settings.section_height_mobile
+
+  case height_desktop
+    when 'auto'
+      assign hero_min_height_desktop = '0px'
+    when 'custom'
+      assign hero_min_height_desktop = section.settings.section_height_custom | append: 'svh'
+    when 'full-screen'
+      assign hero_min_height_desktop = '100svh'
+    else
+      assign hero_min_height_desktop = 'var(--section-height-' | append: height_desktop | append: ')'
+  endcase
+
+  case height_mobile
+    when 'auto'
+      assign hero_min_height_mobile = '0px'
+    when 'custom'
+      assign hero_min_height_mobile = section.settings.section_height_custom_mobile | append: 'svh'
+    when 'full-screen'
+      assign hero_min_height_mobile = '100svh'
+    else
+      assign hero_min_height_mobile = 'var(--section-height-' | append: height_mobile | append: ')'
+  endcase
+%}
+
 <div
   id="Hero-{{ section.id }}"
-  class="hero color-{{ section.settings.color_scheme }}{% if section.blocks.size == 0 and section.settings.section_height == 'auto' %} hero--no-blocks-auto-height{% endif %}"
+  class="hero color-{{ section.settings.color_scheme }}{% if section.blocks.size == 0 and height_desktop == 'auto' %} hero--no-blocks-auto-height-desktop{% endif %}{% if section.blocks.size == 0 and height_mobile == 'auto' %} hero--no-blocks-auto-height-mobile{% endif %}"
   style="
     --hero-border-style: {{ section.settings.border }};
     --hero-border-width: {{ section.settings.border_width }}px;
     --hero-border-opacity: {{ section.settings.border_opacity }}%;
     --blur-opacity: {{ section.settings.reflection_opacity | divided_by: 100.0 }};
-    {% if section.settings.section_height == 'custom' %}
-      --hero-min-height: {{ section.settings.section_height_custom }}svh;
-    {% elsif section.settings.section_height == "full-screen" %}
-       --hero-min-height: 100svh;
-    {% else %}
-      --hero-min-height: var(--section-height-{{ section.settings.section_height }});
+    --hero-min-height-desktop: {{ hero_min_height_desktop }};
+    --hero-min-height-mobile: {{ hero_min_height_mobile }};
+    {% if section.settings.max_height_desktop > 0 and height_desktop != 'auto' %}
+      --hero-max-height-desktop: {{ section.settings.max_height_desktop }}px;
+    {% endif %}
+    {% if section.settings.max_height_mobile > 0 and height_mobile != 'auto' %}
+      --hero-max-height-mobile: {{ section.settings.max_height_mobile }}px;
     {% endif %}
   "
   {% if request.visual_preview_mode %}
@@ -352,9 +380,18 @@
     --hero-height-offset: var(--header-group-height, 0);
   }
 
+  /* Height is set separately for mobile and desktop. Full-screen and svh heights keep
+     growing with the screen, so each breakpoint can also be capped with a max height. */
   .hero {
+    --hero-min-height: var(--hero-min-height-mobile);
+    --hero-max-height: var(--hero-max-height-mobile, 100000px);
     position: relative;
-    min-height: calc(var(--hero-min-height) - var(--hero-height-offset));
+    min-height: min(calc(var(--hero-min-height) - var(--hero-height-offset)), var(--hero-max-height));
+
+    @media screen and (min-width: 750px) {
+      --hero-min-height: var(--hero-min-height-desktop);
+      --hero-max-height: var(--hero-max-height-desktop, 100000px);
+    }
   }
 
   .hero[data-shopify-visual-preview] {
@@ -404,14 +441,28 @@
     aspect-ratio: var(--hero-media-aspect-ratio);
   }
 
-  .hero--no-blocks-auto-height {
-    :is(.hero__image, .hero__video) {
-      width: 100%;
-      aspect-ratio: auto;
+  /* When there are no blocks and the height is auto, allow the image to appear. */
+  @media screen and (max-width: 749px) {
+    .hero--no-blocks-auto-height-mobile {
+      :is(.hero__image, .hero__video) {
+        width: 100%;
+        aspect-ratio: auto;
+      }
+      .hero__media-wrapper {
+        position: relative;
+      }
     }
-    .hero__media-wrapper {
-      /* When there are no blocks and the height is auto, allow the image to appear. */
-      position: relative;
+  }
+
+  @media screen and (min-width: 750px) {
+    .hero--no-blocks-auto-height-desktop {
+      :is(.hero__image, .hero__video) {
+        width: 100%;
+        aspect-ratio: auto;
+      }
+      .hero__media-wrapper {
+        position: relative;
+      }
     }
   }
 
@@ -816,6 +867,10 @@
       "default": "page-width"
     },
     {
+      "type": "header",
+      "content": "Height on desktop"
+    },
+    {
       "type": "select",
       "id": "section_height",
       "label": "t:settings.height",
@@ -857,6 +912,77 @@
       "default": 50,
       "unit": "%",
       "visible_if": "{{ section.settings.section_height == 'custom' }}"
+    },
+    {
+      "type": "range",
+      "id": "max_height_desktop",
+      "label": "Max height on desktop",
+      "info": "Stops the banner from growing on large monitors. 0 = no limit.",
+      "min": 0,
+      "max": 1600,
+      "step": 20,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ section.settings.section_height != 'auto' }}"
+    },
+    {
+      "type": "header",
+      "content": "Height on mobile"
+    },
+    {
+      "type": "select",
+      "id": "section_height_mobile",
+      "label": "t:settings.height",
+      "options": [
+        {
+          "value": "auto",
+          "label": "t:options.auto"
+        },
+        {
+          "value": "small",
+          "label": "t:options.small"
+        },
+        {
+          "value": "medium",
+          "label": "t:options.medium"
+        },
+        {
+          "value": "large",
+          "label": "t:options.large"
+        },
+        {
+          "value": "full-screen",
+          "label": "t:options.full_screen"
+        },
+        {
+          "value": "custom",
+          "label": "t:options.custom"
+        }
+      ],
+      "default": "medium"
+    },
+    {
+      "type": "range",
+      "id": "section_height_custom_mobile",
+      "label": "t:settings.custom_height",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 50,
+      "unit": "%",
+      "visible_if": "{{ section.settings.section_height_mobile == 'custom' }}"
+    },
+    {
+      "type": "range",
+      "id": "max_height_mobile",
+      "label": "Max height on mobile",
+      "info": "0 = no limit.",
+      "min": 0,
+      "max": 1200,
+      "step": 20,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ section.settings.section_height_mobile != 'auto' }}"
     },
     {
       "type": "header",
@@ -1065,6 +1191,7 @@
         "horizontal_alignment_flex_direction_column": "center",
         "gap": 16,
         "section_height": "large",
+        "section_height_mobile": "large",
         "color_scheme": "scheme-5",
         "padding-block-start": 40,
         "padding-block-end": 40,
@@ -1110,6 +1237,7 @@
         "vertical_alignment_flex_direction_column": "space-between",
         "gap": 32,
         "section_height": "large",
+        "section_height_mobile": "large",
         "color_scheme": "scheme-5",
         "padding-block-start": 0,
         "padding-block-end": 40,
