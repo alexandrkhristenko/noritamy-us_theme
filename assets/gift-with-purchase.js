@@ -34,6 +34,7 @@ const NOT_FREE_KEY = 'gift-with-purchase:not-free';
  */
 
 const CART_UPDATE_EVENT = 'cart:update';
+const SHOPEAKS_SYNC_EVENT = 'shopeaks:sync-shopify-cart';
 const CART_REQUEST = /\/cart\/(add|change|update|clear)(\.js)?(\?|$)/;
 
 /** The page's fetch before it is wrapped in standalone mode, so our own requests are not watched. */
@@ -127,7 +128,12 @@ async function getCart() {
  * @param {Record<string, string> | undefined} sections
  */
 async function announce(cart, sections) {
-  if (config?.standalone) return;
+  if (config?.standalone) {
+    // Shopeaks keeps its own copy of the cart. Its app re-reads /cart.js on this event (it is
+    // what it listens to for the BOGOS gift app), so the gift shows without a page reload.
+    document.dispatchEvent(new CustomEvent(SHOPEAKS_SYNC_EVENT));
+    return;
+  }
   const { CartUpdateEvent } = await import('@theme/events');
   document.dispatchEvent(
     new CartUpdateEvent({}, SOURCE, {
