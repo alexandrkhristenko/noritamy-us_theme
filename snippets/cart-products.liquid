@@ -86,10 +86,56 @@
           </thead>
 
           <tbody role="rowgroup">
+            {%- liquid
+              # Gift with purchase: when the customer also buys the gift variant themselves, Shopify may
+              # put the free unit on their own line instead of the gift line. The order total is the
+              # same, but the cart would show their pair as free and the gift at full price. In that
+              # case show the gift line as free and their pair at full price instead.
+              assign gift_variant_id = 0
+              assign gift_line_discount = 0
+              for item in cart.items
+                if item.properties._gift_with_purchase == '1'
+                  assign gift_variant_id = item.variant_id
+                  assign gift_unit_price = item.original_price
+                  assign gift_line_discount = item.original_line_price | minus: item.final_line_price
+                endif
+              endfor
+              assign gift_display_swap = false
+              if gift_variant_id != 0 and gift_line_discount < gift_unit_price
+                assign gift_variant_discount = 0
+                for item in cart.items
+                  if item.variant_id == gift_variant_id
+                    assign line_discount = item.original_line_price | minus: item.final_line_price
+                    assign gift_variant_discount = gift_variant_discount | plus: line_discount
+                  endif
+                endfor
+                if gift_variant_discount >= gift_unit_price
+                  assign gift_display_swap = true
+                endif
+              endif
+            -%}
             {% for item in cart.items %}
+              {%- liquid
+                # Free gift added by assets/gift-with-purchase.js (Theme settings → Gift with purchase).
+                assign is_gift_line = false
+                if item.properties._gift_with_purchase == '1'
+                  assign is_gift_line = true
+                endif
+
+                assign display_final_price = item.final_price
+                assign hide_line_discounts = false
+                if gift_display_swap and item.variant_id == gift_variant_id
+                  if is_gift_line
+                    assign display_final_price = 0
+                  else
+                    assign display_final_price = item.original_price
+                    assign hide_line_discounts = true
+                  endif
+                endif
+              -%}
               <tr
                 role="row"
-                class="cart-items__table-row"
+                class="cart-items__table-row{% if is_gift_line %} cart-items__table-row--gift{% endif %}"
                 ref="cartItemRows[]"
               >
                 <td
@@ -130,6 +176,10 @@
                       {{- item.product.title -}}
                     </a>
                   </p>
+
+                  {%- if is_gift_line and settings.gift_with_purchase_badge != blank -%}
+                    <p class="cart-items__gift-badge">{{ settings.gift_with_purchase_badge | escape }}</p>
+                  {%- endif -%}
 
                   {% if item.product.vendor and block.settings.vendor %}
                     <p>
@@ -188,20 +238,34 @@
                     {% endif %}
                   {%- endif -%}
 
-                  {% if item.line_level_discount_allocations.size > 0 %}
+                  {%- liquid
+                    # Buy X get Y discounts also allocate $0 to the "buy" item, which would print the
+                    # discount title under a full-price item. On the gift line the badge already says it.
+                    assign visible_line_discounts = 0
+                    unless hide_line_discounts or is_gift_line and settings.gift_with_purchase_badge != blank
+                      for discount in item.line_level_discount_allocations
+                        if discount.amount > 0
+                          assign visible_line_discounts = visible_line_discounts | plus: 1
+                        endif
+                      endfor
+                    endunless
+                  -%}
+                  {% if visible_line_discounts > 0 %}
                     <ul
                       class="list-unstyled"
                       role="list"
                     >
                       {%- for discount in item.line_level_discount_allocations -%}
-                        <li style="color: #d11212; font-weight: 600;">{{ discount.discount_application.title | escape }}</li>
+                        {%- if discount.amount > 0 -%}
+                          <li style="color: #d11212; font-weight: 600;">{{ discount.discount_application.title | escape }}</li>
+                        {%- endif -%}
                       {%- endfor -%}
                     </ul>
                   {% endif %}
                   <div>
-                    {% if item.original_price != item.final_price %}
+                    {% if item.original_price != display_final_price %}
                       <span class="visually-hidden">{{ 'content.price_sale' | t }}</span>
-                      <span style="color: #d11212; font-weight: 600;">{{ item.final_price | money }}</span>
+                      <span style="color: #d11212; font-weight: 600;">{{ display_final_price | money }}</span>
                       <span class="visually-hidden">{{ 'content.price_regular' | t }}</span>
                       <s class="compare-at-price">
                         {% if item.variant.compare_at_price > item.original_price %}
@@ -231,6 +295,15 @@
                   role="cell"
                   headers="quantity"
                 >
+                  {%- comment -%}
+                    The gift line keeps its quantity selector in the DOM, only hidden:
+                    component-cart-items.js looks selectors up by line index (refs.quantitySelectors[line - 1]),
+                    so dropping it would shift every line after the gift. It has no remove button either,
+                    since the gift script would add it straight back.
+                  {%- endcomment -%}
+                  {%- if is_gift_line -%}
+                    <div hidden>
+                  {%- endif -%}
                   {% # Here I want to pass some arguments to the quantity block so it knows which value should the input be set to. Though quantity block could be a snippet instead %}
                   {% render 'quantity-selector',
                     product: item.product,
@@ -239,16 +312,19 @@
                     min: 0,
                     class: 'cart-primary-typography'
                   %}
-
-                  <button
-                    class="button button--tertiary cart-items__remove"
-                    type="button"
-                    aria-label="{{ 'accessibility.remove_item' | t: title: item.title | escape }}"
-                    on:click="/onLineItemRemove/{{ item.index | plus: 1 }}"
-                  >
-                    {{- 'icon-delete.svg' | inline_asset_content -}}
-                    <span class="visually-hidden">Remove</span>
-                  </button>
+                  {%- if is_gift_line -%}
+                    </div>
+                  {%- else -%}
+                    <button
+                      class="button button--tertiary cart-items__remove"
+                      type="button"
+                      aria-label="{{ 'accessibility.remove_item' | t: title: item.title | escape }}"
+                      on:click="/onLineItemRemove/{{ item.index | plus: 1 }}"
+                    >
+                      {{- 'icon-delete.svg' | inline_asset_content -}}
+                      <span class="visually-hidden">Remove</span>
+                    </button>
+                  {%- endif -%}
                 </td>
                 <td
                   class="cart-items__error hidden"
@@ -395,6 +471,19 @@
     flex: 0 1 var(--quantity-selector-width);
     font-size: var(--cart-font-size--sm);
     height: auto;
+  }
+
+  .cart-items__gift-badge {
+    display: inline-block;
+    width: fit-content;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background-color: var(--color-foreground);
+    color: var(--color-background);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
   }
 
   .cart-items__remove {

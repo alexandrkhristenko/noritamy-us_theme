@@ -9,7 +9,12 @@
       <span class="cart__summary-item cart__original-total">
         <span class="cart__original-total-label">{{ 'content.cart_subtotal' | t }}</span>
         <span class="cart__original-total-value cart-secondary-typography">
-          {{- cart.original_total_price | money -}}
+          {%- comment -%}
+            items_subtotal_price is after line-level discounts (e.g. the free gift) and before
+            cart-level ones, so subtotal − listed discounts = total. original_total_price also
+            counted the gift at full price, which made the numbers not add up.
+          {%- endcomment -%}
+          {{- cart.items_subtotal_price | money -}}
         </span>
       </span>
       <div class="cart__summary-discounts">
