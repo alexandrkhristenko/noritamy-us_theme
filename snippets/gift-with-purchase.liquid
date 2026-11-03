@@ -75,6 +75,8 @@
       "available": {% if gwp_variant %}{{ gwp_variant.available | json }}{% else %}false{% endif %},
       "needsSync": {{ gwp_needs_sync | json }},
       "standalone": {% if standalone %}true{% else %}false{% endif %},
+      "badge": {{ settings.gift_with_purchase_badge | strip | json }},
+      "productTitle": {% if gwp_variant %}{{ gwp_variant.product.title | json }}{% else %}null{% endif %},
       "routes": {
         "cart": {{ routes.cart_url | json }},
         "add": {{ routes.cart_add_url | append: '.js' | json }},

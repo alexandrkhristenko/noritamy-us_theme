@@ -31,6 +31,8 @@ const NOT_FREE_KEY = 'gift-with-purchase:not-free';
  * @property {boolean} needsSync - The server-rendered cart already needs a fix on page load.
  * @property {boolean} [standalone] - Rendered outside the theme layout (no theme modules).
  * @property {{ cart: string, add: string, change: string }} routes
+ * @property {string} [badge] - Badge text shown on the gift line (standalone pages).
+ * @property {string} [productTitle] - Gift product title, to find its line in a foreign cart UI.
  */
 
 const CART_UPDATE_EVENT = 'cart:update';
@@ -212,6 +214,7 @@ async function sync() {
     }
   }
 
+  rememberGiftDiscountTitles(cart);
   if (changed) await announce(cart, sections);
 }
 
@@ -264,8 +267,100 @@ function watchCartRequests() {
   };
 }
 
+/**
+ * Titles of the discounts on the gift variant's lines (the automatic "Buy X get Y"). Shopeaks
+ * lists them under every line the discount touches, including the paid ones at $0 off.
+ * @type {Set<string>}
+ */
+const giftDiscountTitles = new Set();
+
+/** @param {any} cart */
+function rememberGiftDiscountTitles(cart) {
+  for (const item of cart.items) {
+    if (item.variant_id !== config?.variantId) continue;
+    for (const allocation of item.line_level_discount_allocations || []) {
+      const title = allocation.discount_application?.title;
+      if (title) giftDiscountTitles.add(title.trim().toLowerCase());
+    }
+  }
+  scheduleDecorate();
+}
+
+const BADGE_ATTRIBUTE = 'data-gift-with-purchase-badge';
+const HIDDEN_ATTRIBUTE = 'data-gift-with-purchase-hidden';
+
+/**
+ * Shopeaks cart drawer, as in the theme cart: a badge on the gift line, and the gift discount's
+ * title hidden on all lines. Shopeaks renders its own React UI, so only its stable class
+ * (.cart-cart-drawer-content, one child per line) and the text are relied on; if its markup
+ * changes, the drawer just looks as it does without this.
+ */
+function decorateShopeaksCart() {
+  if (!config?.badge || !config.productTitle) return;
+  const productTitle = config.productTitle.trim().toLowerCase();
+
+  document.querySelectorAll('.cart-cart-drawer-content > *').forEach((row) => {
+    const texts = Array.from(row.querySelectorAll('p')).filter((p) => !p.hasAttribute(BADGE_ATTRIBUTE));
+    const title = texts[0];
+    if (!title) return;
+
+    for (const text of texts) {
+      const label = text.textContent?.trim().toLowerCase();
+      if (!label || !giftDiscountTitles.has(label)) continue;
+      const container = text.parentElement;
+      if (container && container !== row && !container.hasAttribute(HIDDEN_ATTRIBUTE)) {
+        container.setAttribute(HIDDEN_ATTRIBUTE, '');
+        container.style.display = 'none';
+      }
+    }
+
+    // The gift line: the gift product at $0. A pair the customer pays for keeps no badge.
+    const isGift =
+      title.textContent?.trim().toLowerCase() === productTitle &&
+      texts.some((text) => /^\D*0([.,]00)?\D*$/.test(text.textContent?.trim() || ''));
+    const badge = row.querySelector(`[${BADGE_ATTRIBUTE}]`);
+    if (isGift && !badge) {
+      const element = document.createElement('p');
+      element.setAttribute(BADGE_ATTRIBUTE, '');
+      element.textContent = config?.badge || '';
+      Object.assign(element.style, {
+        display: 'inline-block',
+        width: 'fit-content',
+        margin: '6px 0 0',
+        padding: '2px 8px',
+        borderRadius: '4px',
+        backgroundColor: '#000',
+        color: '#fff',
+        fontSize: '0.75rem',
+        fontWeight: '600',
+        letterSpacing: '0.02em',
+        lineHeight: '1.5',
+        textTransform: 'uppercase',
+      });
+      // After the title's own row (title and price side by side), not inside it.
+      const anchor = title.parentElement && title.parentElement !== row ? title.parentElement : title;
+      anchor.insertAdjacentElement('afterend', element);
+    } else if (!isGift && badge) {
+      badge.remove();
+    }
+  });
+}
+
+let decorateQueued = false;
+function scheduleDecorate() {
+  if (!config?.standalone || decorateQueued) return;
+  decorateQueued = true;
+  requestAnimationFrame(() => {
+    decorateQueued = false;
+    decorateShopeaksCart();
+  });
+}
+
 if (config?.standalone) {
   watchCartRequests();
+  new MutationObserver(scheduleDecorate).observe(document.documentElement, { childList: true, subtree: true });
+  // Reads the cart once, also for the discount titles, even when nothing needs fixing.
+  if (!config.needsSync) scheduleSync();
 } else {
   // Our own update must not pop the cart drawer open (it opens on every cart:update when it has
   // auto-open), e.g. when the gift is fixed up on page load.
