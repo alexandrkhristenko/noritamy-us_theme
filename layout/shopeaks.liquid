@@ -133,5 +133,9 @@
   </head>
   <body>
     {{ content_for_layout }}
+    {%- comment -%}
+      Free gift on every order (Theme settings → Gift with purchase), as on the rest of the store.
+    {%- endcomment -%}
+    {% render 'gift-with-purchase', standalone: true %}
   </body>
 </html>

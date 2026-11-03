@@ -1,6 +1,3 @@
-import { ThemeEvents, CartUpdateEvent } from '@theme/events';
-import { fetchConfig } from '@theme/utilities';
-
 /**
  * Gift with purchase: keeps exactly one free gift line in the cart while the cart holds at
  * least one other item, and removes it when it does not.
@@ -14,7 +11,12 @@ import { fetchConfig } from '@theme/utilities';
  * the customer adds themselves is a separate, normal line and is never touched.
  *
  * Config comes from the theme settings (Theme settings → Gift with purchase), rendered by
- * snippets/scripts.liquid into #gift-with-purchase-config.
+ * snippets/gift-with-purchase.liquid into #gift-with-purchase-config.
+ *
+ * The script has no static imports, so it also runs outside the theme layout, e.g. on Shopeaks
+ * app proxy pages (layout/shopeaks.liquid), which have no importmap and render their own cart
+ * UI. There ("standalone" in the config) it watches the page's own cart requests instead of the
+ * theme's cart events.
  */
 
 const GIFT_PROPERTY = '_gift_with_purchase';
@@ -27,7 +29,24 @@ const NOT_FREE_KEY = 'gift-with-purchase:not-free';
  * @property {number | null} variantId
  * @property {boolean} available
  * @property {boolean} needsSync - The server-rendered cart already needs a fix on page load.
+ * @property {boolean} [standalone] - Rendered outside the theme layout (no theme modules).
+ * @property {{ cart: string, add: string, change: string }} routes
  */
+
+const CART_UPDATE_EVENT = 'cart:update';
+const CART_REQUEST = /\/cart\/(add|change|update|clear)(\.js)?(\?|$)/;
+
+/** The page's fetch before it is wrapped in standalone mode, so our own requests are not watched. */
+const nativeFetch = window.fetch.bind(window);
+
+/** @param {string} body */
+function fetchConfig(body) {
+  return {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body,
+  };
+}
 
 /** @type {GiftConfig | null} */
 const config = readConfig();
@@ -84,7 +103,7 @@ async function postCart(url, payload) {
     ...payload,
     ...(sections.length ? { sections: sections.join(','), sections_url: window.location.pathname } : {}),
   });
-  const response = await fetch(url, fetchConfig('json', { body }));
+  const response = await nativeFetch(url, fetchConfig(body));
   const json = await response.json();
   if (!response.ok || json.status) throw new Error(json.description || json.message || 'Cart request failed');
   return json;
@@ -92,11 +111,13 @@ async function postCart(url, payload) {
 
 /** @param {number} line @param {number} quantity */
 function changeLine(line, quantity) {
-  return postCart(Theme.routes.cart_change_url, { line, quantity });
+  if (!config) throw new Error('No config');
+  return postCart(config.routes.change, { line, quantity });
 }
 
 async function getCart() {
-  const response = await fetch(`${Theme.routes.cart_url}.js`, { headers: { Accept: 'application/json' } });
+  if (!config) throw new Error('No config');
+  const response = await nativeFetch(`${config.routes.cart}.js`, { headers: { Accept: 'application/json' } });
   return response.json();
 }
 
@@ -105,7 +126,9 @@ async function getCart() {
  * @param {any} cart
  * @param {Record<string, string> | undefined} sections
  */
-function announce(cart, sections) {
+async function announce(cart, sections) {
+  if (config?.standalone) return;
+  const { CartUpdateEvent } = await import('@theme/events');
   document.dispatchEvent(
     new CartUpdateEvent({}, SOURCE, {
       source: SOURCE,
@@ -164,7 +187,7 @@ async function sync() {
   if (wanted && hasOtherItems && !keptGift) {
     // cart/add.js returns the added items, not the cart, but its sections are rendered for the
     // updated cart, so they can be used as is.
-    ({ sections } = await postCart(Theme.routes.cart_add_url, {
+    ({ sections } = await postCart(config.routes.add, {
       items: [{ id: config.variantId, quantity: 1, properties: { [GIFT_PROPERTY]: '1' } }],
     }));
     cart = await getCart();
@@ -183,7 +206,7 @@ async function sync() {
     }
   }
 
-  if (changed) announce(cart, sections);
+  if (changed) await announce(cart, sections);
 }
 
 // Serialise syncs: a burst of cart events collapses into one run after the current one.
@@ -202,24 +225,61 @@ function scheduleSync() {
   });
 }
 
-// Our own update must not pop the cart drawer open (it opens on every cart:update when it has
-// auto-open), e.g. when the gift is fixed up on page load.
-document.addEventListener(
-  ThemeEvents.cartUpdate,
-  (event) => {
-    if (/** @type {CustomEvent} */ (event).detail?.data?.source !== SOURCE) return;
-    const drawer = document.querySelector('cart-drawer-component');
-    if (!drawer?.hasAttribute('auto-open') || drawer.querySelector('dialog[open]')) return;
-    drawer.removeAttribute('auto-open');
-    setTimeout(() => drawer.setAttribute('auto-open', ''), 0);
-  },
-  { capture: true }
-);
+/**
+ * Standalone pages (Shopeaks) change the cart with their own fetch/XHR calls and fire no theme
+ * events, so sync after each successful cart request they make.
+ */
+function watchCartRequests() {
+  /** @param {unknown} url */
+  const isCartRequest = (url) => {
+    try {
+      return CART_REQUEST.test(new URL(String(url), window.location.href).pathname);
+    } catch {
+      return false;
+    }
+  };
 
-document.addEventListener(ThemeEvents.cartUpdate, (event) => {
-  const detail = /** @type {CustomEvent} */ (event).detail;
-  if (detail?.data?.source === SOURCE || detail?.data?.didError) return;
-  scheduleSync();
-});
+  window.fetch = function (input, init) {
+    const url = input instanceof Request ? input.url : input;
+    const request = nativeFetch(input, init);
+    if (isCartRequest(url)) {
+      request.then((response) => response.ok && scheduleSync()).catch(() => {});
+    }
+    return request;
+  };
+
+  const open = XMLHttpRequest.prototype.open;
+  XMLHttpRequest.prototype.open = function (/** @type {string} */ method, /** @type {string | URL} */ url, ...rest) {
+    if (isCartRequest(url)) {
+      this.addEventListener('load', () => this.status >= 200 && this.status < 300 && scheduleSync());
+    }
+    // @ts-ignore - forwards the optional async/user/password arguments as given.
+    return open.call(this, method, url, ...rest);
+  };
+}
+
+if (config?.standalone) {
+  watchCartRequests();
+} else {
+  // Our own update must not pop the cart drawer open (it opens on every cart:update when it has
+  // auto-open), e.g. when the gift is fixed up on page load.
+  document.addEventListener(
+    CART_UPDATE_EVENT,
+    (event) => {
+      if (/** @type {CustomEvent} */ (event).detail?.data?.source !== SOURCE) return;
+      const drawer = document.querySelector('cart-drawer-component');
+      if (!drawer?.hasAttribute('auto-open') || drawer.querySelector('dialog[open]')) return;
+      drawer.removeAttribute('auto-open');
+      setTimeout(() => drawer.setAttribute('auto-open', ''), 0);
+    },
+    { capture: true }
+  );
+
+  document.addEventListener(CART_UPDATE_EVENT, (event) => {
+    const detail = /** @type {CustomEvent} */ (event).detail;
+    if (detail?.data?.source === SOURCE || detail?.data?.didError) return;
+    scheduleSync();
+  });
+}
 
 if (config?.needsSync) scheduleSync();
