@@ -1852,6 +1852,38 @@
     ]
   },
   {
+    "name": "Gift with purchase",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Adds one free gift to every cart that has at least one other item (max 1 per order) and shows a badge on it. The gift is only free through an automatic \"Buy X get Y\" discount in Shopify admin (Discounts) that makes this product 100% off, max 1 use per order. If the gift is not free in the cart, it is removed automatically."
+      },
+      {
+        "type": "checkbox",
+        "id": "gift_with_purchase_enabled",
+        "label": "Enable gift with purchase",
+        "default": false
+      },
+      {
+        "type": "product",
+        "id": "gift_with_purchase_product",
+        "label": "Gift product"
+      },
+      {
+        "type": "text",
+        "id": "gift_with_purchase_variant_id",
+        "label": "Gift variant ID",
+        "info": "Optional. Leave empty to use the first available variant of the gift product."
+      },
+      {
+        "type": "text",
+        "id": "gift_with_purchase_badge",
+        "label": "Cart badge text",
+        "default": "Free silver earrings"
+      }
+    ]
+  },
+  {
     "name": "t:names.drawers",
     "settings": [
       {
