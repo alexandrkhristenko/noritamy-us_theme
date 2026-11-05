@@ -10,7 +10,7 @@
   custom.il_handle (single line text) to the Israeli handle, or to "none" when the
   product does not exist on the Israeli store.
 
-  Verified against both storefronts on 2026-08-27.
+  Verified against both storefronts on 2026-08-27; Annoory handles updated 2026-11-05.
 
   @example
   {% capture il_path %}{% render 'il-redirect-path' %}{% endcapture %}
@@ -18,10 +18,10 @@
 
 {%- liquid
   # us-handle:il-handle pairs. Matched by SKU on both stores.
-  assign product_map = 'initial-necklace-l-l:initials-necklace-l-n-206-1,wind-bold-curb-bracelet:bold-cuban-links-bracelet,sterling-silver-crystal-tassel-earring-single:sterling-silver-black-crystal-tassel-earring,evil-eye-evolves-diamond-bracelet:evil-eye-evolves-diamond-bracelet-1,unisex-coin-pendant-necklace:unisex-coin-pendant-necklace-14k,oval-links-initial-necklace:oval-links-initial-necklace-copy,signet-octagon-initial-ring-14k-copy:octagon-pinky-diamond-ring-14k,bismuth-earrings:bismuth-chain-earrings-out-of-stock-haf-e-13,hoop-earring-prc-e-104-1:hoop-and-v-earring'
+  assign product_map = 'initial-necklace-l-l:initials-necklace-l-n-206-1,wind-bold-curb-bracelet:bold-cuban-links-bracelet,sterling-silver-crystal-tassel-earring-single:sterling-silver-black-crystal-tassel-earring,annoory-evil-eye-evolves-diamond-bracelet:annoory-evil-eye-evolves-diamond-bracelet-1,unisex-coin-pendant-necklace:unisex-coin-pendant-necklace-14k,oval-links-initial-necklace:oval-links-initial-necklace-copy,signet-octagon-initial-ring-14k-copy:octagon-pinky-diamond-ring-14k,bismuth-earrings:bismuth-chain-earrings-out-of-stock-haf-e-13,hoop-earring-prc-e-104-1:hoop-and-v-earring,annoory-cosmic-transformer-diamond-pinky-ring:annoory-cosmic-transformer-pinky-ring'
 
   # US products with no Israeli equivalent - send these to the Israeli catalogue.
-  assign product_missing = 'oak-leaf-pendant-necklace,align-you-elements-diamond-bracelet,align-your-flow-large-diamond-earrin,co-creator-diamond-necklace,cosmic-balance-diamond-necklace,cosmic-transformer-diamond-earrings,cosmic-transformer-diamond-pinky-ring,divine-femme-diamond-ring,half-the-story-emerald-rose-gold-earrings,on-point-diamond-earrings,long-snake-earrings-s-e-2,tangled-earrings-h-e-100,horizontal-bar-ring-jn-r-32,initials-necklace-sterling-silver-lr-n-200'
+  assign product_missing = 'oak-leaf-pendant-necklace,long-snake-earrings-s-e-2,tangled-earrings-h-e-100,horizontal-bar-ring-jn-r-32,initials-necklace-sterling-silver-lr-n-200'
 
   assign collection_map = 'palm-bracelets:hand-chains'
 
