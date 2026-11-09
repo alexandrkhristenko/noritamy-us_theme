@@ -17,10 +17,9 @@
         "announcement_countdown_aTY9VB": {
           "type": "_announcement-countdown",
           "name": "Countdown announcement",
-          "disabled": true,
           "settings": {
-            "end_date": "2026-10-31 23:59",
-            "text": "<strong>Halloween Sale - 15% Off Store-Wide</strong>",
+            "end_date": "2026-11-11 23:59",
+            "text": "<strong>Singles Day Sale: 20% Off store-wide</strong>",
             "link": "shopify://collections/best-sellers",
             "font": "var(--font-body--family)",
             "font_size": "0.875rem",
@@ -51,6 +50,7 @@
         "announcement_DKDV48": {
           "type": "_announcement",
           "name": "t:names.announcement",
+          "disabled": true,
           "settings": {
             "text": "Singles Day Sale: 20% Off store-wide",
             "text_uk": "",
