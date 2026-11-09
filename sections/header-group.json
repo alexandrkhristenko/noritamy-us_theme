@@ -51,9 +51,8 @@
         "announcement_DKDV48": {
           "type": "_announcement",
           "name": "t:names.announcement",
-          "disabled": true,
           "settings": {
-            "text": "15% OFF Initials collection&nbsp;",
+            "text": "Singles Day Sale: 20% Off store-wide",
             "text_uk": "",
             "link": "shopify://collections/scripted",
             "enable_klaviyo_popup": true,
@@ -69,6 +68,7 @@
         "announcement_XXRaty": {
           "type": "_announcement",
           "name": "t:names.announcement",
+          "disabled": true,
           "settings": {
             "text": "Free Shipping | Price Includes All Taxes & Duties",
             "text_uk": "",
