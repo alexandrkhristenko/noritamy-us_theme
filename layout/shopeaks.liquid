@@ -130,6 +130,12 @@
         }
       })();
     </script>
+    {%- comment -%}
+      Shopeaks injects its stylesheet in <body> here (in <head> on its bare shop page), so its
+      `.cart-page-top-bar { position: fixed; top: 0 }` rule beats the sticky one and the 50px bar
+      covers the running-message ticker. Force sticky so the bar sits below the ticker again.
+    {%- endcomment -%}
+    <style>.cart-page-top-bar{position:sticky!important}</style>
   </head>
   <body>
     {{ content_for_layout }}
