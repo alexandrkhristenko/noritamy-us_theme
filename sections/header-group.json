@@ -17,6 +17,7 @@
         "announcement_countdown_aTY9VB": {
           "type": "_announcement-countdown",
           "name": "Countdown announcement",
+          "disabled": true,
           "settings": {
             "end_date": "2026-11-11 23:59",
             "text": "<strong>Singles Day Sale: 20% Off store-wide</strong>",
@@ -68,7 +69,6 @@
         "announcement_XXRaty": {
           "type": "_announcement",
           "name": "t:names.announcement",
-          "disabled": true,
           "settings": {
             "text": "Free Shipping | Price Includes All Taxes & Duties",
             "text_uk": "",
