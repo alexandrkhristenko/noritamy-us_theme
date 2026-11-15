@@ -2,8 +2,20 @@
 
 {% render 'card-gallery' %}
 
+{%- liquid
+  # On a material collection (e.g. 14K) the card can feature a variant other than the default one
+  capture card_variant_id
+    render 'card-variant-id', product_resource: closest.product
+  endcapture
+  assign card_variant = blank
+  if card_variant_id != blank
+    assign card_variant_id = card_variant_id | strip | plus: 0
+    assign card_variant = closest.product.variants | where: 'id', card_variant_id | first
+  endif
+-%}
+
 {% unless closest.product == blank %}
-  {% render 'product-card-badges', product: closest.product %}
+  {% render 'product-card-badges', product: closest.product, variant: card_variant %}
 {% endunless %}
 
 {% # Title and price for the zoomed out grid view %}
@@ -14,7 +26,7 @@
     <h3 class="h4">{{ closest.product.title }}</h3>
     <div class="h6">
       <product-price data-product-id="{{ closest.product.id }}">
-        {% render 'price', product_resource: closest.product, show_unit_price: false %}
+        {% render 'price', product_resource: closest.product, variant: card_variant, show_unit_price: false %}
       </product-price>
     </div>
   {% endif %}

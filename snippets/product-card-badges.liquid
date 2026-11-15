@@ -6,6 +6,7 @@
 
   @param {object} product - The product object.
   @param {object} settings - The theme settings object.
+  @param {variant} [variant] - The variant the card features; when set, the savings % comes from it instead of the product's lowest price.
 {%- enddoc -%}
 
 {%- liquid
@@ -15,7 +16,13 @@
 
   if product.compare_at_price_max > product.price
     assign badge = 'sale'
-    assign saved_pct = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round
+    if variant != blank
+      if variant.compare_at_price > variant.price
+        assign saved_pct = variant.compare_at_price | minus: variant.price | times: 100.0 | divided_by: variant.compare_at_price | round
+      endif
+    else
+      assign saved_pct = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round
+    endif
   else
     unless collection.handle == 'new' or collection.handle == 'new-1'
       for col in product.collections

@@ -78,7 +78,14 @@
           {% for product in collection.products %}
           {%- liquid
             assign served_position = paginate.current_offset | plus: forloop.index
+            capture card_variant_id
+              render 'card-variant-id', product_resource: product
+            endcapture
             assign card_variant = product.selected_or_first_available_variant
+            if card_variant_id != blank
+              assign card_variant_id = card_variant_id | strip | plus: 0
+              assign card_variant = product.variants | where: 'id', card_variant_id | first
+            endif
           -%}
           <li
             id="{{ section.id }}-{{ product.id }}"
