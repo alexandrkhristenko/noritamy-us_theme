@@ -134,8 +134,36 @@
       Shopeaks injects its stylesheet in <body> here (in <head> on its bare shop page), so its
       `.cart-page-top-bar { position: fixed; top: 0 }` rule beats the sticky one and the 50px bar
       covers the running-message ticker. Force sticky so the bar sits below the ticker again.
+      Their CSS also paints the bar white, which hides the top of the post video/image. While the bar
+      still overlaps that media it is made transparent (logo and icons over the media), and it turns
+      white again once the visitor scrolls past it.
     {%- endcomment -%}
-    <style>.cart-page-top-bar{position:sticky!important}</style>
+    <style>
+      .cart-page-top-bar{position:sticky!important}
+      html.nori-bar-over-media .cart-page-top-bar{background-color:transparent!important}
+    </style>
+    <script>
+      (function () {
+        var root = document.documentElement;
+        var queued = false;
+        function update() {
+          queued = false;
+          var bar = document.querySelector('.cart-page-top-bar');
+          var media = document.querySelector('.main-cart-page-background-image-container');
+          var over = !!(bar && media && media.getBoundingClientRect().bottom > bar.getBoundingClientRect().bottom);
+          root.classList.toggle('nori-bar-over-media', over);
+        }
+        function schedule() {
+          if (queued) return;
+          queued = true;
+          requestAnimationFrame(update);
+        }
+        addEventListener('scroll', schedule, { passive: true });
+        addEventListener('resize', schedule);
+        // Shopeaks renders the page client-side, so re-check whenever its DOM changes.
+        new MutationObserver(schedule).observe(root, { childList: true, subtree: true });
+      })();
+    </script>
   </head>
   <body>
     {{ content_for_layout }}
