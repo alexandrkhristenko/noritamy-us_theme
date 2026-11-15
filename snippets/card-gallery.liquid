@@ -68,7 +68,15 @@
   endif
 
   assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src'
-  assign selected_variant_image = product.selected_or_first_available_variant.image.src
+  capture card_variant_id
+    render 'card-variant-id', product_resource: product
+  endcapture
+  assign card_variant = product.selected_or_first_available_variant
+  if card_variant_id != blank
+    assign card_variant_id = card_variant_id | strip | plus: 0
+    assign card_variant = product.variants | where: 'id', card_variant_id | first
+  endif
+  assign selected_variant_image = card_variant.image.src
   assign selected_variant_image_index = 0
   for image in product.images
     if image.src == selected_variant_image

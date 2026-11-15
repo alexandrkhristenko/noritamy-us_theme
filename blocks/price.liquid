@@ -2,7 +2,14 @@
 
 {%- liquid
   assign product_resource = closest.product
+  capture card_variant_id
+    render 'card-variant-id', product_resource: product_resource
+  endcapture
   assign selected_variant = product_resource.selected_or_first_available_variant
+  if card_variant_id != blank
+    assign card_variant_id = card_variant_id | strip | plus: 0
+    assign selected_variant = product_resource.variants | where: 'id', card_variant_id | first
+  endif
 -%}
 
 {% liquid
@@ -50,6 +57,7 @@
   {% render 'price',
     show_unit_price: true,
     product_resource: product_resource,
+    variant: selected_variant,
     show_sale_price_first: block.settings.show_sale_price_first
   %}
 

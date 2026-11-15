@@ -1,0 +1,44 @@
+{%- doc -%}
+  Outputs the ID of the variant a product card should feature on a material
+  collection page, or nothing when the card should keep its default variant.
+
+  Example: Initial Necklace is in the 14K collection because one of its
+  materials is 14K gold, but its first variant is gold plated. On the 14K
+  collection the card should show the 14K price, image and link.
+
+  Only collection templates are affected. Everywhere else, including product
+  pages reached through a collection URL, this outputs nothing.
+
+  To add another material collection, add a `when` line mapping the
+  collection handle to text that appears in the matching variant's title
+  (upper case; the match ignores case, so 14K and 14k both count).
+
+  @param {product} product_resource - The product the card renders
+
+  @example
+  {% capture card_variant_id %}{% render 'card-variant-id', product_resource: product %}{% endcapture %}
+{%- enddoc -%}
+
+{%- liquid
+  if template.name == 'collection' and collection != blank and product_resource != blank
+    assign material_token = blank
+    case collection.handle
+      when '14k'
+        assign material_token = '14K'
+    endcase
+
+    if material_token != blank
+      assign default_variant = product_resource.selected_or_first_available_variant
+      assign default_title = default_variant.title | upcase
+      unless default_title contains material_token
+        for variant in product_resource.variants
+          assign variant_title = variant.title | upcase
+          if variant.available and variant_title contains material_token
+            echo variant.id
+            break
+          endif
+        endfor
+      endunless
+    endif
+  endif
+-%}
