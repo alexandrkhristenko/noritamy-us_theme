@@ -12,11 +12,9 @@
     render 'card-variant-id', product_resource: product
   endcapture
   assign card_variant = product.selected_or_first_available_variant
-  assign card_variant_overridden = false
   if card_variant_id != blank
     assign card_variant_id = card_variant_id | strip | plus: 0
     assign card_variant = product.variants | where: 'id', card_variant_id | first
-    assign card_variant_overridden = true
   endif
 
   assign product_form_id = 'QuickAdd-ProductForm-' | append: product.id | append: '-' | append: block.id
