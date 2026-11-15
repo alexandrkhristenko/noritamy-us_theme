@@ -7,10 +7,22 @@
 {%- enddoc -%}
 
 {% liquid
+  # On a material collection (e.g. 14K) the card can feature a variant other than the default one
+  capture card_variant_id
+    render 'card-variant-id', product_resource: product
+  endcapture
+  assign card_variant = product.selected_or_first_available_variant
+  assign card_variant_overridden = false
+  if card_variant_id != blank
+    assign card_variant_id = card_variant_id | strip | plus: 0
+    assign card_variant = product.variants | where: 'id', card_variant_id | first
+    assign card_variant_overridden = true
+  endif
+
   assign product_form_id = 'QuickAdd-ProductForm-' | append: product.id | append: '-' | append: block.id
   assign add_to_cart_text = 'actions.add' | t
 
-  if closest.product.selected_or_first_available_variant.available
+  if card_variant.available
     assign can_add_to_cart = true
   else
     assign can_add_to_cart = false
@@ -44,15 +56,15 @@
         type="hidden"
         name="id"
         ref="variantId"
-        value="{{ product.selected_or_first_available_variant.id }}"
-        {% if product.selected_or_first_available_variant.available == false %}
+        value="{{ card_variant.id }}"
+        {% if card_variant.available == false %}
           disabled
         {% endif %}
       >
       <input
         type="hidden"
         name="quantity"
-        value="{% if product.selected_or_first_available_variant.quantity_rule.min %}{{ product.selected_or_first_available_variant.quantity_rule.min }}{% else %}1{% endif %}"
+        value="{% if card_variant.quantity_rule.min %}{{ card_variant.quantity_rule.min }}{% else %}1{% endif %}"
       >
       {% comment %} If there is one variant option but it's swatches or if it's a single variant product, then use add to cart button {% endcomment %}
       {%- if product.variants.size == 1 or product.options.size == 1 -%}

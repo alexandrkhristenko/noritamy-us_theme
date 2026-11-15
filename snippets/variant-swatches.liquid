@@ -10,6 +10,20 @@
   {% render 'variant-swatches', product_resource: product %}
 {%- enddoc -%}
 
+{%- liquid
+  # On a material collection (e.g. 14K) the card can feature a variant other than the default one
+  capture card_variant_id
+    render 'card-variant-id', product_resource: product_resource
+  endcapture
+  assign card_variant = product_resource.selected_or_first_available_variant
+  assign card_variant_overridden = false
+  if card_variant_id != blank
+    assign card_variant_id = card_variant_id | strip | plus: 0
+    assign card_variant = product_resource.variants | where: 'id', card_variant_id | first
+    assign card_variant_overridden = true
+  endif
+-%}
+
 <swatches-variant-picker-component
   data-product-id="{{ product_resource.id }}"
   data-product-url="{{ product_resource.url }}"
@@ -58,7 +72,18 @@
                 {% if product_option_value.variant.id %}
                   data-variant-id="{{ product_option_value.variant.id }}"
                 {% endif %}
-                {% if product_option_value.selected %}
+                {%- liquid
+                  if card_variant_overridden
+                    assign option_key = 'option' | append: product_option.position
+                    assign swatch_checked = false
+                    if card_variant[option_key] == product_option_value.name
+                      assign swatch_checked = true
+                    endif
+                  else
+                    assign swatch_checked = product_option_value.selected
+                  endif
+                -%}
+                {% if swatch_checked %}
                   checked
                 {% endif %}
               >
@@ -86,7 +111,7 @@
     {%- endfor -%}
     {%- unless include_variant_json == false -%}
       <script type="application/json">
-        {{ product_resource.selected_or_first_available_variant | json }}
+        {{ card_variant | json }}
       </script>
     {%- endunless -%}
   </form>
