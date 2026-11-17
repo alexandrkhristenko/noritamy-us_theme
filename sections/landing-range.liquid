@@ -289,7 +289,7 @@
             </details>
             <details class="landing-details" data-details-name="shipping">
               <summary class="h6">{{ section.settings.shipping_heading | escape }}</summary>
-              <div class="rte">{%- if localization.country.iso_code == 'GB' and section.settings.shipping_text_uk != blank -%}{{ section.settings.shipping_text_uk }}{%- else -%}{{ section.settings.shipping_text }}{%- endif -%}</div>
+              <div class="rte">{%- if localization.country.iso_code == 'GB' and section.settings.shipping_text_uk != blank -%}{{ section.settings.shipping_text_uk }}{%- elsif localization.country.iso_code == 'CA' or localization.country.iso_code == 'AU' -%}{%- if section.settings.shipping_text_intl != blank -%}{{ section.settings.shipping_text_intl }}{%- else -%}{{ section.settings.shipping_text }}{%- endif -%}{%- else -%}{{ section.settings.shipping_text }}{%- endif -%}</div>
             </details>
           </div>
 
@@ -503,6 +503,12 @@
       "id": "shipping_text_uk",
       "label": "Second details text, UK version (UK visitors only)",
       "info": "Optional. When filled in, visitors in the United Kingdom market see this instead of the text above."
+    },
+    {
+      "type": "richtext",
+      "id": "shipping_text_intl",
+      "label": "Second details text, Canada & Australia version (CA and AU visitors only)",
+      "info": "Optional. When filled in, visitors in the Canada and Australia markets see this instead of the text above."
     },
     {
       "type": "text",
