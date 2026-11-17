@@ -8,9 +8,13 @@
 
 {% liquid
   # UK market: blocks may carry a UK-specific version of their text (text_uk), shown only to GB visitors.
+  # Canada and Australia markets: optional international version (text_intl), shown only to CA and AU visitors.
   assign text_value = block.settings.text
+  assign intl_countries = 'CA,AU' | split: ','
   if localization.country.iso_code == 'GB' and block.settings.text_uk != blank
     assign text_value = block.settings.text_uk
+  elsif intl_countries contains localization.country.iso_code and block.settings.text_intl != blank
+    assign text_value = block.settings.text_intl
   endif
   assign plain_text = text_value | strip_newlines | strip_html | strip
   assign text_width = width | default: block.settings.width

@@ -196,6 +196,7 @@
                   "settings": {
                     "text": "<p>Each Noritamy piece is crafted by hand. Please allow <strong>4-8 business days</strong> for us to make your piece. Delivery then takes <strong>5-14 business days</strong> with Economy Service (free) or <strong>2-6 business days</strong> with DHL Express. You’ll receive a confirmation email with a tracking number once your order ships.</p>",
                     "text_uk": "<p>Each Noritamy piece is crafted by hand. Please allow <strong>4-8 business days</strong> for us to make your piece, then FedEx delivers it from Israel in <strong>2-6 business days</strong> with International Economy (free) or <strong>1-4 business days</strong> with International Priority. In total, expect your order within about 6-14 business days, or 5-12 with express. You will receive a tracking email once it ships.</p>",
+                    "text_intl": "<p>Each Noritamy piece is crafted by hand. Please allow <strong>4-8 business days</strong> for us to make your piece, then FedEx delivers it from Israel in <strong>2-6 business days</strong> with International Economy (free) or <strong>1-4 business days</strong> with International Priority. In total, expect your order within about 6-14 business days, or 5-12 with express. You will receive a tracking email once it ships.</p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
@@ -274,6 +275,7 @@
                   "settings": {
                     "text": "<p>We offer <strong>free standard shipping on all US orders</strong>. Expedited shipping options are available at checkout for an additional fee. All orders are carefully packaged to ensure your jewelry arrives safely.</p>",
                     "text_uk": "<p>Standard delivery to the UK is <strong>free</strong>, and express delivery is available at checkout. All orders are sent by FedEx from our studio in Israel, <strong>delivered duty paid</strong> with nothing to pay on delivery, and carefully packaged to ensure your jewellery arrives safely.</p>",
+                    "text_intl": "<p>Standard delivery to Canada and Australia is <strong>free</strong>, and express delivery is available at checkout. All orders are sent by FedEx from our studio in Israel, <strong>delivered duty paid</strong> with nothing to pay on delivery, and carefully packaged to ensure your jewellery arrives safely.</p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
@@ -549,6 +551,7 @@
                   "settings": {
                     "text": "<p>Our US store is optimized for <strong>domestic US shipping</strong>. For international orders, please visit our main website at <a href=\"https://noritamy.co.il\" target=\"_blank\">noritamy.co.il</a>, where we offer worldwide shipping via DHL Express.</p>",
                     "text_uk": "<p>Yes. We deliver to the <strong>United Kingdom</strong> from our studio in Israel by FedEx, delivered duty paid, with nothing to pay on delivery. For other countries, please visit <a href=\"https://noritamy.co.il\" target=\"_blank\">noritamy.co.il</a>.</p>",
+                    "text_intl": "<p>Yes. We deliver to Canada and Australia from our studio in Israel by FedEx, <strong>delivered duty paid</strong>, with nothing to pay on delivery. Standard delivery is free and express delivery is available at checkout. For other countries, please visit <a href=\"https://noritamy.co.il\" target=\"_blank\">noritamy.co.il</a>.</p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
