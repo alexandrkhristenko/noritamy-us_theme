@@ -784,7 +784,7 @@
           "type": "text",
           "name": "t:names.text",
           "settings": {
-            "text": "<p>For other days\/ hours please <a href=\"mailto:info@noritamy.com\" title=\"mailto:info@noritamy.com\"><strong>contact us<\/strong><\/a> to schedule.<\/p>",
+            "text": "<p>For other days\/ hours please <a href=\"mailto:hey@noritamy.com\" title=\"mailto:hey@noritamy.com\"><strong>contact us<\/strong><\/a> to schedule.<\/p>",
             "width": "100%",
             "max_width": "none",
             "alignment": "center",

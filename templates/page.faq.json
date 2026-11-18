@@ -116,7 +116,7 @@
                 "text_kQLzWY": {
                   "type": "text",
                   "settings": {
-                    "text": "<p>We offer a <strong>30-day return policy</strong> from the date of delivery. Items must be unworn, in their original condition, and returned in the original Noritamy packaging. To initiate a return, please contact us at <a href=\"mailto:info@noritamy.com\">info@noritamy.com</a> with your order number. Once we receive and inspect the returned item, a refund will be issued to your original payment method within 5\u201310 business days.</p>",
+                    "text": "<p>We offer a <strong>30-day return policy</strong> from the date of delivery. Items must be unworn, in their original condition, and returned in the original Noritamy packaging. To initiate a return, please contact us at <a href=\"mailto:hey@noritamy.com\">hey@noritamy.com</a> with your order number. Once we receive and inspect the returned item, a refund will be issued to your original payment method within 5\u201310 business days.</p>",
                     "text_uk": "<p>You can return your order within <strong>30 days of delivery</strong>, for any reason. We refund the price and the standard delivery cost to your original payment method within 14 days of receiving the item back. Returns are sent to our studio in Israel and you pay the return postage. To start a return, email <a href=\"mailto:hey@noritamy.com\">hey@noritamy.com</a> with your order number. Full details: <a href=\"/pages/uk-cancellations\">Cancellations &amp; returns (UK)</a>.</p>",
                     "width": "100%",
                     "max_width": "normal",
@@ -196,7 +196,7 @@
                   "settings": {
                     "text": "<p>Each Noritamy piece is crafted by hand. Please allow <strong>4-8 business days</strong> for us to make your piece. Delivery then takes <strong>5-14 business days</strong> with Economy Service (free) or <strong>2-6 business days</strong> with DHL Express. You’ll receive a confirmation email with a tracking number once your order ships.</p>",
                     "text_uk": "<p>Each Noritamy piece is crafted by hand. Please allow <strong>4-8 business days</strong> for us to make your piece, then FedEx delivers it from Israel in <strong>2-6 business days</strong> with International Economy (free) or <strong>1-4 business days</strong> with International Priority. In total, expect your order within about 6-14 business days, or 5-12 with express. You will receive a tracking email once it ships.</p>",
-                    "text_intl": "<p>Each Noritamy piece is crafted by hand. Please allow <strong>4-8 business days</strong> for us to make your piece, then FedEx delivers it from Israel in <strong>2-6 business days</strong> with International Economy (free) or <strong>1-4 business days</strong> with International Priority. In total, expect your order within about 6-14 business days, or 5-12 with express. You will receive a tracking email once it ships.</p>",
+                    "text_intl": "<p>Each Noritamy piece is crafted by hand. Please allow <strong>4-8 business days</strong> for us to make your piece, then FedEx delivers it from Israel in <strong>7-9 business days</strong> with International Economy (free) or <strong>2-6 business days</strong> with International Priority. In total, expect your order within about 11-17 business days, or 6-14 with express. You will receive a tracking email once it ships.</p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
@@ -353,7 +353,7 @@
                 "text_uT9pLm": {
                   "type": "text",
                   "settings": {
-                    "text": "<p>We use <strong>US ring sizes</strong> for our US store. If you\u2019re unsure of your size, we recommend visiting a local jeweler for a professional measurement. You can also check our <a href=\"/pages/size-guide\">Size Guide</a> page for help. If you need further assistance, contact us at <a href=\"mailto:info@noritamy.com\">info@noritamy.com</a>.</p>",
+                    "text": "<p>We use <strong>US ring sizes</strong> for our US store. If you\u2019re unsure of your size, we recommend visiting a local jeweler for a professional measurement. You can also check our <a href=\"/pages/size-guide\">Size Guide</a> page for help. If you need further assistance, contact us at <a href=\"mailto:hey@noritamy.com\">hey@noritamy.com</a>.</p>",
                     "text_uk": "<p>On our UK site, ring sizes are shown in <strong>UK sizes</strong> (letters, for example L or N). Our <a href=\"/pages/size-guide\">Size Guide</a> shows how they compare with US and European sizes. If you are unsure, a local jeweller can measure your finger, or contact us at <a href=\"mailto:hey@noritamy.com\">hey@noritamy.com</a>.</p>",
                     "width": "100%",
                     "max_width": "normal",
@@ -471,7 +471,7 @@
                 "text_dC8hDg": {
                   "type": "text",
                   "settings": {
-                    "text": "<p>We\u2019d love to hear from you! You can reach us at <a href=\"mailto:info@noritamy.com\">info@noritamy.com</a> or through the <a href=\"/pages/contact\">Contact</a> page on our website. Our team typically responds within <strong>24\u201348 hours</strong> during business days.</p>",
+                    "text": "<p>We\u2019d love to hear from you! You can reach us at <a href=\"mailto:hey@noritamy.com\">hey@noritamy.com</a> or through the <a href=\"/pages/contact\">Contact</a> page on our website. Our team typically responds within <strong>24\u201348 hours</strong> during business days.</p>",
                     "text_uk": "<p>We would love to hear from you! You can reach us at <a href=\"mailto:hey@noritamy.com\">hey@noritamy.com</a> or through the <a href=\"/pages/contact\">Contact</a> page on our website. Our team typically responds within <strong>24-48 hours</strong> on business days.</p>",
                     "width": "100%",
                     "max_width": "normal",
@@ -510,8 +510,9 @@
                 "text_fD3kRw": {
                   "type": "text",
                   "settings": {
-                    "text": "<p>You may cancel your order within <strong>48 hours</strong> of placing it by contacting us at <a href=\"mailto:info@noritamy.com\">info@noritamy.com</a>. After 48 hours, your order may already be in production or shipped, and cancellation may not be possible. In that case, you can return the item once received under our standard return policy.</p>",
+                    "text": "<p>You may cancel your order within <strong>48 hours</strong> of placing it by contacting us at <a href=\"mailto:hey@noritamy.com\">hey@noritamy.com</a>. After 48 hours, your order may already be in production or shipped, and cancellation may not be possible. In that case, you can return the item once received under our standard return policy.</p>",
                     "text_uk": "<p>You can cancel your order at any time before it is dispatched, and up to <strong>30 days after delivery</strong>, without giving a reason. Just email <a href=\"mailto:hey@noritamy.com\">hey@noritamy.com</a> with your order number. See <a href=\"/pages/uk-cancellations\">Cancellations &amp; returns (UK)</a> for how refunds work.</p>",
+                    "text_intl": "<p>You can cancel your order at any time before it is dispatched, and up to <strong>30 days after delivery</strong>. Just email <a href=\"mailto:hey@noritamy.com\">hey@noritamy.com</a> with your order number.</p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
@@ -589,7 +590,7 @@
                 "text_jH7oWa": {
                   "type": "text",
                   "settings": {
-                    "text": "<p>Please inspect your order upon delivery. If your item arrives <strong>defective, damaged, or incorrect</strong>, contact us immediately at <a href=\"mailto:info@noritamy.com\">info@noritamy.com</a> with photos of the issue and your order number. We will arrange a replacement or full refund as quickly as possible.</p>",
+                    "text": "<p>Please inspect your order upon delivery. If your item arrives <strong>defective, damaged, or incorrect</strong>, contact us immediately at <a href=\"mailto:hey@noritamy.com\">hey@noritamy.com</a> with photos of the issue and your order number. We will arrange a replacement or full refund as quickly as possible.</p>",
                     "text_uk": "<p>Please inspect your order on delivery. If an item is <strong>faulty, damaged or not as described</strong>, contact us at <a href=\"mailto:hey@noritamy.com\">hey@noritamy.com</a> with photos and your order number. You can reject it for a full refund within 30 days of delivery, or ask for a repair or replacement after that. We pay the cost of returning faulty items. This does not affect your statutory rights.</p>",
                     "width": "100%",
                     "max_width": "normal",
@@ -706,7 +707,7 @@
                 "text_pN3uBg": {
                   "type": "text",
                   "settings": {
-                    "text": "<p>Yes! We work with clients to develop <strong>custom-made pieces</strong> upon request. Whether you have a specific design in mind or want to modify an existing piece, reach out to us at <a href=\"mailto:info@noritamy.com\">info@noritamy.com</a> to discuss your vision. Please note that custom and personalized orders are <strong>final sale</strong> and cannot be returned.</p>",
+                    "text": "<p>Yes! We work with clients to develop <strong>custom-made pieces</strong> upon request. Whether you have a specific design in mind or want to modify an existing piece, reach out to us at <a href=\"mailto:hey@noritamy.com\">hey@noritamy.com</a> to discuss your vision. Please note that custom and personalized orders are <strong>final sale</strong> and cannot be returned.</p>",
                     "text_uk": "<p>Yes! We work with clients to develop <strong>custom-made pieces</strong> upon request. Whether you have a specific design in mind or want to modify an existing piece, reach out to us at <a href=\"mailto:hey@noritamy.com\">hey@noritamy.com</a> to discuss your vision. Please note that pieces made to your own specifications cannot be returned unless they are faulty.</p>",
                     "width": "100%",
                     "max_width": "normal",
@@ -785,7 +786,7 @@
                 "text_tR7yFk": {
                   "type": "text",
                   "settings": {
-                    "text": "<p>Yes. Over time, gold plating may naturally fade with regular wear. We offer a <strong>professional re-plating service</strong> to restore your piece to its original luster. Contact us at <a href=\"mailto:info@noritamy.com\">info@noritamy.com</a> for details and pricing.</p>",
+                    "text": "<p>Yes. Over time, gold plating may naturally fade with regular wear. We offer a <strong>professional re-plating service</strong> to restore your piece to its original luster. Contact us at <a href=\"mailto:hey@noritamy.com\">hey@noritamy.com</a> for details and pricing.</p>",
                     "text_uk": "<p>Yes. Over time, gold plating may naturally fade with regular wear. We offer a <strong>professional re-plating service</strong> to restore your piece to its original lustre. Contact us at <a href=\"mailto:hey@noritamy.com\">hey@noritamy.com</a> for details and pricing.</p>",
                     "width": "100%",
                     "max_width": "normal",
