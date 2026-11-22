@@ -9,17 +9,44 @@
 %}
 
 {%- if image -%}
+  {% liquid
+    # sizes cannot read CSS custom properties: "calc(var(--logo-width))" is invalid there, so
+    # browsers fell back to 100vw and fetched a ~1100px file for a ~150px logo. State the real
+    # widths in px when the block is sized in px; percent sizing keeps a viewport-based value.
+    if block.settings.unit == 'percent'
+      assign logo_sizes_desktop = block.settings.percent_width | append: 'vw'
+    else
+      assign logo_px = image.width | times: 1.00 | divided_by: image.height | times: block.settings.pixel_height | ceil
+      assign logo_sizes_desktop = logo_px | append: 'px'
+    endif
+    assign logo_sizes_mobile = logo_sizes_desktop
+    if block.settings.custom_mobile_size
+      if block.settings.unit_mobile == 'percent'
+        assign logo_sizes_mobile = block.settings.percent_width_mobile | append: 'vw'
+      else
+        assign logo_px_mobile = image.width | times: 1.00 | divided_by: image.height | times: block.settings.pixel_height_mobile | ceil
+        assign logo_sizes_mobile = logo_px_mobile | append: 'px'
+      endif
+    endif
+    assign logo_sizes = '(min-width: 750px) ' | append: logo_sizes_desktop | append: ', ' | append: logo_sizes_mobile
+    # The block is used in the footer (below the fold) and on the password page (above it).
+    assign logo_loading = 'lazy'
+    if template.name == 'password'
+      assign logo_loading = 'eager'
+    endif
+  %}
   {% capture logo_image %}
     {{-
       image
       | image_url: width: 3840
       | image_tag:
         width: image.width,
-        widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840',
+        widths: '150, 225, 300, 375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840',
         height: image.height,
         class: 'logo-block__image',
         alt: shop.name,
-        sizes: '(min-width: 750px) calc(var(--logo-width)), 100vw'
+        loading: logo_loading,
+        sizes: logo_sizes
     -}}
   {% endcapture %}
 {%- endif -%}

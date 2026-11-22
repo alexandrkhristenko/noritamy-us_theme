@@ -51,42 +51,34 @@
 </style>
 
 {% # theme-check-disable %}
-{%- unless settings.type_body_font.system? -%}
-  <link
-    rel="preload"
-    as="font"
-    href="{{ settings.type_body_font | font_url }}"
-    type="font/woff2"
-    crossorigin
-  >
-{%- endunless -%}
-{%- unless settings.type_subheading_font.system? -%}
-  <link
-    rel="preload"
-    as="font"
-    href="{{ settings.type_subheading_font | font_url }}"
-    type="font/woff2"
-    crossorigin
-  >
-{%- endunless -%}
-{%- unless settings.type_heading_font.system? -%}
-  <link
-    rel="preload"
-    as="font"
-    href="{{ settings.type_heading_font | font_url }}"
-    type="font/woff2"
-    crossorigin
-  >
-{%- endunless -%}
-{%- unless settings.type_accent_font.system? -%}
-  <link
-    rel="preload"
-    as="font"
-    href="{{ settings.type_accent_font | font_url }}"
-    type="font/woff2"
-    crossorigin
-  >
-{%- endunless -%}
+{%- comment -%}
+  Body, subheading and accent often share one file (here: Montserrat 500 three times), so
+  preload each distinct URL once.
+{%- endcomment -%}
+{%- liquid
+  assign preloaded_font_urls = ''
+-%}
+{%- for font in (1..4) -%}
+  {%- case forloop.index -%}
+    {%- when 1 -%}{%- assign preload_font = settings.type_body_font -%}
+    {%- when 2 -%}{%- assign preload_font = settings.type_subheading_font -%}
+    {%- when 3 -%}{%- assign preload_font = settings.type_heading_font -%}
+    {%- when 4 -%}{%- assign preload_font = settings.type_accent_font -%}
+  {%- endcase -%}
+  {%- unless preload_font.system? -%}
+    {%- assign preload_font_url = preload_font | font_url -%}
+    {%- unless preloaded_font_urls contains preload_font_url -%}
+      <link
+        rel="preload"
+        as="font"
+        href="{{ preload_font_url }}"
+        type="font/woff2"
+        crossorigin
+      >
+      {%- assign preloaded_font_urls = preloaded_font_urls | append: preload_font_url | append: ' ' -%}
+    {%- endunless -%}
+  {%- endunless -%}
+{%- endfor -%}
 {% # theme-check-enable %}
 
 {%- render 'fonts-he-override' -%}
