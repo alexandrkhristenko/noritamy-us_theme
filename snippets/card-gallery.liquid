@@ -234,11 +234,35 @@
 
         {% assign fetchpriority = 'auto' %}
         {% if slide_index == 1 and section.index == nil or section.index <= 2 %}
-          {% capture current_eager_count %}{% increment eager_image_counter %}{% endcapture %}
-          {% assign current_eager_count = current_eager_count | plus: 0 %}
-          {% if current_eager_count < 4 %}
+          {%- comment -%}
+            Only the first row of a grid is above the fold. Each card renders in its own block
+            scope, so an increment counter restarts at 0 for every card and cannot cap this:
+            on a collection page all 24 cards came out eager with fetchpriority="high", which
+            makes the LCP image compete with 23 others. On a collection, find the card's
+            position in the current (sorted, filtered) page 1 instead.
+          {%- endcomment -%}
+          {% assign is_first_row = true %}
+          {% if template.name == 'collection' and collection %}
+            {% assign is_first_row = false %}
+            {% if current_page == 1 or current_page == blank %}
+              {% for first_row_product in collection.products limit: 4 %}
+                {% if first_row_product.id == product.id %}
+                  {% assign is_first_row = true %}
+                  {% break %}
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+          {% endif %}
+          {% if is_first_row %}
             {% assign loading = 'eager' %}
-            {% assign fetchpriority = 'high' %}
+            {%- comment -%}
+              High priority only where a card image can be the LCP element (a collection grid).
+              Elsewhere (cart page recommendations, homepage lists) cards stay eager but must not
+              outrank the hero or the cart's own images.
+            {%- endcomment -%}
+            {% if template.name == 'collection' %}
+              {% assign fetchpriority = 'high' %}
+            {% endif %}
           {% endif %}
           {% assign sizes = image_sizes %}
         {% endif %}

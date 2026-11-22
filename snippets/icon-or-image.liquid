@@ -25,16 +25,23 @@
   </svg>
 {%- elsif image_upload != blank -%}
   {% liquid
-    assign media_width_desktop = '100vw'
-    assign media_width_mobile = '100vw'
-    assign sizes = '(min-width: 1024px) 1024px, ' | append: media_width_desktop | append: ', ' | append: media_width_mobile
-    assign widths = '300, 375, 450, 525, 600, 675, 750, 768, 850, 900, 1024'
+    # The image is always drawn at `width` CSS px (inline style below), so size the candidates to
+    # that box at 1x/2x/3x. The old sizes="...100vw" made phones fetch a ~1000px file for a
+    # 24px icon.
+    assign icon_px = width | default: 24 | plus: 0
+    if icon_px < 1
+      assign icon_px = 24
+    endif
+    assign icon_px_2x = icon_px | times: 2
+    assign icon_px_3x = icon_px | times: 3
+    assign widths = icon_px | append: ', ' | append: icon_px_2x | append: ', ' | append: icon_px_3x
+    assign sizes = icon_px | append: 'px'
   %}
 
   {% assign image_style = 'width: ' | append: width | append: 'px;' %}
   {{
     image_upload
-    | image_url: width: 1024
-    | image_tag: widths: widths, class: class_name, style: image_style, sizes: sizes
+    | image_url: width: icon_px_3x
+    | image_tag: widths: widths, class: class_name, style: image_style, sizes: sizes, loading: 'lazy'
   }}
 {%- endif -%}
