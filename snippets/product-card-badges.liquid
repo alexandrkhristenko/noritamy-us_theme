@@ -7,6 +7,10 @@
   @param {object} product - The product object.
   @param {object} settings - The theme settings object.
   @param {variant} [variant] - The variant the card features; when set, the savings % comes from it instead of the product's lowest price.
+
+  Multi-buy line (Theme settings → Badges → Multi-buy badge): shown under the SALE row, on every
+  product except the free gift (tag gift-with-purchase). The discount itself is an automatic
+  discount in Shopify admin, this is only the label.
 {%- enddoc -%}
 
 {%- liquid
@@ -54,6 +58,13 @@
       endfor
     endif
   endif
+
+  assign show_multibuy = false
+  if badge == 'sale' and settings.badge_multibuy_text != blank
+    unless product.tags contains 'gift-with-purchase'
+      assign show_multibuy = true
+    endunless
+  endif
 -%}
 
 {%- if badge != blank -%}
@@ -68,6 +79,9 @@
           <span class="noritamy-badge noritamy-badge--savings">Save {{ saved_pct }}%</span>
         {%- endif -%}
       </div>
+      {%- if show_multibuy -%}
+        <span class="noritamy-badge noritamy-badge--savings">{{ settings.badge_multibuy_text | escape }}</span>
+      {%- endif -%}
     {%- else -%}
       <span class="noritamy-badge">
         {%- case badge -%}
