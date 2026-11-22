@@ -81,6 +81,8 @@
     </script>
     {%- endif -%}
 
+    {%- render 'lcp-preload' -%}
+
     {%- comment -%} Render-blocking CSS and fonts are requested before any third-party script. {%- endcomment -%}
     {%- render 'fonts' -%}
     {%- render 'stylesheets' -%}
