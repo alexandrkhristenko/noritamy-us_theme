@@ -85,6 +85,28 @@
     <div class="cart__summary-item tax-note cart-primary-typography">
       {% render 'tax-info', has_discounts_enabled: settings.show_add_discount_code %}
     </div>
+    {%- comment -%}
+      Canada and Australia: point to the market's consumer terms before checkout, because Shopify's
+      checkout only links the store-wide policies.
+    {%- endcomment -%}
+    {%- assign terms_country = localization.country.iso_code -%}
+    {%- if terms_country == 'CA' or terms_country == 'AU' -%}
+      {%- liquid
+        assign terms_root = routes.root_url
+        if terms_root == '/'
+          assign terms_root = ''
+        endif
+      -%}
+      <div class="cart__summary-item tax-note cart-primary-typography cart__market-terms">
+        <small>
+          {%- if terms_country == 'CA' -%}
+            <a href="{{ terms_root }}/pages/ca-consumer-terms">Canada Consumer Terms</a> apply.
+          {%- else -%}
+            <a href="{{ terms_root }}/pages/au-consumer-terms">Australia Consumer Terms</a> apply.
+          {%- endif -%}
+        </small>
+      </div>
+    {%- endif -%}
   </div>
 </div>
 
@@ -127,5 +149,11 @@
 
   .cart__installments {
     color: var(--color-foreground);
+  }
+
+  .cart__market-terms a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
   }
 {% endstylesheet %}
