@@ -67,7 +67,7 @@
           if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
           else fn();
         }
-        var STRICT = /^(GB|AT|BE|BG|HR|CY|CZ|DK|EE|FI|FR|DE|GR|HU|IE|IT|LV|LT|LU|MT|NL|PL|PT|RO|SK|SI|ES|SE|IS|LI|NO|CH)/;
+        var STRICT = /^(GB|AT|BE|BG|HR|CY|CZ|DK|EE|FI|FR|DE|GR|HU|IE|IT|LV|LT|LU|MT|NL|PL|PT|RO|SK|SI|ES|SE|IS|LI|NO|CH|CA)/;
         // Triple Whale is an app embed, so the theme cannot wrap it. Its snippet skips initialising when
         // localStorage holds the key below, and it accepts TriplePixel('trackingConsent', bool). The
         // snippet renders after this script, so the flag is set synchronously here: from the visitor's
@@ -89,12 +89,41 @@
             if (typeof window.TriplePixel === 'function') window.TriplePixel('trackingConsent', !!on);
           } catch (e) {}
         }
+        // Klaviyo only follows Shopify's cookie banner for UK/EU/Swiss visitors, so in every STRICT
+        // region its tracking is switched off with the __kla_off cookie until marketing consent is given.
+        function klaviyoAllowed(strict, marketing) {
+          if (strict && !marketing) {
+            document.cookie = '__kla_off=true; path=/; max-age=31536000; SameSite=Lax';
+          } else if (document.cookie.indexOf('__kla_off=') !== -1) {
+            document.cookie = '__kla_off=; path=/; max-age=0; SameSite=Lax';
+          }
+        }
+        // Microsoft Clarity loads from an app embed, outside this loader. Its queue is created here so the
+        // consent signal reaches Clarity whenever it starts.
+        window.clarity =
+          window.clarity ||
+          function () {
+            (window.clarity.q = window.clarity.q || []).push(arguments);
+          };
+        function clarityConsent(analytics, marketing) {
+          try {
+            window.clarity('consentv2', {
+              analytics_Storage: analytics ? 'granted' : 'denied',
+              ad_Storage: marketing ? 'granted' : 'denied',
+            });
+          } catch (e) {}
+        }
         (function () {
           var saved = null;
           try {
             saved = JSON.parse(localStorage.getItem(CHOICE) || 'null');
           } catch (e) {}
-          triplePixelAllowed(saved ? !!saved.m : !STRICT.test({{ localization.country.iso_code | json }}));
+          var strict = STRICT.test({{ localization.country.iso_code | json }});
+          var analytics = saved ? !!saved.a : !strict;
+          var marketing = saved ? !!saved.m : !strict;
+          triplePixelAllowed(marketing);
+          klaviyoAllowed(strict, marketing);
+          clarityConsent(analytics, marketing);
         })();
         function apply() {
           var cp = window.Shopify && window.Shopify.customerPrivacy;
@@ -114,6 +143,8 @@
             localStorage.setItem(CHOICE, JSON.stringify({ a: analytics, m: marketing }));
           } catch (e) {}
           triplePixelAllowed(marketing);
+          klaviyoAllowed(strict, marketing);
+          clarityConsent(analytics, marketing);
           if (analytics || marketing) once('gtm', loadGTM);
           if (analytics) {
             afterParse(function () {
