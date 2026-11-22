@@ -102,6 +102,36 @@
   endif
   assign has_image_drop = sorted_media | has: 'media_type', 'image'
 -%}
+{%- liquid
+  # sizes for the gallery images. Without it image_tag emits sizes="" (= 100vw), so a desktop
+  # grid cell of ~350px fetched the 1800px candidate. The media column is half the page
+  # (page_width: narrow 90rem, normal 120rem, wide 150rem), split by the grid columns.
+  case settings.page_width
+    when 'wide'
+      assign gallery_page_px = 2400
+    when 'normal'
+      assign gallery_page_px = 1920
+    else
+      assign gallery_page_px = 1440
+  endcase
+  assign gallery_cols = 1
+  if block.settings.media_presentation == 'grid' and block.settings.media_columns == 'two'
+    assign gallery_cols = 2
+  endif
+  assign gallery_cell_px = gallery_page_px | divided_by: 2 | divided_by: gallery_cols
+  assign gallery_cell_vw = 50 | divided_by: gallery_cols
+  assign gallery_wide_px = gallery_page_px | divided_by: 2
+  assign grid_sizes = '(min-width: ' | append: gallery_page_px | append: 'px) ' | append: gallery_cell_px | append: 'px, (min-width: 750px) ' | append: gallery_cell_vw | append: 'vw, 100vw'
+  # A cell spanning both columns (large first image, or a single image) is as wide as the column.
+  assign grid_wide_sizes = '(min-width: ' | append: gallery_page_px | append: 'px) ' | append: gallery_wide_px | append: 'px, (min-width: 750px) 50vw, 100vw'
+  if block.settings.media_presentation == 'grid'
+    # In grid mode the slideshow is mobile-only (display: none from 750px). Its first image is
+    # still eager, and hidden eager images are downloaded, so on desktop ask for the smallest file.
+    assign slideshow_sizes = '(min-width: 750px) 1px, 100vw'
+  else
+    assign slideshow_sizes = grid_wide_sizes
+  endif
+-%}
 {%- if has_image_drop -%}
   <script
     src="{{ 'drag-zoom-wrapper.js' | asset_url }}"
@@ -150,7 +180,7 @@
             assign fetchpriority = 'high'
           endif
         %}
-        {%- render 'product-media', media: media, fetchpriority: fetchpriority -%}
+        {%- render 'product-media', media: media, fetchpriority: fetchpriority, sizes: slideshow_sizes -%}
       {% endcapture %}
       {% capture class %}
         product-media-container product-media-container--{{ media.media_type }}{% if block.settings.constrain_to_viewport %} constrain-height{% endif %}{% if block.settings.aspect_ratio != 'adapt' %} media-fit{% endif %}{% if block.settings.zoom %} product-media-container--zoomable{% endif %}
@@ -252,8 +282,14 @@
             if forloop.first
               assign fetchpriority = 'high'
             endif
+            assign cell_sizes = grid_sizes
+            if sorted_media.size == 1 and gallery_cols == 2
+              assign cell_sizes = grid_wide_sizes
+            elsif forloop.first and block.settings.large_first_image and gallery_cols == 2
+              assign cell_sizes = grid_wide_sizes
+            endif
           %}
-          {%- render 'product-media', media: media, fetchpriority: fetchpriority -%}
+          {%- render 'product-media', media: media, fetchpriority: fetchpriority, sizes: cell_sizes -%}
         </li>
       {% endfor %}
     </ul>
