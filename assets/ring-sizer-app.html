@@ -1,0 +1,1917 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>Ring Size Finder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Oswald:wght@200;300;400&family=Rubik:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* Palette and type lifted from the live Noritamy storefront: Oswald headings, Montserrat
+     body, #1e1f21 ink on white, #eae8e6 rules, and the terracotta from the brand's own colour
+     schemes. Hebrew switches to Rubik, which is what the storefront itself uses, because
+     neither Oswald nor Montserrat carries Hebrew glyphs. */
+  :root {
+    --bg: #ffffff; --surface: #f8f8f8; --ink: #1e1f21; --line: #eae8e6;
+    --muted: rgba(30,31,33,.55); --accent: #7d5449; --disc-fill: #4cc9e8; --rim-color: #101010; --rim-dark: #ffffff;
+    --head: "Oswald", "Helvetica Neue", Arial, sans-serif;
+    --body: "Montserrat", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  html[lang="he"] {
+    --head: "Rubik", "Helvetica Neue", Arial, sans-serif;
+    --body: "Rubik", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  html[lang="he"] h1 { letter-spacing: .02em; }
+  html[lang="he"] button.primary, html[lang="he"] button.ghost,
+  html[lang="he"] .methods button, html[lang="he"] .answers button { letter-spacing: .04em; }
+
+  /* pan-y, not none: vertical scrolling still works on the result screen, but the browser
+     stops handling pinch and double-tap, which are what move the drawing off true scale. */
+  html, body { touch-action: pan-y; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  /* Any explicit display beats the hidden attribute's UA display:none, so a .btns row marked
+     hidden still occupied its 54px and quietly ate the ruler's range. Settle it once here
+     rather than remembering to add a [hidden] rule beside every new display value. */
+  [hidden] { display: none !important; }
+  html, body { margin: 0; height: 100%; overscroll-behavior: none; }
+  body {
+    background: var(--bg); color: var(--ink); font: 300 15px/1.5 var(--body);
+    -webkit-font-smoothing: antialiased; user-select: none; -webkit-user-select: none;
+  }
+  /* Bounded height, not min-height: the calibration graphic is sized in physical millimetres
+     and would otherwise push the controls off screen instead of being fitted against them. */
+  #app { height: 100vh; height: 100dvh; display: flex; flex-direction: column; }
+  .step { display: none; flex: 1; flex-direction: column; min-height: 0; }
+  .step.on { display: flex; }
+
+  header { padding: 12px 22px 0; text-align: center; position: relative; }
+  h1 { font: 300 19px/1.2 var(--head); letter-spacing: .09em; text-transform: uppercase;
+       margin: 0 0 6px; }
+  p.sub { margin: 0 auto; color: var(--muted); font-size: 12.5px; line-height: 1.5;
+          max-width: 40ch; min-height: 2.6em; }
+  .pips { display: flex; gap: 5px; justify-content: center; margin: 0 0 10px; }
+  .pip { width: 20px; height: 1px; background: var(--line); }
+  .pip.on { background: var(--ink); }
+
+  /* One back control per step, always in the same place, so there is a way out of every
+     screen including part-way through the guided questions. */
+  .nav { position: absolute; top: 6px; inset-inline-start: 12px; background: none; border: 0;
+         padding: 8px 10px; color: var(--muted); font: 300 12px var(--body); }
+  .nav::before { content: "‹"; font-size: 17px; margin-inline-end: 5px; vertical-align: -1px; }
+  html[dir="rtl"] .nav::before { content: "›"; }
+  .nav[hidden] { display: none; }
+  /* Fixed, not inside a step's header: a Hebrew speaker who lands on the measuring screen
+     still has to be able to switch. */
+  .lang { position: fixed; top: 2px; inset-inline-end: 58px; z-index: 5; background: none;
+          border: 0; padding: 7px 6px; color: var(--muted); font: 400 11px var(--body);
+          letter-spacing: .08em; text-decoration: underline; text-underline-offset: 3px; }
+
+  .stage { flex: 1; min-height: 110px; position: relative; display: grid; place-items: center;
+           overflow: hidden; touch-action: none; background: var(--bg); }
+
+  /* Bank card. Only its 53.98mm height is the reference, so the 85.6mm width is free to run
+     off both sides. Top edge anchored: a card is wider than a phone and hides what is under
+     it, so a strip that is too SHORT would otherwise look exactly like a perfect match. */
+  #card { position: relative; border-radius: 8px;
+    background: linear-gradient(180deg, #efeae4 0%, #ded6ca 100%);
+    border-top: 2px solid var(--ink); border-bottom: 2px solid var(--ink); }
+  #card.clipped { border-radius: 0;
+    --fade: linear-gradient(to right, transparent 0, #000 30px, #000 calc(100% - 30px), transparent 100%);
+    -webkit-mask-image: var(--fade); mask-image: var(--fade); }
+  .chip { position: absolute; inset-inline-start: 8%; top: 50%; transform: translateY(-50%);
+    width: 11%; max-width: 44px; aspect-ratio: 4/3; border-radius: 14%;
+    background: linear-gradient(145deg,#d9c298,#a98c5e); }
+  #card.clipped .chip { inset-inline-start: 22%; }
+  #coin { border-radius: 50%; background: linear-gradient(150deg,#ddd6c9,#a9a191 60%,#c4bcab);
+          box-shadow: inset 0 0 0 1px rgba(0,0,0,.12); }
+  .guide { position: absolute; left: 0; right: 0; height: 0;
+           border-top: 1px dashed rgba(30,31,33,.4); }
+
+  /* Picking a phone needs no picture of a card, so the stage carries the result instead: the
+     phone we believe is in the customer's hand, and the circle it is about to draw. An empty
+     stage with one line of grey text floating in the middle of it read as a broken page. */
+  #devnote { text-align: center; padding: 0 26px; }
+  #devnote .lead { display: block; color: var(--muted); font-size: 11px; letter-spacing: .12em;
+                   text-transform: uppercase; margin-bottom: 7px; }
+  #devnote b { display: block; font: 300 20px/1.35 var(--head); letter-spacing: .04em;
+               margin-bottom: 8px; }
+  #devnote span { display: block; color: var(--muted); font-size: 12.5px; line-height: 1.5; }
+  #devnote em { display: block; margin-top: 18px; font-style: normal; font-size: 12px;
+                line-height: 1.6; color: var(--muted); }
+  #devnote u { display: inline-block; margin-top: 14px; color: var(--accent); font-size: 12px;
+               text-underline-offset: 3px; cursor: pointer; }
+
+  /* The measuring circle, with a hairline red rim.
+     Without the rim the test is one-sided: a circle larger than the hole hides under the band
+     and looks exactly like a perfect fit. The rim makes it three-state. White outside the red
+     means too small, red hidden means too big, and a thin red line touching the metal with no
+     white is the size.
+     A zero-blur INSET shadow, not a border: Chromium floors border-width to whole pixels, so
+     a 1.81px rim rendered at 1px. An inset shadow keeps the fractional thickness and, being a
+     paint effect, cannot touch layout, so the outer diameter stays exactly the ring size. */
+  /* Inverted on purpose: a pale blue centre inside a black ring.
+     The three states are now three different colours rather than three amounts of one colour,
+     and the two that matter are colour FLIPS at the metal: white outside the black means too
+     small, black touching means right, and pale blue touching means the ring has covered the
+     black entirely, so too big. A shade of red going slightly darker was a judgement nobody
+     could make on gold; this one needs no judgement at all. */
+  #disc, .cmp i { border-radius: 50%; background: var(--disc-fill);
+    box-shadow: inset 0 0 0 var(--rim, 2px) var(--rim-color); }
+  .stage.inverted { background: #14120f; }
+  .stage.inverted #disc, .stage.inverted .cmp i { box-shadow: inset 0 0 0 var(--rim, 2px) var(--rim-dark); }
+  .stage.inverted .stage-note, .stage.inverted .cmp span { color: rgba(255,255,255,.5); }
+  .stage-note { position: absolute; bottom: 8px; left: 0; right: 0; text-align: center;
+    font-size: 11px; letter-spacing: .04em; color: var(--muted); pointer-events: none;
+    padding: 0 16px; }
+  /* Viewing at an angle reads small, and it is the one error the customer alone can prevent. */
+  .eye { position: absolute; top: 8px; left: 0; right: 0; text-align: center; pointer-events: none;
+    font: 400 11px/1.3 var(--body); letter-spacing: .05em; color: var(--accent); }
+  .eye i { display: inline-block; width: 15px; height: 15px; margin-inline-end: 6px;
+    vertical-align: -3px; border: 1.5px solid var(--accent); border-radius: 50%;
+    position: relative; }
+  .eye i::after { content: ""; position: absolute; inset: 4px; border-radius: 50%;
+    background: var(--accent); }
+  .stage.inverted .eye { color: #e0a99b; }
+  .stage.inverted .eye i { border-color: #e0a99b; }
+  .stage.inverted .eye i::after { background: #e0a99b; }
+
+  #compare { display: flex; align-items: center; justify-content: center; gap: 4px; }
+  .cmp { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .cmp i { display: block; }
+  .cmp span { font: 300 11px/1 var(--head); letter-spacing: .1em; color: var(--muted); }
+  .cmp.mid span { color: var(--ink); }
+
+  /* Scale runs corner to corner: circumference reaches 61mm and an upright phone leaves only
+     about 60mm of height once controls are placed, but the diagonal gives 85mm. */
+  #ruler { position: absolute; inset: 0; }
+  #ruler-axis { position: absolute; height: 0; transform-origin: 0 0;
+                border-top: 1px solid var(--line); }
+  .tick { position: absolute; top: 0; width: 0; border-left: 1px solid var(--ink); opacity: .45; }
+  .tick.t1 { height: 8px; opacity: .25; }
+  .tick.t5 { height: 15px; }
+  .tick.t10 { height: 24px; opacity: .8; }
+  .tick b { position: absolute; left: 3px; top: 26px; transform-origin: 0 0; white-space: nowrap;
+            font: 300 11px/1 var(--head); letter-spacing: .06em; color: var(--ink); }
+  #ruler-marker { position: absolute; top: -13px; width: 0; height: 33px;
+                  border-left: 2px solid var(--accent); }
+
+  .methods { display: flex; margin: 10px 22px 0; border: 1px solid var(--line); }
+  .methods button { flex: 1; height: 33px; border: 0; background: transparent; color: var(--muted);
+    font: 400 10.5px/1.2 var(--body); letter-spacing: .09em; text-transform: uppercase;
+    padding: 0 2px; }
+  .methods button + button { border-inline-start: 1px solid var(--line); }
+  .methods button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+
+  .controls { padding: 12px 22px calc(16px + env(safe-area-inset-bottom)); background: var(--surface);
+              border-top: 1px solid var(--line); }
+  .readout { text-align: center; margin-bottom: 8px; }
+  .readout b { display: block; font: 300 26px/1.1 var(--head); letter-spacing: .06em; }
+  .readout small { display: block; color: var(--muted); font-size: 11px; margin-top: 5px;
+                   letter-spacing: .06em; }
+  .row { display: flex; align-items: center; gap: 10px; }
+  .nudge { flex: 0 0 44px; height: 44px; border: 1px solid var(--line); background: #fff;
+    border-radius: 50%; font-size: 20px; line-height: 1; color: var(--ink); }
+  .nudge:active { background: #efece7; }
+  input[type=range] { flex: 1; -webkit-appearance: none; appearance: none; height: 44px;
+    background: transparent; }
+  input[type=range]::-webkit-slider-runnable-track { height: 1px; background: var(--line); }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 26px; height: 26px;
+    border-radius: 50%; background: var(--ink); margin-top: -13px; }
+  input[type=range]::-moz-range-track { height: 1px; background: var(--line); }
+  input[type=range]::-moz-range-thumb { width: 26px; height: 26px; border: 0; border-radius: 50%;
+    background: var(--ink); }
+  select { width: 100%; height: 46px; padding: 0 12px; margin-bottom: 8px; border: 1px solid var(--line);
+    background: #fff; color: var(--ink); font: 300 14px var(--body); border-radius: 0; appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+      linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+    background-position: calc(100% - 17px) 21px, calc(100% - 12px) 21px;
+    background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; }
+  html[dir="rtl"] select { background-position: 12px 21px, 17px 21px; }
+  /* Model names are Latin. In an RTL select each line was pushed to the right edge and the
+     mixed runs ("iPhone 16 Plus", "Galaxy S24 Ultra / S23 Ultra") broke into a ragged column
+     that was hard to scan. Forced LTR, the names line up under each other as one column, and
+     the arrow moves back to the right where the box now starts. */
+  html[dir="rtl"] #device-pick,
+  html[dir="rtl"] #device-pick option,
+  html[dir="rtl"] #device-pick optgroup { direction: ltr; text-align: left; }
+  html[dir="rtl"] #device-pick { background-position: calc(100% - 17px) 21px,
+                                 calc(100% - 12px) 21px; }
+  .btns { display: flex; gap: 8px; margin-top: 10px; }
+  button.primary { flex: 1; height: 48px; border: 0; background: var(--ink); color: #fff;
+    font: 400 11px/1 var(--body); letter-spacing: .13em; text-transform: uppercase; }
+  button.ghost { flex: 1; height: 44px; border: 1px solid var(--line); background: transparent;
+    color: var(--muted); font: 400 10.5px/1 var(--body); letter-spacing: .1em;
+    text-transform: uppercase; }
+  /* Guided is the accurate path for anyone unsure, so it reads as an offer, not a footnote. */
+  button.ghost.accent { border-color: var(--accent); color: var(--accent); }
+  button:active { opacity: .82; }
+  .minor { display: flex; gap: 16px; justify-content: center; margin-top: 10px; }
+  .minor button, .linkish { background: none; border: 0; color: var(--muted); font: 300 11.5px var(--body);
+    letter-spacing: .04em; text-decoration: underline; text-underline-offset: 3px; padding: 4px 0; }
+  .linkish { display: block; width: 100%; margin-top: 10px; }
+  /* The store's own WhatsApp bubble is a theme element, and this tool covers the viewport, so
+     the bubble is underneath it and unreachable. Same number, our own doorway. */
+  .wa.cta { border: 1px solid #25d366; text-decoration: none; margin-top: 12px;
+            font-size: 12.5px; letter-spacing: .08em; text-transform: uppercase;
+            padding: 15px 8px; }
+  .wa { display: block; text-align: center; margin-top: 12px; padding: 10px 8px;
+        color: var(--ink); font: 400 12px/1.4 var(--body); letter-spacing: .03em;
+        text-decoration: underline; text-underline-offset: 3px; }
+  .wa::before { content: ""; display: inline-block; width: 9px; height: 9px; border-radius: 50%;
+                background: #25d366; margin-inline-end: 7px; vertical-align: 0; }
+
+  /* Size wheel. Scroll-snap does the momentum and the detents natively, so the customer
+     flicks rather than aims: every stop is a size the store actually stocks, and flicking
+     between two neighbours turns a 4.9px difference into motion, which the eye reads far
+     better than a still gap. */
+  .wheel-wrap { position: relative; margin: 2px 0; }
+  .wheel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; padding: 8px 0 12px;
+           scrollbar-width: none; -webkit-overflow-scrolling: touch; touch-action: pan-x; }
+  .wheel::-webkit-scrollbar { display: none; }
+  .wsz { flex: 0 0 64px; scroll-snap-align: center; background: none; border: 0; padding: 0;
+         font: 300 19px/1.6 var(--head); letter-spacing: .06em; color: var(--ink); opacity: .3;
+         transition: opacity .16s ease, transform .16s ease; }
+  .wsz[aria-current="true"] { opacity: 1; transform: scale(1.45); }
+  .wpad { flex: 0 0 calc(50% - 32px); }
+  .wmark { position: absolute; left: 50%; top: 0; bottom: 4px; width: 62px;
+           transform: translateX(-50%); pointer-events: none;
+           border-top: 1px solid var(--line); border-bottom: 1px solid var(--accent); }
+  .wheel-hint { text-align: center; font-size: 11px; letter-spacing: .05em; color: var(--muted);
+                margin-top: 2px; line-height: 1.4; }
+
+  .ask { text-align: center; font-size: 12.5px; line-height: 1.45; margin-bottom: 12px;
+         color: var(--muted); }
+  .ask b { display: block; font: 300 16px/1.35 var(--head); letter-spacing: .06em;
+           text-transform: uppercase; margin-bottom: 4px; color: var(--ink); }
+  .answers { display: flex; gap: 8px; }
+  .answers button { flex: 1; min-height: 60px; padding: 8px 6px; border: 1px solid var(--ink);
+    background: #fff; color: var(--ink); font: 400 11px/1.4 var(--body); letter-spacing: .08em;
+    text-transform: uppercase; }
+  .answers button.alt { border-color: var(--line); color: var(--muted); }
+  .answers button:active { background: var(--ink); color: #fff; }
+  .prog { display: flex; gap: 4px; justify-content: center; margin-bottom: 10px; }
+  .prog i { width: 16px; height: 2px; background: var(--line); }
+  .prog i.on { background: var(--accent); }
+
+  .result { flex: 1; display: flex; flex-direction: column; justify-content: center;
+            padding: 22px; text-align: center; overflow-y: auto; }
+  .sizes { display: flex; align-items: stretch; justify-content: center; }
+  .size-card { flex: 1; padding: 4px 10px; }
+  .size-card + .size-card { border-inline-start: 1px solid var(--line); }
+  .size-big { font: 200 52px/1 var(--head); letter-spacing: .02em; }
+  .size-scale { font: 400 10px/1.3 var(--body); letter-spacing: .16em; text-transform: uppercase;
+                color: var(--muted); margin-bottom: 12px; }
+  .size-card.secondary .size-big { font-size: 36px; color: var(--muted); padding-top: 14px; }
+  .equiv { margin-top: 16px; color: var(--muted); font-size: 12.5px; letter-spacing: .04em; }
+  .equiv b { color: var(--ink); font-weight: 400; }
+  .notes { margin: 20px 0 0; padding: 16px 0 0; padding-inline-start: 16px; text-align: start;
+    font-size: 11.5px; color: var(--muted); line-height: 1.75; border-top: 1px solid var(--line); }
+  .notes a { color: var(--accent); }
+  /* Plain, quiet, and not hidden behind a link: it has to be readable where the number is. */
+  .legal { margin: 18px 0 0; padding: 14px 0 0; border-top: 1px solid var(--line);
+           text-align: start; font-size: 10.5px; line-height: 1.7; color: var(--muted);
+           letter-spacing: .01em; }
+  .legal a { color: var(--muted); text-underline-offset: 2px; }
+
+  .banner { margin: 0 22px 8px; padding: 8px 10px; background: #fbf6f2; color: var(--accent);
+    font-size: 11.5px; line-height: 1.5; border-inline-start: 2px solid var(--accent); text-align: start; }
+  .banner[hidden] { display: none; }
+
+  /* Desktop. The whole tool rests on knowing the physical size of the glass, and on a desktop
+     there is nothing to calibrate against: no model to name, no known screen. Rather than draw
+     a circle that is confidently the wrong size, say so and send them to a phone. */
+  .desk { flex: 1; display: flex; flex-direction: column; justify-content: center;
+          align-items: center; text-align: center; padding: 40px 28px; }
+  .phone-glyph { width: 52px; height: 90px; border: 1.5px solid var(--ink); border-radius: 9px;
+                position: relative; margin: 0 auto 26px; }
+  .phone-glyph::before { content: ""; position: absolute; top: 7px; left: 50%; width: 16px;
+                        height: 2px; background: var(--ink); transform: translateX(-50%); }
+  .phone-glyph::after { content: ""; position: absolute; width: 26px; height: 26px;
+                       border-radius: 50%; background: var(--disc-fill);
+                       box-shadow: inset 0 0 0 2px var(--rim-color);
+                       left: 50%; top: 52%; transform: translate(-50%, -50%); }
+  .desk h1 { margin-bottom: 14px; }
+  .desk .phone-glyph { margin-bottom: 26px; }
+  .desk p { max-width: 34ch; margin: 0 0 4px; color: var(--muted); font-size: 13px;
+            line-height: 1.65; }
+  .desk-url { margin-top: 22px; padding: 11px 16px; border: 1px solid var(--line);
+              background: var(--surface); font: 400 12px/1.4 var(--body); letter-spacing: .02em;
+              color: var(--ink); word-break: break-all; max-width: 100%; direction: ltr; }
+
+  /* Demo only: the build id sits in the corner so a stale cache is obvious at a glance. */
+  /* Stays on the live page on purpose: a field report of "it said 49" is unactionable, and
+     one screenshot of this panel settles what scale produced it. Small enough to ignore. */
+  #dbg-toggle { position: fixed; top: 2px; inset-inline-end: 6px; width: auto; margin: 0;
+    padding: 7px 8px; font-size: 8px; letter-spacing: .1em; opacity: .22; z-index: 5;
+    text-decoration: none; }
+  #dbg { position: fixed; inset: auto 0 0 0; z-index: 6; max-height: 60vh; overflow: auto;
+    font: 11px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; background: #14120f;
+    color: #b9b2a6; padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    white-space: pre-wrap; word-break: break-all; margin: 0; direction: ltr; text-align: left; }
+  #dbg[hidden] { display: none; }
+  #dbg b { color: #f0e9dd; font-weight: 400; }
+</style>
+
+<div id="app">
+  <!-- STEP 1: calibrate -->
+  <section class="step on" id="s-cal">
+    <header>
+      <div class="pips"><i class="pip on"></i><i class="pip"></i><i class="pip"></i></div>
+      <h1 data-t="calTitle"></h1>
+      <p class="sub" id="cal-sub"></p>
+    </header>
+    <div class="methods">
+      <button data-method="device" aria-pressed="true" data-t="mDevice"></button>
+      <button data-method="card" aria-pressed="false" data-t="mCard"></button>
+      <button data-method="coin" aria-pressed="false" data-t="mCoin"></button>
+    </div>
+    <div class="stage" id="cal-stage">
+      <div id="card" hidden><i class="chip"></i></div>
+      <div id="coin" hidden></div>
+      <div id="devnote" hidden></div>
+      <div class="guide" id="g-top"></div>
+      <div class="guide" id="g-bot"></div>
+      <div class="stage-note" id="cal-note"></div>
+    </div>
+    <div class="banner" id="cal-banner" hidden></div>
+    <div class="controls">
+      <select id="device-pick" hidden></select>
+      <select id="inch-pick" hidden></select>
+      <select id="coin-pick" hidden></select>
+      <div class="row" id="cal-row">
+        <button class="nudge" data-cal="-1" aria-label="-">&minus;</button>
+        <input type="range" id="cal-range" step="0.005">
+        <button class="nudge" data-cal="1" aria-label="+">+</button>
+      </div>
+      <div class="btns"><button class="primary" id="cal-next" data-t="calNext"></button></div>
+      <!-- only when the scale cannot be established: a customer whose phone is in no list had
+           nowhere left to go, and a dead end on the first screen is a lost customer -->
+      <a class="wa" id="cal-wa" target="_blank" rel="noopener" data-t="waHelp" hidden></a>
+    </div>
+  </section>
+
+  <!-- STEP 2: measure -->
+  <section class="step" id="s-measure">
+    <header>
+      <button class="nav" id="m-nav" data-t="back"></button>
+      <div class="pips"><i class="pip on"></i><i class="pip on"></i><i class="pip"></i></div>
+      <h1 data-t="measTitle"></h1>
+      <p class="sub" id="m-sub"></p>
+    </header>
+    <div class="methods" id="m-methods">
+      <button data-mmethod="circle" aria-pressed="true" data-t="mmCircle"></button>
+      <button data-mmethod="strip" aria-pressed="false" data-t="mmStrip"></button>
+      <button data-mmethod="ruler" aria-pressed="false" data-t="mmRuler"></button>
+    </div>
+    <div class="stage" id="m-stage">
+      <div id="disc" hidden></div>
+      <div id="compare" hidden></div>
+      <div id="ruler" hidden></div>
+      <div class="eye" id="m-eye" hidden><i></i><span data-t="lookStraight"></span></div>
+      <div class="stage-note" id="m-note"></div>
+    </div>
+    <div class="banner" id="zoom-banner" hidden></div>
+
+    <div class="controls">
+      <div id="m-normal">
+        <div class="readout"><b id="m-size">&mdash;</b><small id="m-mm"></small></div>
+        <div class="wheel-wrap" id="m-wheelwrap">
+          <div class="wheel" id="m-wheel"></div>
+          <div class="wmark"></div>
+        </div>
+        <div class="wheel-hint" id="m-hint"></div>
+        <div class="btns">
+          <button class="ghost" id="m-back" data-t="back"></button>
+          <button class="primary" id="m-next" data-t="thisIsMySize"></button>
+        </div>
+        <div class="btns" id="m-guide-row">
+          <button class="ghost accent" id="m-guide" data-t="guideMe"></button>
+        </div>
+        <div class="minor" id="m-minor">
+          <button id="m-compare" data-t="compareThree"></button>
+          <button id="m-invert" data-t="darkBg"></button>
+        </div>
+      </div>
+
+      <!-- opt-in: one visible yes/no per step, binary search over the stocked sizes -->
+      <div id="m-guided" hidden>
+        <div class="prog" id="m-prog"></div>
+        <div class="ask"><b data-t="askTitle"></b><span data-t="askSub"></span></div>
+        <div class="answers">
+          <button data-ans="small" data-t="ansWhite"></button>
+          <button data-ans="big" class="alt" data-t="ansNoWhite"></button>
+        </div>
+        <div class="btns">
+          <button class="ghost" id="m-undo" data-t="undo"></button>
+          <button class="ghost" id="m-manual" data-t="backToWheel"></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 3: result -->
+  <section class="step" id="s-result">
+    <header>
+      <button class="nav" id="r-nav" data-t="back"></button>
+      <div class="pips"><i class="pip on"></i><i class="pip on"></i><i class="pip on"></i></div>
+    </header>
+    <div class="result">
+      <div class="sizes">
+        <div class="size-card" id="r-card-us">
+          <div class="size-scale" data-t="usSize"></div>
+          <div class="size-big" id="r-us">&mdash;</div>
+        </div>
+        <div class="size-card" id="r-card-eu">
+          <div class="size-scale" data-t="euSize"></div>
+          <div class="size-big" id="r-eu">&mdash;</div>
+        </div>
+      </div>
+      <div class="equiv" id="r-equiv"></div>
+      <div class="banner" id="r-banner" hidden></div>
+      <ul class="notes" id="r-notes"></ul>
+      <p class="legal" id="r-legal"></p>
+      <!-- last thing on the last screen: someone who has read all of that and still is not
+           sure should not have to go looking for us -->
+      <a class="wa" id="r-wa" target="_blank" rel="noopener" hidden></a>
+    </div>
+    <div class="controls">
+      <div class="btns">
+        <button class="ghost" id="r-back" data-t="measureAgain"></button>
+        <button class="primary" id="r-cta" data-t="shopThisSize"></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- shown INSTEAD of everything above when this is not a phone -->
+  <section class="step" id="s-desktop">
+    <div class="desk">
+      <div class="phone-glyph"></div>
+      <h1 data-t="dtTitle"></h1>
+      <p data-t="dtBody"></p>
+      <p data-t="dtHow"></p>
+      <div class="desk-url" id="dt-url"></div>
+    </div>
+  </section>
+
+  <button class="lang" id="lang-toggle"></button>
+  <button class="linkish" id="dbg-toggle">2fd1b85</button>
+  <pre id="dbg" hidden></pre>
+</div>
+
+<script type="module">
+/**
+ * Ring size math, plus the physical reference data the calibration step needs.
+ *
+ * Everything is derived from inner diameter in mm. US sizes follow the standard linear
+ * scale (size 0 = 11.63mm ID, +0.8128mm per size). EU/IL sizes ARE the inner circumference
+ * in mm, so that conversion is just d * PI.
+ */
+
+const US_PER_MM = 0.8128;
+const US_ZERO_MM = 11.63;
+
+const idToUS = (mm) => (mm - US_ZERO_MM) / US_PER_MM;
+const usToId = (us) => US_ZERO_MM + US_PER_MM * us;
+const idToEU = (mm) => mm * Math.PI;
+const euToId = (eu) => eu / Math.PI;
+
+/**
+ * Both scales for one inner diameter. Customers arrive knowing whichever number their
+ * market uses, and the catalogue itself is inconsistent (a few US-store products carry
+ * EU option values and vice versa), so we always show both.
+ */
+function bothScales(mm) {
+  return { us: Math.round(idToUS(mm) * 2) / 2, eu: Math.round(idToEU(mm)) };
+}
+
+/** Sizes actually stocked, read from the live catalogue (active ring products). */
+const CATALOGUE = {
+  us: { store: "Noritamy US", scale: "US", region: "US", toId: usToId,
+        sizes: [3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5] },
+  // Up to 68: wider than the stocked range, because the larger sizes are made to order. Whole
+  // sizes only. A half EU size is 0.16 mm of diameter, which is finer than this tool can
+  // honestly resolve, so offering it would have been precision the measurement cannot back.
+  il: { store: "Noritamy IL", scale: "EU", region: "IL", toId: euToId,
+        sizes: Array.from({ length: 26 }, (_, i) => 43 + i) },
+};
+
+/**
+ * noritamy.com, UK and Australia: letter sizes, the same scheme as the store's size guide page
+ * (US 3 = F ... US 9.5 = S, one letter per half US size). A letter is a label for a US size here,
+ * so the drawing and the snapping stay in the US scale underneath.
+ */
+// An array, not an object: an object would list the whole-number keys before 3.5, 4.5 ... and
+// scramble the wheel (F, H, J ... G, I, K).
+const US_UK = [[3, "F"], [3.5, "G"], [4, "H"], [4.5, "I"], [5, "J"], [5.5, "K"], [6, "L"], [6.5, "M"],
+               [7, "N"], [7.5, "O"], [8, "P"], [8.5, "Q"], [9, "R"], [9.5, "S"]];
+const UK_TO_US = Object.fromEntries(US_UK.map(([us, uk]) => [uk, us]));
+CATALOGUE.uk = { store: "Noritamy UK/AU", scale: "UK", region: "GB", toId: (l) => usToId(UK_TO_US[l]),
+                 sizes: US_UK.map(([, uk]) => uk) };
+
+/** Nearest stocked size, plus how far off it is, so the UI can warn on a bad straddle. */
+function snapToStocked(mm, catalogue) {
+  let best = null;
+  for (const size of catalogue.sizes) {
+    const delta = Math.abs(catalogue.toId(size) - mm);
+    if (!best || delta < best.delta) best = { size, delta, mm: catalogue.toId(size) };
+  }
+  return best;
+}
+
+/* ------------------------------------------------------------------ calibration references */
+
+/** ISO/IEC 7810 ID-1. Every bank and credit card on earth is this size. */
+const CARD = { longMm: 85.60, shortMm: 53.98 };
+
+/**
+ * Coin diameters, verified against the US Mint and Bank of Israel specifications.
+ * Ordered largest first because a bigger reference attenuates the customer's alignment
+ * error: two pixels of slop on a 26mm coin is over twice the relative error of the same
+ * slop on the card's 53.98mm edge. Coins are the fallback, never the default.
+ */
+const COINS = {
+  US: [
+    { label: "Quarter", mm: 24.26 },
+    { label: "Nickel", mm: 21.21 },
+    { label: "Penny", mm: 19.05 },
+    { label: "Dime", mm: 17.91 },
+  ],
+  GB: [
+    { label: "2p", mm: 25.9 },
+    { label: "10p", mm: 24.5 },
+    { label: "1p", mm: 20.3 },
+    { label: "5p", mm: 18.0 },
+  ],
+  AU: [
+    { label: "$1", mm: 25.0 },
+    { label: "10c", mm: 23.6 },
+    { label: "$2", mm: 20.5 },
+    { label: "5c", mm: 19.41 },
+  ],
+  CA: [
+    { label: "$1 (loonie)", mm: 26.5 },
+    { label: "25c (quarter)", mm: 23.88 },
+    { label: "5c (nickel)", mm: 21.2 },
+    { label: "10c (dime)", mm: 18.03 },
+  ],
+  IL: [
+    { label: "חצי שקל", mm: 26.0 },
+    { label: "5 שקל", mm: 24.0 },
+    { label: "10 שקל", mm: 23.0 },   // outer ring of the bimetallic coin
+    { label: "10 אגורות", mm: 22.0 },
+    { label: "2 שקל", mm: 21.6 },
+    { label: "1 שקל", mm: 18.0 },
+  ],
+};
+
+/**
+ * Physical screen width in MILLIMETRES, keyed by CSS geometry.
+ *
+ * Storing millimetres rather than a px/mm ratio is deliberate. The ratio is derived at
+ * runtime by dividing the live CSS width by this number, so a phone in iOS Display Zoom
+ * (which reports a smaller CSS width for the same physical screen) still resolves
+ * correctly once the customer names their model by hand. A stored ratio could not.
+ */
+const DEVICE_TABLE = {
+  "320x568@2": { widthMm: 49.9, label: "iPhone SE (1st gen) / 5s" },
+  "375x667@2": { widthMm: 58.4, label: "iPhone 6/7/8/SE 2/SE 3" },
+  "414x736@3": { widthMm: 68.4, label: "iPhone 6+/7+/8+" },
+  "414x896@2": { widthMm: 64.5, label: "iPhone XR / 11" },
+  "414x896@3": { widthMm: 68.9, label: "iPhone XS Max / 11 Pro Max" },
+  "390x844@3": { widthMm: 64.6, label: "iPhone 12/13/14" },
+  "428x926@3": { widthMm: 71.2, label: "iPhone 12/13 Pro Max, 14 Plus" },
+  "393x852@3": { widthMm: 65.1, label: "iPhone 14 Pro/15/16" },
+  "430x932@3": { widthMm: 71.2, label: "iPhone 15 Plus / Pro Max, 16 Plus" },
+  "402x874@3": { widthMm: 66.6, label: "iPhone 18 Pro / 17 / 17 Pro / 16 Pro" },
+  "440x956@3": { widthMm: 72.9, label: "iPhone 18 Pro Max / 17 Pro Max / 16 Pro Max" },
+  "420x912@3": { widthMm: 69.6, label: "iPhone Air" },
+  // iPhone X/XS/11 Pro (62.4mm) and 12/13 mini (57.6mm) report identical geometry and are
+  // 8.3% apart, which is four EU sizes. Never auto-accept this one; make the customer confirm.
+  "375x812@3": { widthMm: 60.0, label: "iPhone X/XS/11 Pro or 12/13 mini", ambiguous: true },
+};
+
+/**
+ * Models the customer can name by hand. This resolves the ambiguous geometry above and
+ * survives Display Zoom, which auto-detection cannot.
+ *
+ * iPhones carry a verified physical width. Everything else carries the marketed screen
+ * diagonal instead, because there is no maintainable database of Android screen widths and
+ * there never will be: the width is derived at runtime from the diagonal and the device's
+ * own reported aspect ratio. That is accurate to about 1%, or a fifth of a ring size, and it
+ * works for a phone released tomorrow. Anything not listed can pick a diagonal directly.
+ */
+const DEVICE_PICKER = [
+  // Physical panel width, from Apple's own published resolution and ppi: 1320 px / 460 ppi is
+  // 72.90 mm, exactly, with nothing derived from a marketed diagonal.
+  { group: "iPhone", label: "iPhone 18 Pro Max", widthMm: 72.9 },
+  { group: "iPhone", label: "iPhone 18 Pro", widthMm: 66.6 },
+  { group: "iPhone", label: "iPhone 17 Pro Max / 16 Pro Max", widthMm: 72.9 },
+  { group: "iPhone", label: "iPhone 17 Pro / 17 / 16 Pro", widthMm: 66.6 },
+  { group: "iPhone", label: "iPhone Air", widthMm: 69.6 },
+  { group: "iPhone", label: "iPhone 16 Plus", widthMm: 71.2 },
+  { group: "iPhone", label: "iPhone 16", widthMm: 65.1 },
+  { group: "iPhone", label: "iPhone 16e", widthMm: 64.6 },
+  { group: "iPhone", label: "iPhone 15 Pro Max / 15 Plus", widthMm: 71.2 },
+  { group: "iPhone", label: "iPhone 15 Pro / 15 / 14 Pro", widthMm: 65.1 },
+  { group: "iPhone", label: "iPhone 14 Plus / 13 Pro Max / 12 Pro Max", widthMm: 71.2 },
+  { group: "iPhone", label: "iPhone 14 / 13 / 13 Pro / 12 / 12 Pro", widthMm: 64.6 },
+  { group: "iPhone", label: "iPhone 13 mini / 12 mini", widthMm: 57.6 },
+  { group: "iPhone", label: "iPhone 11 Pro Max / XS Max", widthMm: 68.9 },
+  { group: "iPhone", label: "iPhone 11 / XR", widthMm: 64.5 },
+  { group: "iPhone", label: "iPhone 11 Pro / XS / X", widthMm: 62.4 },
+  { group: "iPhone", label: "iPhone 8 Plus / 7 Plus / 6s Plus", widthMm: 68.4 },
+  { group: "iPhone", label: "iPhone SE (2020 / 2022) / 8 / 7", widthMm: 58.4 },
+  { group: "iPhone", label: "iPhone SE (2016) / 5s", widthMm: 49.9 },
+
+  { group: "Samsung", label: "Galaxy S26 Ultra", inches: 6.9 },
+  { group: "Samsung", label: "Galaxy S26+", inches: 6.7 },
+  { group: "Samsung", label: "Galaxy S26", inches: 6.3 },
+  { group: "Samsung", label: "Galaxy S25 Ultra", inches: 6.9 },
+  { group: "Samsung", label: "Galaxy S25 Edge", inches: 6.7 },
+  { group: "Samsung", label: "Galaxy S25+", inches: 6.7 },
+  { group: "Samsung", label: "Galaxy S25", inches: 6.2 },
+  { group: "Samsung", label: "Galaxy S24 Ultra / S23 Ultra", inches: 6.8 },
+  { group: "Samsung", label: "Galaxy S24+", inches: 6.7 },
+  { group: "Samsung", label: "Galaxy S24", inches: 6.2 },
+  { group: "Samsung", label: "Galaxy S24 FE", inches: 6.7 },
+  { group: "Samsung", label: "Galaxy S23+ / S22+", inches: 6.6 },
+  { group: "Samsung", label: "Galaxy S23 / S22", inches: 6.1 },
+  { group: "Samsung", label: "Galaxy S23 FE / S21 FE", inches: 6.4 },
+  { group: "Samsung", label: "Galaxy S21 Ultra / S20 Ultra", inches: 6.8 },
+  { group: "Samsung", label: "Galaxy S21+ / S20+", inches: 6.7 },
+  { group: "Samsung", label: "Galaxy S21 / S20", inches: 6.2 },
+  { group: "Samsung", label: "Galaxy S20 FE", inches: 6.5 },
+  { group: "Samsung", label: "Galaxy S10+ / Note 10+", inches: 6.4 },
+  { group: "Samsung", label: "Galaxy S10 / S9+", inches: 6.1 },
+  { group: "Samsung", label: "Galaxy Note 20 Ultra", inches: 6.9 },
+  { group: "Samsung", label: "Galaxy Note 20", inches: 6.7 },
+  { group: "Samsung", label: "Galaxy A56 / A36 / A26", inches: 6.7 },
+  { group: "Samsung", label: "Galaxy A55 / A35 / A34", inches: 6.6 },
+  { group: "Samsung", label: "Galaxy A54 / A53", inches: 6.4 },
+  { group: "Samsung", label: "Galaxy A16 / A06", inches: 6.7 },
+  { group: "Samsung", label: "Galaxy A25 / A15 / A14", inches: 6.5 },
+
+  { group: "Google", label: "Pixel 10 Pro XL / 9 Pro XL", inches: 6.8 },
+  { group: "Google", label: "Pixel 10 Pro / 10 / 9 Pro / 9", inches: 6.3 },
+  { group: "Google", label: "Pixel 8 Pro / 7 Pro", inches: 6.7 },
+  { group: "Google", label: "Pixel 8 / 7", inches: 6.2 },
+  { group: "Google", label: "Pixel 10a / 9a / 8a / 7a", inches: 6.2 },
+  { group: "Google", label: "Pixel 6 Pro", inches: 6.7 },
+  { group: "Google", label: "Pixel 6 / 6a", inches: 6.3 },
+
+  { group: "Xiaomi", label: "Redmi Note 14 / 13 / 12", inches: 6.67 },
+  { group: "Xiaomi", label: "Xiaomi 15 / 14 / 13", inches: 6.36 },
+  { group: "Xiaomi", label: "Redmi 14C / 13C", inches: 6.74 },
+  { group: "Xiaomi", label: "Poco X7 / X6", inches: 6.67 },
+
+  { group: "OnePlus", label: "OnePlus 13 / 12", inches: 6.82 },
+  { group: "OnePlus", label: "OnePlus 11 / Nord 4", inches: 6.7 },
+
+  { group: "Other", label: "Motorola Edge 50 / 40", inches: 6.7 },
+  { group: "Other", label: "Nothing Phone (3) / (2)", inches: 6.7 },
+  { group: "Other", label: "Honor Magic 6 / 200", inches: 6.78 },
+  { group: "Other", label: "Oppo Reno 12 / 11", inches: 6.7 },
+];
+
+/** Any phone at all: the diagonal is printed on the box and sits in Settings, About. */
+const DIAGONALS = [
+  4.7, 5.0, 5.4, 5.5, 5.8, 6.0, 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9, 7.0,
+];
+
+/** Fallback is the modern iPhone cluster. Desktop screen size is genuinely unknowable. */
+const FALLBACK = { widthMm: 64.6, label: "unrecognised device", ambiguous: true };
+
+/**
+ * The screen as reported, unless someone who can see it better tells us otherwise.
+ *
+ * A cross-origin frame does not always inherit the device it is running on: measured on the
+ * product modal, the frame reported an 800x600 screen at dpr 1 while the page around it
+ * correctly reported 390x844 at dpr 3. Everything downstream is keyed on that geometry, so a
+ * blind frame silently falls through to the unrecognised-device fallback and, on any phone
+ * whose width is not the fallback's, draws at the wrong size. The parent page is not blind,
+ * so it hands its own reading in.
+ */
+let geometryOverride = null;
+function overrideScreenGeometry(g) {
+  geometryOverride = g && g.shortCss > 0 && g.longCss > 0 && g.dpr > 0 ? g : null;
+}
+
+/**
+ * The layout width of the page that framed us, in ITS pixels.
+ *
+ * The zoom test divides the layout width by the screen width, and both have to be measured in
+ * the same coordinate space for the answer to mean anything. Inside a frame they are not: the
+ * frame's own innerWidth is in the frame's space and the screen is in the parent's, and on an
+ * iPhone 16 that difference alone produced a 5% "you are zoomed" warning on a phone that was
+ * not zoomed. So the parent measures the pair and hands both over.
+ */
+let layoutWidthOverride = 0;
+function overrideLayoutWidth(px) {
+  layoutWidthOverride = px > 0 ? px : 0;
+}
+
+function screenGeometry(win = window) {
+  if (geometryOverride) return { ...geometryOverride };
+  return {
+    shortCss: Math.min(win.screen.width, win.screen.height),
+    longCss: Math.max(win.screen.width, win.screen.height),
+    dpr: Math.round(win.devicePixelRatio * 100) / 100,
+  };
+}
+
+/**
+ * One table lookup, tolerant on the long edge.
+ *
+ * The short edge and the dpr pin the device; the long edge moves by a pixel or two between the
+ * value a device reports and the value derived from a ratio, and an exact-string match on all
+ * three throws away a correct identification over rounding.
+ */
+function lookupDevice(shortCss, longCss, dpr) {
+  const exact = DEVICE_TABLE[shortCss + "x" + longCss + "@" + dpr];
+  if (exact) return exact;
+  for (const key of Object.keys(DEVICE_TABLE)) {
+    const m = key.match(/^(\d+)x(\d+)@([\d.]+)$/);
+    if (!m) continue;
+    if (Number(m[1]) !== shortCss || Number(m[3]) !== dpr) continue;
+    if (longCss > 0 && Math.abs(Number(m[2]) / longCss - 1) <= 0.01) return DEVICE_TABLE[key];
+  }
+  return null;
+}
+
+/**
+ * Which device this is, and therefore how wide the glass is.
+ *
+ * Identified by the LAYOUT width first, falling back to the reported screen. A real iPhone 16
+ * on iOS 26.6.1 reported a 414x896 screen, which is an iPhone XS Max's geometry, while laying
+ * out at its own true 393. Keying on the screen named the XS Max and handed back 68.9mm instead
+ * of 65.1mm, so every millimetre was drawn 5.8% small and a real EU 51 ring read as EU 54.
+ *
+ * The rule that avoids the whole class of error: identify the device by the same width the
+ * scale divides by. cssAcrossScreen is the pixel count spanning the glass, so it is also the
+ * number that has to name the device.
+ */
+function detectScreen(win = window) {
+  const g = screenGeometry(win);
+  const layoutShort = cssAcrossScreen(win);
+  const scaledLong = g.shortCss > 0 ? Math.round(g.longCss * (layoutShort / g.shortCss)) : g.longCss;
+
+  const byLayout = layoutShort !== g.shortCss ? lookupDevice(layoutShort, scaledLong, g.dpr) : null;
+  const byScreen = lookupDevice(g.shortCss, g.longCss, g.dpr);
+  const hit = byLayout ?? byScreen;
+  const info = hit ?? FALLBACK;
+  // "layout" also means the reported screen is not to be trusted for anything downstream, so
+  // the zoom test has to stop reading a 5% gap between the two as browser zoom.
+  const basis = byLayout ? "layout" : byScreen ? "screen" : "none";
+  const shortCss = byLayout ? layoutShort : g.shortCss;
+  const longCss = byLayout ? scaledLong : g.longCss;
+
+  return {
+    ...info,
+    key: shortCss + "x" + longCss + "@" + g.dpr,
+    screenKey: g.shortCss + "x" + g.longCss + "@" + g.dpr,
+    shortCss, longCss, dpr: g.dpr, basis,
+    matched: Boolean(hit),
+    pxPerMm: cssAcrossScreen(win) / info.widthMm,
+  };
+}
+
+/**
+ * How many CSS pixels actually span the physical width of the screen.
+ *
+ * Not `screen.width`: browser page zoom (Safari's per-site setting, for one) changes how big a
+ * CSS pixel is without touching `screen.width` at all, so a scale derived from it is wrong by
+ * the zoom factor and nothing on the page would ever notice. The layout width does move with
+ * page zoom, so dividing by it cancels the zoom out of the arithmetic entirely.
+ *
+ * Only true while this page owns the whole viewport, so a framed copy falls back and says so.
+ */
+/**
+ * A frame we built ourselves, spanning the whole viewport width, and therefore still a
+ * trustworthy source of layout width. Any other frame keeps the cautious fallback, because a
+ * frame of unknown width tells us nothing about the glass.
+ */
+let trustedFrame = false;
+function trustFramedViewport(on) { trustedFrame = Boolean(on); }
+
+function cssAcrossScreen(win = window) {
+  const ownsViewport = win.top === win.self || trustedFrame;
+  const portrait = win.innerHeight >= win.innerWidth;
+  if (ownsViewport && portrait && win.innerWidth > 0) return win.innerWidth;
+  return screenGeometry(win).shortCss;
+}
+
+/** True when the layout disagrees with the screen, which means zoom we cannot cancel. */
+function isFramed(win = window) {
+  return win.top !== win.self;
+}
+
+/**
+ * How far the layout width disagrees with the screen width, or null when unknowable.
+ *
+ * Dividing by the layout width cancels browser page zoom, which is what we want. It cannot
+ * tell page zoom apart from a window that is simply narrower than the screen (split view, a
+ * floating window, an unmaximised desktop window), and those two want opposite treatment.
+ * When they disagree we therefore stop trusting the device picker rather than pick a side:
+ * matching a real card is immune to both and stays available.
+ */
+function layoutMismatch(win = window) {
+  const portrait = win.innerHeight >= win.innerWidth;
+  if ((win.top !== win.self && !trustedFrame) || !portrait || !win.innerWidth) return null;
+  const layout = layoutWidthOverride || win.innerWidth;
+  return layout / screenGeometry(win).shortCss;
+}
+
+/** CSS px per mm implied by a physical screen width, at zoom 1. */
+function pxPerMmForWidth(widthMm, win = window) {
+  return cssAcrossScreen(win) / widthMm;
+}
+
+/**
+ * The same thing from a screen diagonal in inches. The device reports its own aspect ratio,
+ * so the diagonal is all the customer has to know, and every phone on earth is described by
+ * one. Marketed diagonals are measured to the rounded corners, which costs about 1%.
+ */
+function widthMmForInches(inches, win = window) {
+  const g = screenGeometry(win);
+  return (inches * 25.4 * g.shortCss) / Math.hypot(g.shortCss, g.longCss);
+}
+
+/** Physical width a picker entry implies, whichever way it is specified. */
+function entryWidthMm(entry, win = window) {
+  return entry.widthMm ?? widthMmForInches(entry.inches, win);
+}
+
+
+const $ = (id) => document.getElementById(id);
+const STORE_KEY = "noritamy.ringsizer.v3";
+let CAT = CATALOGUE.us;
+const DENSEST_PHONE = 6.6;         // densest phone screen in real use, css px per mm
+
+/**
+ * Running inside the product page's own modal.
+ *
+ * The frame is exactly as wide as the viewport, so the layout width is still the truth and
+ * browser page zoom is still cancelled by it. That has to be asserted here rather than
+ * guessed, because a frame of unknown width is the one case the scale cannot survive, and it
+ * has to be asserted BEFORE detectScreen() runs.
+ */
+/**
+ * A same-origin path, or nothing.
+ *
+ * Two of these parameters end up in an href and in location.href. A query string on the CDN
+ * copy is attacker-controllable, so "javascript:..." or a quote that closes the attribute has
+ * to be impossible rather than unlikely. One leading slash, no scheme, no protocol-relative
+ * "//host", and no characters that can break out of an attribute.
+ */
+function samePath(v) {
+  if (typeof v !== "string") return null;
+  if (!/^\/[^\/\\]/.test(v)) return null;
+  return /["'<>\s]/.test(v) ? null : v;
+}
+
+const EMBEDDED = /[?&]embedded=1/.test(location.search);
+if (EMBEDDED) trustFramedViewport(true);
+
+/**
+ * Configuration by query string, for the copy that runs as a static theme asset.
+ *
+ * Shopify answers every storefront page with `frame-ancestors 'none'`, so a page cannot be
+ * framed even by itself. A theme asset on the CDN can be, which is how the product modal gets
+ * an isolated copy, and a static file has no Liquid to inject the store's own values.
+ */
+{
+  const q = new URLSearchParams(location.search);
+  for (const [param, global] of [["store", "RING_SIZER_STORE"], ["wa", "RING_SIZER_WHATSAPP"],
+                                 ["shop", "RING_SIZER_SHOP_URL"], ["policy", "RING_SIZER_POLICY_URL"],
+                                 ["cc", "RING_SIZER_COUNTRY"], ["nolang", "RING_SIZER_NOLANG"]]) {
+    const v = param === "store" || param === "wa" || param === "cc" || param === "nolang" ? q.get(param) : samePath(q.get(param));
+    if (v && window[global] === undefined) window[global] = v;
+  }
+  // The screen, as seen by the page that framed us. See overrideScreenGeometry: a frame can be
+  // blind to the device it is running on, and this is the one number nothing else can replace.
+  if (EMBEDDED && q.get("sw")) {
+    overrideScreenGeometry({
+      shortCss: Number(q.get("sw")), longCss: Number(q.get("sh")), dpr: Number(q.get("dpr")),
+    });
+    // And the parent's own layout width, so the zoom test compares like with like.
+    if (q.get("lw")) overrideLayoutWidth(Number(q.get("lw")));
+  }
+}
+
+/* ---------- copy ------------------------------------------------------- */
+/** Every user-facing string in both languages. Hebrew is the Israeli store's default. */
+const T = {
+  lang:        { en: "עברית", he: "English" },
+  back:        { en: "Back", he: "חזרה" },
+  calTitle:    { en: "Your phone", he: "הטלפון שלך" },
+  mDevice:     { en: "My phone", he: "הטלפון שלי" },
+  mCard:       { en: "Bank card", he: "כרטיס אשראי" },
+  mCoin:       { en: "Coin", he: "מטבע" },
+  calNext:     { en: "Continue", he: "ממשיכים" },
+  subDevice:   { en: "Tell us which phone you are holding and we will draw at true size.",
+                 he: "בחרי את דגם הטלפון שבידך, ואנחנו נצייר בגודל אמיתי." },
+  subCard:     { en: "Rest a bank card on the upper line, covering the strip. Shrink the strip until it stops showing below the card.",
+                 he: "הניחי כרטיס אשראי על הקו העליון כך שיכסה את הרצועה. הקטיני את הרצועה עד שהיא מפסיקה להציץ מתחת לכרטיס." },
+  subCoin:     { en: "Rest the coin on the circle. Shrink the circle until no grey shows around it.",
+                 he: "הניחי את המטבע על העיגול. הקטיני את העיגול עד שלא נראה אפור סביבו." },
+  noteCard:    { en: "No grey below the card means it matches", he: "אין אפור מתחת לכרטיס, סימן שזה מתאים" },
+  noteCoin:    { en: "A card is more accurate than a coin", he: "כרטיס מדויק יותר ממטבע" },
+  startingFrom:{ en: "Starting from ", he: "מתחילים מ" },
+  pickPhone:   { en: "Choose your phone", he: "בחרי את הטלפון" },
+  pickInch:    { en: "Not listed? Pick your screen size", he: "לא ברשימה? בחרי גודל מסך" },
+  inchScreen:  { en: " inch screen", he: " אינץ'" },
+  devIs:       { en: "We think you are holding", he: "נראה לנו שבידך" },
+  waHelp:      { en: "Can't find your phone? Message us and we will size you",
+                 he: "לא מצאת את הדגם שלך? דברי איתנו ונעזור לך למדוד" },
+  waMsg:       { en: "Hi! I am trying to find my ring size and my phone model is not in the list. My screen reports ",
+                 he: "היי, אני מנסה למצוא מידת טבעת והדגם של הטלפון שלי לא מופיע ברשימה. המסך שלי מדווח " },
+  devNot:      { en: "Not your phone? Choose the right one from the list below.",
+                 he: "לא הטלפון שלך? בחרי את הדגם הנכון מהרשימה למטה." },
+  devWide:     { en: "Screen width set to ", he: "רוחב המסך נקבע ל-" },
+  devVerify:   { en: "Check it against a bank card", he: "לאימות מול כרטיס אשראי" },
+  devPrompt:   { en: "Choose your phone below", he: "בחרי את הטלפון שלך למטה" },
+  ambiguous:   { en: "Two different phones report this exact screen, and they are not the same width. Pick your model from the list so we draw at the right size.",
+                 he: "שני דגמים שונים מדווחים על מסך זהה, והרוחב שלהם שונה. בחרי את הדגם שלך מהרשימה כדי שנצייר בגודל הנכון." },
+  unknownDev:  { en: "We could not recognise this phone on its own. Pick your model from the list below.",
+                 he: "לא זיהינו את הטלפון הזה לבד. בחרי את הדגם שלך מהרשימה למטה." },
+  tooShort:    { en: "This screen is too short to show that reference at full size. Use a smaller coin, or pick your phone instead.",
+                 he: "המסך קצר מדי להצגת הפריט בגודל מלא. בחרי מטבע קטן יותר, או את דגם הטלפון." },
+
+  measTitle:   { en: "Find your size", he: "מציאת המידה" },
+  mmCircle:    { en: "On screen", he: "על המסך" },
+  mmStrip:     { en: "Paper strip", he: "סרט נייר" },
+  mmRuler:     { en: "On ruler", he: "על הסרגל" },
+  subCircle:   { en: "Lay your ring flat on the circle. Your size is the one where the black ring is just covered by the metal.",
+                 he: "הניחי את הטבעת שטוחה על העיגול. המידה שלך היא זו שבה הטבעת השחורה בדיוק מתכסה במתכת." },
+  subStrip:    { en: "Wrap paper or thread round your finger, mark where it meets, then lay it along the line from 0 and tap the mark.",
+                 he: "כרכי נייר או חוט סביב האצבע, סמני היכן שהוא נפגש, הניחי אותו על הקו מ-0 והקישי על הסימן." },
+  subGuided:   { en: "Put your ring over the circle. We change the size, you slide the ring and tell us what you see.",
+                 he: "הניחי את הטבעת מעל העיגול. אנחנו משנים את המידה, את מזיזה את הטבעת ואומרת מה את רואה." },
+  subRuler:    { en: "Lay a ring you own along the line from 0 and tap the far inside edge of the band.",
+                 he: "הניחי טבעת על הקו מ-0 והקישי על הקצה הפנימי הרחוק של הפס." },
+  lookStraight: { en: "Hold the phone flat and look straight down at it",
+                 he: "החזיקי את הטלפון ישר והביטי עליו מלמעלה" },
+  noteCircle:  { en: "White left = too small · blue touching = too big",
+                 he: "נשאר לבן = קטן מדי · תכלת נוגעת = גדול מדי" },
+  noteStrip:   { en: "Millimetres around. That number is also your EU size",
+                 he: "מילימטרים של היקף. המספר הזה הוא גם המידה האירופאית" },
+  noteRuler:   { en: "Line up the inside edges of the band", he: "יישרי לפי הקצוות הפנימיים של הפס" },
+  guidedFound: { en: "Your answers point to ", he: "התשובות שלך מצביעות על " },
+  guidedCheck: { en: ". Check the circle against your ring, then confirm.",
+                 he: ". בדקי את העיגול מול הטבעת, ואז אשרי." },
+  wheelHint:   { en: "Slide the ring around. The size is where the black just disappears.",
+                 he: "הזיזי את הטבעת. המידה היא זו שבה השחור בדיוק נעלם." },
+  thisIsMySize:{ en: "This is my size", he: "זו המידה שלי" },
+  guideMe:     { en: "Not sure? Guide me", he: "לא בטוחה? הדריכו אותי" },
+  compareThree:{ en: "Compare three", he: "השוואת שלוש" },
+  showOne:     { en: "Show one", he: "עיגול אחד" },
+  darkBg:      { en: "Dark background", he: "רקע כהה" },
+  lightBg:     { en: "Light background", he: "רקע בהיר" },
+  askTitle:    { en: "Can you hide all the white?", he: "אפשר להעלים את כל הלבן?" },
+  askSub:      { en: "Slide the ring first. If white still shows wherever you move it, the circle is too small. When it fits, the black ring touches the metal.",
+                 he: "הזיזי קודם את הטבעת. אם בכל מיקום עדיין נשאר לבן, העיגול קטן מדי. כשהוא מתאים, הטבעת השחורה נוגעת במתכת." },
+  ansWhite:    { en: "No, white always shows", he: "לא, תמיד נשאר לבן" },
+  ansNoWhite:  { en: "Yes, I can hide it", he: "כן, אפשר להעלים" },
+  undo:        { en: "Undo", he: "אחורה" },
+  backToWheel: { en: "Set it myself", he: "לבחירה ידנית" },
+  setMarker:   { en: "Set the marker", he: "סמני על הסרגל" },
+  outOfRange:  { en: "Outside our range", he: "מחוץ לטווח שלנו" },
+  mmUnit:      { en: " mm", he: " מ״מ" },
+  mmInside:    { en: " mm inside diameter", he: " מ״מ קוטר פנימי" },
+  mmAround:    { en: " mm around", he: " מ״מ היקף" },
+  mmAcross:    { en: " mm across", he: " מ״מ רוחב" },
+  tooBigForScreen: { en: "This size will not fit on your screen at full scale. Use the paper strip instead, which needs no room.",
+                 he: "המידה הזו לא נכנסת למסך בגודל מלא. אפשר להשתמש בסרט הנייר, שלא דורש מקום." },
+  rotate:      { en: "Turn your phone upright. Sideways there is not enough room to draw the circle at full size.",
+                 he: "סובבי את הטלפון לאורך. לרוחב אין מספיק מקום לצייר את העיגול בגודל מלא." },
+  pickClash:   { en: "Careful: this screen reports a phone {det} mm wide, and the model you picked is {pick} mm. One of them is wrong, and the gap is about {n} sizes. Your exact model is in Settings, General, About.",
+                 he: "רגע: המסך הזה מדווח על טלפון ברוחב {det} מ״מ, והדגם שבחרת הוא {pick} מ״מ. אחד מהם שגוי, וההפרש שווה בערך {n} מידות. הדגם המדויק מופיע בהגדרות, כללי, אודות." },
+  zoomSuspect: { en: "Your browser is zoomed, or this window is not full screen, so the circle cannot be drawn at true size. Set the zoom back to 100% and reload this page.",
+                 he: "הדפדפן במצב זום, או שהחלון אינו מסך מלא, ולכן אי אפשר לצייר בגודל אמיתי. כדאי להחזיר את הזום ל-100% ולרענן את העמוד." },
+  framed:      { en: "This is running inside a frame, so we cannot tell if your browser zoom is on. Match a bank card to be sure.",
+                 he: "הכלי רץ בתוך מסגרת, ולכן איננו יכולים לדעת אם זום הדפדפן פעיל. כדאי להתאים כרטיס אשראי כדי לוודא." },
+  offScale:    { en: "Your mark runs past the end of the scale, which means you are above the largest size we make.",
+                 he: "הסימן שלך חורג מסוף הסרגל, כלומר את מעל המידה הגדולה ביותר שאנחנו מייצרים." },
+
+  notListed:   { en: "My phone is not on this list", he: "הטלפון שלי לא ברשימה" },
+  notListedTitle: { en: "Let's do it together", he: "נעשה את זה יחד" },
+  notListedBody: { en: "Without your model we cannot draw at true size, and a circle at the wrong size is worse than none. Send us one message and we will size you by hand, usually within the hour.",
+                 he: "בלי הדגם שלך אי אפשר לצייר בגודל אמיתי, ועיגול בגודל שגוי גרוע יותר מכלום. שלחי לנו הודעה אחת ונמדוד איתך ידנית, בדרך כלל תוך שעה." },
+  waGo:        { en: "Message us on WhatsApp", he: "לשיחה בוואטסאפ" },
+  waResult:    { en: "Still unsure? Talk to us on WhatsApp",
+                 he: "עדיין לא בטוחה? דברי איתנו בוואטסאפ" },
+  waResultMsg: { en: "Hi! The ring sizer gave me ", he: "היי, מד המידה נתן לי מידה " },
+  legal:       { en: "This is a recommendation based on a measurement you take yourself, on your own screen. We cannot check how the ring was placed or which size was chosen, so we cannot guarantee the result and are not responsible for a size ordered on the basis of it. Rings are made to the size you order. Before ordering, and especially for a ring you cannot resize, please ",
+                 he: "התוצאה היא המלצה בלבד, המבוססת על מדידה שאת מבצעת בעצמך על המסך שלך. איננו יכולים לבדוק כיצד הונחה הטבעת או איזו מידה נבחרה, ולכן איננו מתחייבים לדיוק התוצאה ואיננו אחראים לבחירת מידה שנעשתה על בסיסה. הטבעות מיוצרות לפי המידה שהוזמנה. לפני הזמנה, במיוחד בטבעת שלא ניתן להרחיב, " },
+  legalLink:   { en: "see our returns policy", he: "כדאי לעיין במדיניות ההחזרות וההחלפות" },
+  legalEnd:    { en: ".", he: "." },
+
+  usSize:      { en: "US size", he: "מידה אמריקאית" },
+  ukSize:      { en: "UK size", he: "מידה בריטית" },
+  euSize:      { en: "EU / IL size", he: "מידה אירופאית" },
+  measureAgain:{ en: "Measure again", he: "מדידה מחדש" },
+  shopThisSize:{ en: "Shop rings", he: "לצפייה בטבעות" },
+  straddle:    { en: "That reading sits between our sizes. We rounded to ",
+                 he: "הקריאה נופלת בין שתי מידות. עיגלנו ל" },
+  straddle2:   { en: ". If the ring you measured feels loose, size down.",
+                 he: ". אם הטבעת שמדדת מרגישה רפויה, כדאי לרדת מידה." },
+  note1:       { en: "Fingers swell during the day. Between sizes, choose the larger.",
+                 he: "האצבעות מתנפחות במהלך היום. בין שתי מידות, כדאי לבחור את הגדולה." },
+  note2:       { en: "A wide band sits tighter. Over 6mm, go up half a size.",
+                 he: "פס רחב יושב הדוק יותר. מעל 6 מ״מ, עולים חצי מידה." },
+  note2eu:     { en: "A wide band sits tighter. Over 6mm, go up one size.",
+                 he: "פס רחב יושב הדוק יותר. מעל 6 מ״מ, עולים מידה." },
+  note3:       { en: "Look straight down at the screen. Measuring at an angle reads small.",
+                 he: "הביטי ישר מלמעלה על המסך. מדידה בזווית נותנת תוצאה קטנה מדי." },
+  note4:       { en: "Dark or blackened ring? Switch to the dark background: the outline turns white.",
+                 he: "טבעת כהה או מושחרת? החליפי לרקע כהה, והמתאר יהפוך ללבן." },
+
+  dtTitle:     { en: "Open this on your phone", he: "פתחי את זה בטלפון" },
+  dtBody:      { en: "The ring sizer draws your ring at its true physical size, so it needs a screen we can calibrate. A computer screen cannot be, and a circle drawn at the wrong size is worse than no circle at all.",
+                 he: "מד המידה מצייר את הטבעת בגודל הפיזי האמיתי שלה, ולכן הוא צריך מסך שאפשר לכייל. מסך מחשב לא ניתן לכיול, ועיגול בגודל שגוי גרוע יותר מאשר בלי עיגול בכלל." },
+  dtHow:       { en: "Type this address into your phone's browser:",
+                 he: "הקלידי את הכתובת הזו בדפדפן של הטלפון:" },
+};
+let LANG = "en";
+const t = (k) => T[k][LANG];
+
+/* ---------- state ------------------------------------------------------ */
+const detected = detectScreen();
+/**
+ * Two scales, deliberately.
+ *
+ * `basePxPerMm` is css pixels per millimetre at pinch-zoom 1. `pxPerMm` is what to draw with
+ * right now. Pinch zoom does not change the CSS pixel count, it magnifies each pixel, so at
+ * scale s one css pixel covers s times more glass and the drawing scale is base/s. Deriving it
+ * live means a customer can pinch to look closer and the circle stays physically correct,
+ * instead of being warned that the calibration is void. Page zoom is already cancelled inside
+ * cssAcrossScreen, so the base itself is zoom-free and safe to store.
+ */
+let basePxPerMm = detected.pxPerMm;
+let pxPerMm = basePxPerMm;
+let innerMm = 0;
+let source = "detected";
+let method = "device";
+let coin = COINS[CAT.region][0];
+let devLabel = "";
+// The physical screen width the drawing is currently based on, in millimetres. Held rather than
+// re-derived: dividing a screen width by a scale is only valid when both were measured in the
+// same coordinate space, and inside the product modal they are not.
+let devWidthMm = detected.widthMm;
+
+const vvScale = () => (window.visualViewport ? window.visualViewport.scale : 1);
+
+function syncScale() { pxPerMm = basePxPerMm / vvScale(); }
+
+function loadSaved() {
+  try {
+    const s = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
+    // The stored value is a zoom-free base, so it survives any zoom the customer was using.
+    if (!s || s.key !== detected.key || s.dpr !== detected.dpr) return null;
+    return s;
+  } catch { return null; }
+}
+function save() {
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify({
+      pxPerMm: basePxPerMm, key: detected.key, dpr: detected.dpr,
+    }));
+  } catch { /* private browsing */ }
+}
+
+/* ---------- step 1: calibration --------------------------------------- */
+const CARD_TOP = 10;
+const calStage = $("cal-stage"), card = $("card"), coinEl = $("coin"), devnote = $("devnote");
+const gTop = $("g-top"), gBot = $("g-bot"), calRange = $("cal-range");
+
+const referenceMm = () => (method === "coin" ? coin.mm : CARD.shortMm);
+
+function calBounds() {
+  // Absolute floor and ceiling, not proportional to what fits: a small coin leaves room to
+  // draw 14 px/mm, and scaling the minimum with it would put every real phone below the
+  // bottom of its own slider. Real screens run about 3.6 to 6.5 px/mm.
+  // clientHeight is 0 while the step is hidden, which would make max negative.
+  const h = calStage.clientHeight;
+  if (h <= 0) return { min: 3.0, max: 9.0 };
+  return { min: 3.0, max: Math.min((h - 18) / referenceMm(), 9.0) };
+}
+
+/** 0.3mm of rim, held constant in millimetres so the judgement is the same on every screen. */
+function applyRim() {
+  // The black ring's thickness is the tolerance on the too-big side, since it has to be
+  // covered completely before the pale blue reaches the metal. Kept modest for that reason,
+  // and it no longer has to be thick to be seen: black on gold needs no help.
+  document.documentElement.style.setProperty(
+    "--rim", Math.max(1.6, 0.26 * pxPerMm).toFixed(2) + "px");
+}
+
+function drawCard() {
+  const hPx = CARD.shortMm * pxPerMm;
+  const trueW = CARD.longMm * pxPerMm;
+  const drawW = Math.min(trueW, calStage.clientWidth);
+  card.style.height = hPx + "px";
+  card.style.width = drawW + "px";
+  card.classList.toggle("clipped", drawW < trueW - 1);
+  card.style.marginBottom = Math.max(0, calStage.clientHeight - hPx - CARD_TOP * 2) + "px";
+  gTop.style.top = CARD_TOP + "px";
+  gBot.style.top = CARD_TOP + hPx + "px";
+}
+
+function drawCal() {
+  applyRim();
+  card.hidden = method !== "card";
+  coinEl.hidden = method !== "coin";
+  devnote.hidden = method !== "device";
+  gTop.hidden = gBot.hidden = method !== "card";
+  if (method === "coin") {
+    const px = coin.mm * pxPerMm;
+    coinEl.style.width = px + "px"; coinEl.style.height = px + "px";
+  } else if (method === "card") {
+    drawCard();
+  } else {
+    // Nothing to match against here, so the stage reports the outcome instead of showing a
+    // picture of a card the customer is not being asked to use.
+    // Auto-detection knew the model all along and never said so, which left the only screen
+    // in the flow showing a blank stage and a grey instruction. Name it, and the customer's
+    // job drops to confirming or correcting.
+    const known = notListed
+      ? "" : devLabel || (detected.matched && !detected.ambiguous ? detected.label : "");
+    devnote.innerHTML = "<div class='phone-glyph'></div>" + (notListed
+      ? "<b>" + t("notListedTitle") + "</b><span>" + t("notListedBody") + "</span>"
+      : known
+      // devWidthMm, NOT shortCss / pxPerMm. That division mixes the screen width as the parent
+      // measured it with a scale measured inside the frame, and in the product modal it told an
+      // iPhone 16 owner their 65.1mm screen was 68.6mm wide. This is the width actually in use.
+      ? "<i class='lead'>" + t("devIs") + "</i><b>" + known + "</b><span>" + t("devWide") +
+        devWidthMm.toFixed(1) + t("mmUnit") + "</span>" +
+        "<em>" + t("devNot") + "</em>" +
+        // Only offered while the card method exists. Without this it was a link into a
+        // method whose tab is gone, with no way back out of it.
+        (FEATURES.card ? "<u id='dev-verify'>" + t("devVerify") + "</u>" : "")
+      : "<span>" + t("devPrompt") + "</span>");
+  }
+  document.documentElement.dataset.pxPerMm = pxPerMm.toFixed(4);
+}
+
+function setMethod(next) {
+  method = next;
+  document.querySelectorAll("[data-method]").forEach((b) =>
+    b.setAttribute("aria-pressed", String(b.dataset.method === next)));
+  $("cal-sub").textContent = t(next === "card" ? "subCard" : next === "coin" ? "subCoin" : "subDevice");
+  $("coin-pick").hidden = next !== "coin";
+  $("device-pick").hidden = next !== "device";
+  $("inch-pick").hidden = next !== "device" || !FEATURES.inch;
+  $("cal-row").hidden = next === "device";
+  initCal();
+}
+
+function initCal() {
+  const b = calBounds();
+  calRange.min = b.min; calRange.max = b.max;
+  // The slider range is a display limit, not the truth. Clamping pxPerMm here would quietly
+  // destroy a correct calibration when switching to a method this screen cannot draw.
+  calRange.value = Math.min(Math.max(pxPerMm, b.min), b.max);
+  drawCal();
+
+  const banner = $("cal-banner");
+  // Page zoom and a narrow window look identical from here and want opposite handling, so a
+  // mismatch means the picker's answer cannot be trusted. The card does not care either way.
+  const mism = layoutMismatch();
+  // Not when the device was identified BY its layout width: then the gap between layout and
+  // reported screen is exactly what named the phone, and calling it browser zoom sent a
+  // correctly measured iPhone 16 a warning telling it to reset a zoom it never had.
+  const zoomSuspect = detected.basis !== "layout" && mism !== null && Math.abs(mism - 1) > 0.02;
+
+  /**
+   * A manual pick that contradicts a confident detection.
+   *
+   * This is the one error that reached real customers. The screen said 68.9mm and the customer
+   * picked a 65.1mm model, and the tool simply believed the customer: every millimetre came out
+   * 5.8% large and a real EU 51 ring read as 48. Detection is usually the better witness, since
+   * it comes from the device, but not always (Display Zoom makes it report a narrower screen
+   * than the glass), so this warns rather than refuses and names the check that settles it.
+   */
+  const clash = devLabel && detected.matched && !detected.ambiguous
+    ? devWidthMm / detected.widthMm - 1 : 0;
+  if (method === "device" && Math.abs(clash) > 0.02) {
+    // Expressed in sizes, because millimetres of glass mean nothing to the person reading it.
+    // One EU size is 1mm of circumference, one US size is 0.8128mm of diameter.
+    const sizes = Math.abs(clash) * (CAT.scale === "EU" ? Math.PI * 16.5 : 16.5 / US_PER_MM);
+    banner.hidden = false;
+    banner.textContent = t("pickClash")
+      .replace("{det}", detected.widthMm.toFixed(1))
+      .replace("{pick}", devWidthMm.toFixed(1))
+      .replace("{n}", sizes < 1.5 ? "1" : String(Math.round(sizes)));
+  } else if (method === "device" && zoomSuspect) {
+    banner.hidden = false;
+    banner.textContent = t("zoomSuspect");
+  } else if (method !== "device" && b.max < DENSEST_PHONE) {
+    banner.hidden = false;
+    banner.textContent = t("tooShort");
+  } else if (detected.ambiguous && source === "detected") {
+    banner.hidden = false;
+    banner.textContent = t(detected.matched ? "ambiguous" : "unknownDev");
+  } else banner.hidden = true;
+
+  // Nothing may proceed on a guess. Detection covers iPhones by geometry and no Android at
+  // all, so before this the common Android path was: press Continue, silently inherit the
+  // 64.6mm fallback, and be told a size derived from a screen width nobody ever checked. A
+  // Galaxy S24 Ultra is 71mm, which is 9% out, which is two US sizes. The ambiguous iPhone
+  // geometry (X/XS/11 Pro against 12/13 mini, 8% apart) had the same hole.
+  const mustChoose = method === "device" &&
+    (notListed || (!devLabel && (!detected.matched || detected.ambiguous || zoomSuspect)));
+  $("cal-next").disabled = mustChoose;
+  $("cal-next").style.opacity = mustChoose ? ".4" : "1";
+
+  // The message carries the screen's own geometry, so whoever answers can look the model up
+  // and reply with a width instead of starting the conversation with "what phone is it".
+  const wa = $("cal-wa"), waNum = String(window.RING_SIZER_WHATSAPP || "").replace(/[^0-9]/g, "");
+  wa.hidden = !mustChoose || !waNum;
+  // Once she has said the phone is not there, this IS the next step, so it stops looking like
+  // a footnote under a dead button and starts looking like the thing to press.
+  wa.classList.toggle("cta", notListed);
+  wa.textContent = t(notListed ? "waGo" : "waHelp");
+  if (!wa.hidden) {
+    wa.href = "https://api.whatsapp.com/send?phone=" + waNum + "&text=" +
+      encodeURIComponent(t("waMsg") + detected.key + " (" + location.href.split("?")[0] + ")");
+  }
+
+  $("cal-note").textContent = method === "card"
+    ? (source === "detected" && detected.matched ? t("startingFrom") + detected.label : t("noteCard"))
+    : method === "coin" ? t("noteCoin") : "";
+}
+
+document.querySelectorAll("[data-method]").forEach((b) =>
+  b.addEventListener("click", () => setMethod(b.dataset.method)));
+calRange.addEventListener("input", () => {
+  // The customer matches what they can see, which is the zoomed drawing, so undo the zoom.
+  basePxPerMm = parseFloat(calRange.value) * vvScale();
+  syncScale(); source = method; devLabel = "";
+  devWidthMm = cssAcrossScreen() / basePxPerMm;
+  drawCal(); dumpDebug();
+});
+document.querySelectorAll("[data-cal]").forEach((b) => b.addEventListener("click", () => {
+  const bounds = calBounds();
+  const next = Math.min(bounds.max, Math.max(bounds.min, pxPerMm + 0.02 * Number(b.dataset.cal)));
+  basePxPerMm = next * vvScale();
+  syncScale(); calRange.value = pxPerMm; source = method;
+  devWidthMm = cssAcrossScreen() / basePxPerMm;
+  drawCal(); dumpDebug();
+}));
+calStage.addEventListener("click", (e) => {
+  if (e.target.id === "dev-verify" && FEATURES.card) setMethod("card");
+});
+
+function fillPickers() {
+  // Refilling happens on every language switch. Rebuilding the options discards the value, so
+  // a customer who named their phone and then switched language was silently returned to the
+  // auto-detected guess, with the picker still reading as though they had chosen.
+  const keepDev = $("device-pick").value, keepInch = $("inch-pick").value;
+  $("coin-pick").innerHTML = COINS[CAT.region]
+    .map((c, i) => "<option value='" + i + "'>" + c.label + " (" + c.mm + " mm)</option>").join("");
+  coin = COINS[CAT.region][0];
+  // Grouped so a long list stays navigable, and any unlisted phone falls through to a diagonal.
+  const groups = [...new Set(DEVICE_PICKER.map((d) => d.group))];
+  // The way out belongs among the choices, not beside them: someone scrolling a list looking
+  // for a phone that is not in it should reach the end of the list and find the answer there.
+  $("device-pick").innerHTML = "<option value=''>" + t("pickPhone") + "</option>" +
+    groups.map((g) => "<optgroup label='" + g + "'>" +
+      DEVICE_PICKER.map((d, i) => d.group === g
+        ? "<option value='" + i + "'>" + d.label + "</option>" : "").join("") +
+      "</optgroup>").join("") +
+    "<option value='none'>" + t("notListed") + "</option>";
+  $("inch-pick").innerHTML = "<option value=''>" + t("pickInch") + "</option>" +
+    DIAGONALS.map((n) => "<option value='" + n + "'>" + n.toFixed(1) + t("inchScreen") + "</option>").join("");
+  $("device-pick").value = keepDev;
+  $("inch-pick").value = keepInch;
+}
+$("coin-pick").addEventListener("change", (e) => {
+  coin = COINS[CAT.region][Number(e.target.value)]; initCal();
+});
+
+function applyWidth(widthMm, label) {
+  // Derived from the live layout width, so Display Zoom and browser page zoom both land right.
+  basePxPerMm = pxPerMmForWidth(widthMm);
+  // initCal, not drawCal: naming the phone is what clears the "you must choose" block, and
+  // only initCal re-evaluates it. Without this the customer picked their model and Continue
+  // stayed greyed out, with nothing on screen saying what else it wanted.
+  syncScale(); source = "device"; devLabel = label; devWidthMm = widthMm; initCal(); dumpDebug();
+}
+$("device-pick").addEventListener("change", (e) => {
+  if (e.target.value === "") return;
+  $("inch-pick").value = "";
+  if (e.target.value === "none") {
+    // No width is applied. Saying "not listed" must never leave a number behind that a later
+    // screen would quietly draw with.
+    notListed = true; devLabel = ""; source = "detected"; devWidthMm = detected.widthMm;
+    initCal(); dumpDebug();
+    return;
+  }
+  notListed = false;
+  const d = DEVICE_PICKER[Number(e.target.value)];
+  applyWidth(entryWidthMm(d), d.label);
+});
+$("inch-pick").addEventListener("change", (e) => {
+  if (e.target.value === "") return;
+  // Naming a screen size is naming the phone, so it has to clear "my phone is not listed" the
+  // same way picking a model does. Without this Continue stayed disabled for good.
+  notListed = false;
+  $("device-pick").value = "";
+  const inch = parseFloat(e.target.value);
+  applyWidth(widthMmForInches(inch), inch.toFixed(1) + t("inchScreen"));
+});
+$("cal-next").addEventListener("click", () => { save(); go("s-measure"); });
+
+/* ---------- step 2: measurement --------------------------------------- */
+/**
+ * One US size is 0.81mm of inner diameter, which is 4.9 css pixels. The eye resolves that
+ * fine; a thumb on a slider cannot place it. So the wheel snaps to stocked sizes only, and
+ * the guided path asks one visible yes/no per step and binary-searches, which is why both
+ * exist and why free-form adjustment does not.
+ */
+const disc = $("disc"), rulerEl = $("ruler"), mStage = $("m-stage"), wheel = $("m-wheel");
+let mMethod = "circle";
+let sizeIdx = Math.max(0, CAT.sizes.indexOf(7));
+let compareOn = false, guided = false, notListed = false;
+let lo = 0, hi = CAT.sizes.length - 1, asked = 0;
+let guidedResult = null;   // the size the questions arrived at, pending the customer's check
+let guidedHistory = [];
+let rulerMm = 0, rulerSpan = 0;
+let wheelLock = false;
+
+
+const RULER_MODE = {
+  strip: { max: 78, unit: "mmAround", toInner: (mm) => mm / Math.PI },
+  ruler: { max: 26, unit: "mmAcross", toInner: (mm) => mm },
+};
+const sizeAt = (i) => CAT.sizes[Math.min(CAT.sizes.length - 1, Math.max(0, i))];
+
+function buildWheel() {
+  // Sizes and two spacers. Nothing else belongs in here: the wheel is a scroll container whose
+  // geometry decides which sizes the customer can reach, so any stray child moves the reachable
+  // range. It once held three lines of diagnostics and the smallest stocked size sat 576px past
+  // the marker, unreachable by flicking, while every screenshot looked clean because the
+  // centring had already scrolled the text out of view.
+  wheel.innerHTML = "<div class='wpad'></div>" +
+    CAT.sizes.map((sz, i) => "<button class='wsz' data-idx='" + i + "'>" + sz + "</button>").join("") +
+    "<div class='wpad'></div>";
+}
+
+/** Centre by rect maths rather than scrollLeft, which flips sign under RTL. */
+function centerWheel(i, smooth, tries = 0) {
+  const b = wheel.querySelector("[data-idx='" + i + "']");
+  if (!b) return;
+  // The step is revealed and centred in the same tick, so the first attempt lands before
+  // layout has happened and the wheel measures zero. Giving up there left the wheel parked
+  // at one end of its range while the readout said something else entirely: EU 52 selected,
+  // "60" sitting under the marker. Wait for layout instead of abandoning the centring.
+  if (wheel.clientWidth === 0) {
+    if (tries < 30) requestAnimationFrame(() => centerWheel(i, smooth, tries + 1));
+    return;
+  }
+  wheelLock = true;
+  // offsetLeft, not getBoundingClientRect. A rect on a scrolling container reports where the
+  // element is *right now*, mid-animation and mid-snap, so a delta computed from it is a delta
+  // from a moving target: the wheel settled a half step off and showed a neighbouring number
+  // for the first instant of the step, which is the instant the customer looks at it.
+  const want = b.offsetLeft + b.offsetWidth / 2 - wheel.clientWidth / 2;
+  if (smooth) wheel.scrollTo({ left: want, behavior: "smooth" });
+  else wheel.scrollLeft = want;
+  clearTimeout(centerWheel.t);
+  centerWheel.t = setTimeout(() => {
+    wheelLock = false;
+    // Close the loop: whatever ended up under the marker must be the selected size. Fonts
+    // landing, a reflow, or an interrupted smooth scroll can all leave it a notch off, and a
+    // wheel that disagrees with the number is worse than no wheel at all.
+    if (wheel.clientWidth && wheelIndexAtCentre() !== i && tries < 3) {
+      centerWheel(i, false, tries + 1);
+    }
+  }, smooth ? 420 : 80);
+}
+
+function wheelIndexAtCentre() {
+  const wr = wheel.getBoundingClientRect(), mid = wr.left + wr.width / 2;
+  let best = sizeIdx, bestD = Infinity;
+  for (const b of wheel.querySelectorAll(".wsz")) {
+    const r = b.getBoundingClientRect();
+    const d = Math.abs(r.left + r.width / 2 - mid);
+    if (d < bestD) { bestD = d; best = Number(b.dataset.idx); }
+  }
+  return best;
+}
+
+/**
+ * Only a scroll the customer started may change the size.
+ *
+ * The selection used to be whatever sat under the marker, so ANY scroll spoke for her: a
+ * reflow, a font landing, the browser restoring a position. On a real phone that desynced the
+ * wheel from the reading badly enough to show "60" while EU 52 was selected, and it never
+ * reproduced in emulation. Rather than keep guessing at the trigger, the rule is now explicit,
+ * and a scroll nobody asked for is undone instead of obeyed.
+ */
+let userScrolling = false, userScrollTimer = 0;
+wheel.addEventListener("pointerdown", () => {
+  userScrolling = true;
+  clearTimeout(userScrollTimer);
+});
+for (const ev of ["pointerup", "pointercancel"]) {
+  wheel.addEventListener(ev, () => {
+    clearTimeout(userScrollTimer);
+    // Momentum keeps the wheel moving after the finger lifts, so stay in user mode briefly.
+    userScrollTimer = setTimeout(() => { userScrolling = false; }, 1200);
+  });
+}
+
+let wheelRaf = 0;
+wheel.addEventListener("scroll", () => {
+  if (wheelLock || wheelRaf || wheel.clientWidth === 0) return;
+  wheelRaf = requestAnimationFrame(() => {
+    wheelRaf = 0;
+    const i = wheelIndexAtCentre();
+    if (userScrolling) {
+      // iOS momentum runs well past the finger lifting, so keep the window alive while the
+      // wheel is still visibly moving rather than cutting the customer off mid-flick.
+      clearTimeout(userScrollTimer);
+      userScrollTimer = setTimeout(() => { userScrolling = false; }, 1200);
+    }
+    if (i === sizeIdx) return;
+    if (userScrolling) { sizeIdx = i; guidedResult = null; drawMeasure(); }
+    else centerWheel(sizeIdx);          // nobody asked for this: put it back
+  });
+});
+wheel.addEventListener("click", (e) => {
+  const b = e.target.closest(".wsz");
+  if (!b) return;
+  sizeIdx = Number(b.dataset.idx);
+  guidedResult = null;
+  centerWheel(sizeIdx, true);
+  drawMeasure();
+});
+
+function rulerGeom() {
+  // Tight padding on purpose: every pixel of inset costs range, and the scale has to reach
+  // 61mm (the largest stocked size) even on a 320px screen.
+  const pad = 6;
+  const w = rulerEl.clientWidth - pad * 2, h = rulerEl.clientHeight - pad * 2;
+  return { pad, w, h, L: Math.hypot(w, h), deg: (Math.atan2(h, w) * 180) / Math.PI };
+}
+
+function drawRuler() {
+  const g = rulerGeom();
+  rulerSpan = Math.min(RULER_MODE[mMethod].max, g.L / pxPerMm);
+  let html = "";
+  for (let mm = 0; mm <= Math.floor(rulerSpan); mm++) {
+    const cls = mm % 10 === 0 ? "t10" : mm % 5 === 0 ? "t5" : "t1";
+    // Counter-rotated so labels stay upright, and anchored so they run away from the axis.
+    const label = mm % 10 === 0
+      ? "<b style='transform:rotate(" + -g.deg + "deg)" +
+        (mm === 0 ? "" : " translateX(-100%)") + "'>" + mm + "</b>" : "";
+    html += "<i class='tick " + cls + "' style='left:" + mm * pxPerMm + "px'>" + label + "</i>";
+  }
+  rulerEl.innerHTML = "<div id='ruler-axis' style='left:" + g.pad + "px;top:" + g.pad +
+    "px;width:" + g.L + "px;transform:rotate(" + g.deg + "deg)'>" + html +
+    "<div id='ruler-marker' style='left:" + Math.min(rulerMm, rulerSpan) * pxPerMm + "px'></div></div>";
+}
+
+function drawCompare() {
+  const idx = [sizeIdx - 1, sizeIdx, sizeIdx + 1].filter((i) => i >= 0 && i < CAT.sizes.length);
+  $("compare").innerHTML = idx.map((i) => {
+    const px = CAT.toId(CAT.sizes[i]) * pxPerMm;
+    return "<div class='cmp" + (i === sizeIdx ? " mid" : "") + "'>" +
+      "<i style='width:" + px + "px;height:" + px + "px'></i>" +
+      "<span>" + CAT.scale + " " + CAT.sizes[i] + "</span></div>";
+  }).join("");
+}
+
+function drawMeasure() {
+  const isRuler = mMethod !== "circle";
+  const showGuided = !isRuler && guided;
+  disc.hidden = isRuler || compareOn;
+  $("compare").hidden = isRuler || !compareOn;
+  rulerEl.hidden = !isRuler;
+  $("m-guided").hidden = !showGuided;
+  $("m-normal").hidden = showGuided;
+  $("m-wheelwrap").hidden = isRuler;
+  $("m-hint").hidden = isRuler;
+  $("m-minor").hidden = isRuler;
+  $("m-guide-row").hidden = isRuler || !FEATURES.guided;
+
+  // Settle the banner BEFORE anything measures the stage: it sits above the stage, so toggling
+  // it changes the stage height, and the ruler was being laid out against the old one.
+  innerMm = isRuler ? RULER_MODE[mMethod].toInner(rulerMm) : CAT.toId(sizeAt(showGuided ? Math.floor((lo + hi) / 2) : sizeIdx));
+  const drawnPx = innerMm * pxPerMm;
+  const clipped = !isRuler &&
+    (mStage.clientHeight < drawnPx + 10 || mStage.clientWidth < drawnPx + 10);
+  const sideways = innerWidth > innerHeight;
+  $("m-next").disabled = clipped;
+  $("m-next").style.opacity = clipped ? ".4" : "1";
+  $("zoom-banner").hidden = (!isFramed() || EMBEDDED) && !clipped;
+  $("zoom-banner").textContent = t(clipped ? (sideways ? "rotate" : "tooBigForScreen") : "framed");
+
+  if (isRuler) {
+    drawRuler();
+  } else {
+    if (showGuided) sizeIdx = Math.floor((lo + hi) / 2);
+    applyRim();
+    // The element's OUTER size, rim included, is the ring size. Setting width here and letting
+    // border-box absorb the rim is what keeps that true.
+    const px = innerMm * pxPerMm;
+    disc.style.width = px + "px"; disc.style.height = px + "px";
+
+    if (compareOn) drawCompare();
+    wheel.querySelectorAll(".wsz").forEach((b) =>
+      b.setAttribute("aria-current", String(Number(b.dataset.idx) === sizeIdx)));
+    const total = Math.ceil(Math.log2(CAT.sizes.length));
+    $("m-prog").innerHTML = Array.from({ length: total },
+      (_, i) => "<i class='" + (i < asked ? "on" : "") + "'></i>").join("");
+    $("m-undo").disabled = guidedHistory.length === 0;
+    $("m-undo").style.opacity = guidedHistory.length ? "1" : ".4";
+  }
+
+  const snap = snapToStocked(innerMm, CAT);
+  const both = bothScales(snap.mm);
+  const loMm = CAT.toId(CAT.sizes[0]) - 0.4;
+  const hiMm = CAT.toId(CAT.sizes[CAT.sizes.length - 1]) + 0.4;
+  const inRange = innerMm >= loMm && innerMm <= hiMm;
+  $("m-size").textContent = innerMm <= 0 ? t("setMarker")
+    : inRange ? (CAT.scale === "UK" ? "UK " + snap.size + "  ·  US " + both.us
+                                    : "US " + both.us + "  ·  EU " + both.eu) : t("outOfRange");
+  $("m-mm").textContent = isRuler && rulerMm > 0
+    ? rulerMm.toFixed(1) + t(RULER_MODE[mMethod].unit) + " · " + innerMm.toFixed(1) + t("mmAcross")
+    : innerMm.toFixed(1) + t("mmInside");
+  $("m-sub").textContent = t(isRuler ? (mMethod === "strip" ? "subStrip" : "subRuler")
+    : showGuided ? "subGuided" : "subCircle");
+  $("m-hint").textContent = guidedResult === null ? t("wheelHint")
+    : t("guidedFound") + CAT.scale + " " + guidedResult + t("guidedCheck");
+  $("m-hint").style.color = guidedResult === null ? "" : "var(--accent)";
+  $("m-eye").hidden = isRuler;
+  $("m-note").textContent = t(isRuler ? (mMethod === "strip" ? "noteStrip" : "noteRuler") : "noteCircle");
+  document.documentElement.dataset.innerMm = innerMm.toFixed(3);
+
+  // Running off the end of the scale is only knowable after the ruler is drawn.
+  const off = isRuler && rulerSpan > 0 && rulerMm >= rulerSpan - 0.05;
+  if (off) { $("zoom-banner").hidden = false; $("zoom-banner").textContent = t("offScale"); }
+}
+
+function setMeasureMethod(next) {
+  mMethod = next;
+  compareOn = false;
+  // The label has to follow the state it describes, or the button reads "show one" while one
+  // is already showing.
+  $("m-compare").textContent = t("compareThree");
+  document.querySelectorAll("[data-mmethod]").forEach((b) =>
+    b.setAttribute("aria-pressed", String(b.dataset.mmethod === next)));
+  if (next !== "circle" && innerMm > 0) rulerMm = next === "strip" ? innerMm * Math.PI : innerMm;
+  drawMeasure();
+}
+document.querySelectorAll("[data-mmethod]").forEach((b) =>
+  b.addEventListener("click", () => setMeasureMethod(b.dataset.mmethod)));
+
+/* The guided search. "White shows" means the circle is smaller than the hole, so the answer
+   lies above it; "no white" means this size already covers the hole, so it is the answer or
+   below. The target is the smallest size that shows no white. */
+document.querySelectorAll("[data-ans]").forEach((b) => b.addEventListener("click", () => {
+  guidedHistory.push([lo, hi]);
+  const mid = Math.floor((lo + hi) / 2);
+  if (b.dataset.ans === "small") lo = mid + 1; else hi = mid;
+  asked++;
+  if (lo >= hi) {
+    // Do not jump to a result. Hand the answer back to the wheel with the circle drawn at that
+    // size so it can be looked at and overruled: being told a size with no chance to check it
+    // is exactly what made the guided path feel untrustworthy.
+    sizeIdx = lo; guided = false; guidedResult = CAT.sizes[lo];
+    drawMeasure(); centerWheel(sizeIdx, true);
+    return;
+  }
+  drawMeasure();
+}));
+$("m-undo").addEventListener("click", () => {
+  if (!guidedHistory.length) return;
+  [lo, hi] = guidedHistory.pop();
+  asked = Math.max(0, asked - 1);
+  drawMeasure();
+});
+function startGuided() {
+  lo = 0; hi = CAT.sizes.length - 1; asked = 0; guidedHistory = []; guided = true;
+  guidedResult = null;
+  setMeasureMethod("circle");
+}
+$("m-guide").addEventListener("click", startGuided);
+$("m-manual").addEventListener("click", () => {
+  guided = false; setMeasureMethod("circle"); centerWheel(sizeIdx);
+});
+
+function rulerFromEvent(e) {
+  const rect = rulerEl.getBoundingClientRect(), g = rulerGeom();
+  const dx = e.clientX - rect.left - g.pad, dy = e.clientY - rect.top - g.pad;
+  // Project the touch onto the tilted axis rather than reading a single coordinate.
+  rulerMm = Math.max(0, Math.min(RULER_MODE[mMethod].max, ((dx * g.w + dy * g.h) / g.L) / pxPerMm));
+  drawMeasure();
+}
+let dragging = false;
+rulerEl.addEventListener("pointerdown", (e) => {
+  dragging = true; rulerEl.setPointerCapture(e.pointerId); rulerFromEvent(e);
+});
+rulerEl.addEventListener("pointermove", (e) => { if (dragging) rulerFromEvent(e); });
+// pointercancel as well: a drag interrupted by the system (a call, a gesture taken over by the
+// browser) never fires pointerup, and the marker then followed every later touch.
+for (const ev of ["pointerup", "pointercancel"]) {
+  rulerEl.addEventListener(ev, () => { dragging = false; });
+}
+
+$("m-compare").addEventListener("click", () => {
+  compareOn = !compareOn;
+  $("m-compare").textContent = t(compareOn ? "showOne" : "compareThree");
+  drawMeasure();
+});
+$("m-invert").addEventListener("click", () => {
+  const on = mStage.classList.toggle("inverted");
+  $("m-invert").textContent = t(on ? "lightBg" : "darkBg");
+});
+$("m-back").addEventListener("click", () => go("s-cal"));
+$("m-nav").addEventListener("click", () => go("s-cal"));
+$("m-next").addEventListener("click", () => { if (innerMm > 0) showResult(); });
+
+if (window.visualViewport) {
+  // Follow the pinch instead of complaining about it.
+  window.visualViewport.addEventListener("resize", () => {
+    syncScale(); drawMeasure();
+    if ($("s-cal").classList.contains("on")) initCal();
+    dumpDebug();
+  });
+}
+
+/* ---------- step 3: result -------------------------------------------- */
+function showResult() {
+  const snap = snapToStocked(innerMm, CAT);
+  const both = bothScales(snap.mm);
+  if (CAT.scale === "UK") {
+    $("r-us").textContent = snap.size;
+    $("r-eu").textContent = both.us;
+    $("r-card-us").classList.remove("secondary");
+    $("r-card-eu").classList.add("secondary");
+  } else {
+  $("r-us").textContent = both.us;
+  $("r-eu").textContent = both.eu;
+  // Only one scale names an actual variant on this store; the other is a conversion.
+  $("r-card-us").classList.toggle("secondary", CAT.scale !== "US");
+  $("r-card-eu").classList.toggle("secondary", CAT.scale !== "EU");
+  }
+  $("r-equiv").innerHTML = "<b>" + snap.mm.toFixed(2) + "</b>" + t("mmInside");
+
+  const wa = $("r-wa"), waNum = String(window.RING_SIZER_WHATSAPP || "").replace(/[^0-9]/g, "");
+  wa.hidden = !waNum;
+  wa.textContent = t("waResult");
+  if (waNum) {
+    wa.href = "https://api.whatsapp.com/send?phone=" + waNum + "&text=" +
+      encodeURIComponent(t("waResultMsg") + CAT.scale + " " + snap.size +
+        " (" + snap.mm.toFixed(2) + t("mmUnit") + ")");
+  }
+
+  const banner = $("r-banner");
+  banner.hidden = snap.delta <= 0.3;
+  if (!banner.hidden) {
+    banner.textContent = t("straddle") + CAT.scale + " " + snap.size + t("straddle2");
+  }
+  go("s-result");
+}
+function backToMeasure() { guided = false; go("s-measure"); }
+$("r-back").addEventListener("click", backToMeasure);
+$("r-nav").addEventListener("click", backToMeasure);
+$("r-cta").addEventListener("click", () => {
+  const snap = snapToStocked(innerMm, CAT), both = bothScales(snap.mm);
+  // The product page listens for this and selects the matching variant. Emitting an event
+  // rather than reaching into the theme keeps the sizer identical on the page and in a modal.
+  // A host that acts on it calls preventDefault. On the standalone page nothing does, and the
+  // button was then inert: the last screen of the flow ended in a button that did nothing.
+  const ev = new CustomEvent("ringsizer:selected", { cancelable: true,
+    detail: { scale: CAT.scale, size: snap.size, innerMm: snap.mm, us: both.us, eu: both.eu } });
+  const handled = !window.dispatchEvent(ev);
+  if (EMBEDDED) {
+    // Same origin, but postMessage anyway: the product page owns its own variant picker and
+    // reaching across into it from here would couple this tool to one theme's markup.
+    // Pinned to our own origin in production. A file:// copy has no real origin to pin to,
+    // and a ring size is not a secret, so the receiver is the side that has to check: the
+    // theme block only accepts a message whose source is the frame it created itself.
+    const target = /^https?:/.test(location.origin || "") ? location.origin : "*";
+    parent.postMessage({ source: "ringsizer", type: "selected", ...ev.detail }, target);
+    return;
+  }
+  const shop = samePath(window.RING_SIZER_SHOP_URL);
+  if (!handled && shop) location.href = shop;
+});
+
+/* ---------- language --------------------------------------------------- */
+function applyLang() {
+  document.documentElement.lang = LANG;
+  document.documentElement.dir = LANG === "he" ? "rtl" : "ltr";
+  document.querySelectorAll("[data-t]").forEach((el) => { el.textContent = t(el.dataset.t); });
+  const lt = $("lang-toggle"); if (lt) lt.textContent = t("lang");
+  // note5 used to link to printable.html, which exists in this folder and nowhere on the
+  // storefront, so on the live page it was a 404 sitting under the customer's size.
+  $("r-notes").innerHTML = ["note1", CAT.scale === "EU" ? "note2eu" : "note2", "note3", "note4"]
+    .map((k) => "<li>" + t(k) + "</li>").join("");
+  if (!$("r-wa").hidden) $("r-wa").textContent = t("waResult");
+  const policy = samePath(window.RING_SIZER_POLICY_URL) || "/policies/refund-policy";
+  $("r-legal").innerHTML = t("legal") +
+    "<a href='" + policy + "' target='_blank' rel='noopener'>" + t("legalLink") + "</a>" +
+    t("legalEnd");
+  $("m-hint").textContent = guidedResult === null ? t("wheelHint")
+    : t("guidedFound") + CAT.scale + " " + guidedResult + t("guidedCheck");
+  $("m-compare").textContent = t(compareOn ? "showOne" : "compareThree");
+  $("m-invert").textContent = t(mStage.classList.contains("inverted") ? "lightBg" : "darkBg");
+  fillPickers();
+  setMethod(method);
+  setMeasureMethod(mMethod);
+}
+$("lang-toggle")?.addEventListener("click", () => {
+  LANG = LANG === "en" ? "he" : "en";
+  applyLang();
+});
+
+/* ---------- shell ------------------------------------------------------ */
+function go(id) {
+  if (typeof HANDHELD !== "undefined" && !HANDHELD && id !== "s-desktop") return;
+  document.querySelectorAll(".step").forEach((s) => s.classList.toggle("on", s.id === id));
+  if (id === "s-cal") initCal();
+  if (id === "s-measure") {
+    drawMeasure();
+    requestAnimationFrame(() => requestAnimationFrame(() => centerWheel(sizeIdx)));
+  }
+  window.scrollTo(0, 0);
+  dumpDebug();
+}
+
+$("dbg-toggle")?.addEventListener("click", () => { $("dbg").hidden = !$("dbg").hidden; dumpDebug(); });
+$("dbg")?.addEventListener("click", (e) => {
+  if (e.target.id !== "swap-store") return;
+  CAT = CAT === CATALOGUE.us ? CATALOGUE.il : CATALOGUE.us;
+  // guided is opt-in, so switching stores must not silently force the quiz back on.
+  lo = 0; hi = CAT.sizes.length - 1; asked = 0; guided = false; guidedHistory = [];
+  sizeIdx = Math.floor(CAT.sizes.length / 2);
+  LANG = CAT.region === "IL" ? "he" : "en";
+  buildWheel(); applyLang(); drawMeasure(); centerWheel(sizeIdx); dumpDebug();
+});
+const NL = String.fromCharCode(10);
+function dumpDebug() {
+  const el = $("dbg");
+  if (!el || el.hidden) return;
+  el.innerHTML =
+    "build         <b>2fd1b85</b>\n" +
+    "SIZE SHOWN    <b>" + CAT.scale + " " + snapToStocked(innerMm, CAT).size +
+      "</b>   inner <b>" + innerMm.toFixed(2) + " mm</b>" + NL +
+    "CALIBRATED BY <b>" + source + (devLabel ? ": " + devLabel : "") + "</b>" + NL +
+    "CIRCLE DRAWN  <b>" + (innerMm * pxPerMm).toFixed(1) + " css px</b>  at " +
+      pxPerMm.toFixed(4) + " px/mm" + NL +
+    "screen        <b>" + detected.key + "</b>  short edge " + detected.shortCss + " css px" +
+      (detected.basis === "layout" ? "   (reported " + detected.screenKey + ", not trusted)" : "") + "\n" +
+    "identified by <b>" + detected.basis + "</b>\n" +
+    "layout        innerWidth " + innerWidth + (EMBEDDED ? "  (inside the frame)" : "") + NL +
+    // The zoom ratio, from whichever pair was actually measured together. Inside the product
+    // modal the frame's innerWidth and the parent's screen width are different spaces, and
+    // dividing them warned an unzoomed iPhone 16 that it was zoomed by 5%.
+    "zoom test     " + (layoutMismatch() === null ? "not available (framed, untrusted)"
+      : layoutMismatch().toFixed(4) + (Math.abs(layoutMismatch() - 1) <= 0.02 ? "  ok"
+        : detected.basis === "layout" ? "  (the device's own gap, not zoom)" : "  <-- ZOOMED")) + NL +
+    (EMBEDDED ? "handover      parent screen " + detected.shortCss + "  parent layout " +
+      (new URLSearchParams(location.search).get("lw") || "?") + "  frame " + innerWidth + NL : "") +
+    "matched       <b>" + detected.matched + "</b>  " + detected.label + (detected.ambiguous ? "  [AMBIGUOUS]" : "") + "\n" +
+    "detected      <b>" + detected.pxPerMm.toFixed(3) + "</b> css px/mm  (screen " + detected.widthMm + " mm wide)\n" +
+    "in use        <b>" + pxPerMm.toFixed(3) + "</b> css px/mm  (" + source + (devLabel ? ": " + devLabel : "") + ")\n" +
+    "width in use  <b>" + devWidthMm.toFixed(1) + " mm</b> of glass across the screen\n" +
+    "method        <b>" + method + "</b> / <b>" + mMethod + (guided ? " guided" : " manual") + "</b>\n" +
+    "search        lo " + lo + " hi " + hi + " asked " + asked + " undo " + guidedHistory.length + "\n" +
+    "zoom          pinch " + vvScale().toFixed(3) + "  base " + basePxPerMm.toFixed(3) + "  framed " + isFramed() + "\n" +
+    "inner dia     <b>" + innerMm.toFixed(2) + " mm</b>  -> " + CAT.scale + " " + snapToStocked(innerMm, CAT).size + "\n" +
+    "catalogue     <b>" + CAT.store + "</b>  lang " + LANG +
+      "  <u id='swap-store' style='cursor:pointer'>switch store</u>\n" +
+    "ua            " + navigator.userAgent;
+}
+
+/**
+ * Which optional paths the customer is offered. Hidden, not deleted: every one of these is
+ * still exercised by the test suites, which turn them all back on with ?features=all, so
+ * bringing one back is a one-word change rather than a rewrite.
+ */
+const FEATURES = Object.assign(
+  { card: false, coin: false, inch: false, guided: false, strip: false },
+  /[?&]features=all/.test(location.search)
+    ? { card: true, coin: true, inch: true, guided: true, strip: true } : null,
+  window.RING_SIZER_FEATURES || null
+);
+
+function applyFeatures() {
+  for (const m of ["card", "coin"]) {
+    const b = document.querySelector('[data-method="' + m + '"]');
+    if (b) b.hidden = !FEATURES[m];
+  }
+  // A lone "my phone" tab is a tab bar with nothing to switch to.
+  document.querySelector("#s-cal .methods").hidden = !FEATURES.card && !FEATURES.coin;
+  if (!FEATURES[method]) setMethod("device");
+  // Same on the measuring screen: with the paper strip and the ruler gone, the circle is not
+  // one option among three, it is the tool.
+  $("m-methods").hidden = !FEATURES.strip;
+  if (!FEATURES.strip && mMethod !== "circle") setMeasureMethod("circle");
+}
+
+/**
+ * Which store this copy belongs to. The host page sets it; standalone defaults to the US
+ * catalogue. Without this the Israeli store would have shown US 3 to 9.5 instead of EU 43 to
+ * 60, in English, which is the wrong tool wearing the right clothes.
+ */
+{
+  const region = String(window.RING_SIZER_STORE || "us").toLowerCase();
+  const country = String(window.RING_SIZER_COUNTRY || "").toUpperCase();
+  if (region === "us" && (country === "GB" || country === "AU")) {
+    CAT = { ...CATALOGUE.uk, region: country };
+    lo = 0; hi = CAT.sizes.length - 1;
+    sizeIdx = Math.max(0, CAT.sizes.indexOf("N"));
+    coin = COINS[CAT.region][0];
+    // the result screen leads with the letter and shows the US size beside it
+    document.querySelector("#r-card-us .size-scale").dataset.t = "ukSize";
+    document.querySelector("#r-card-eu .size-scale").dataset.t = "usSize";
+  } else if (region === "us" && country === "CA") {
+    CAT = { ...CATALOGUE.us, region: "CA" };
+    coin = COINS[CAT.region][0];
+  }
+  if (window.RING_SIZER_NOLANG === "1") { const lt = document.getElementById("lang-toggle"); if (lt) lt.hidden = true; }
+  if (region === "il") {
+    CAT = CATALOGUE.il;
+    LANG = "he";
+    lo = 0; hi = CAT.sizes.length - 1;
+    sizeIdx = Math.max(0, CAT.sizes.indexOf(52));
+    coin = COINS[CAT.region][0];
+  }
+}
+
+/**
+ * Phones only, and not as a matter of taste.
+ *
+ * Every millimetre this tool draws comes from knowing the physical width of the screen, and
+ * the only two ways it has to know are a phone model it recognises and a phone model the
+ * customer names. Neither exists for a laptop: monitors are not identifiable from a browser,
+ * and the same 1920 px sits on a 13 inch panel and a 27 inch one. The circle would still be
+ * drawn, confidently, at any size at all, and a wrong ring size is a return and a remake.
+ *
+ * Coarse pointer AND a touch digitiser AND a short edge of phone proportions: a touchscreen
+ * laptop clears the first two and fails the third, and a desktop browser narrowed to a phone
+ * width still reports the real screen, so resizing a window is not a way in.
+ */
+function isHandheld(win) {
+  win = win || window;
+  if (/[?&]desktop=1/.test(location.search)) return true;   // for testing on a real desktop
+  const coarse = win.matchMedia && win.matchMedia("(any-pointer: coarse)").matches;
+  const touch = (win.navigator.maxTouchPoints || 0) > 0;
+  // screenGeometry, not win.screen: inside the product modal the honest answer comes from the
+  // page that framed us, and it is the same answer every other measurement here is based on.
+  const shortEdge = screenGeometry(win).shortCss;
+  return Boolean(coarse && touch && shortEdge > 0 && shortEdge <= 520);
+}
+
+const HANDHELD = isHandheld();
+if (!HANDHELD) {
+  // location.href, not a hardcoded address: this same file runs on the dedicated page, inside
+  // a product modal and from the file system, and each of those is a different thing to type.
+  $("dt-url").textContent = location.href.split("?")[0].replace(/^https?:\/\//, "");
+  go("s-desktop");
+}
+
+/**
+ * Hold the page still. Every pixel of zoom is a millimetre of error, and Safari has ignored
+ * `user-scalable=no` since iOS 10, so the meta tag alone does nothing. Blocking the gestures
+ * does. `visualViewport` still corrects the scale underneath as a backstop, for any zoom that
+ * gets through or is applied from outside the page.
+ */
+(function lockZoom() {
+  const stop = (e) => e.preventDefault();
+  for (const ev of ["gesturestart", "gesturechange", "gestureend"]) {
+    document.addEventListener(ev, stop, { passive: false });
+  }
+  document.addEventListener("touchmove", (e) => {
+    if (e.touches.length > 1) e.preventDefault();
+  }, { passive: false });
+  // Double-tap to zoom arrives as a dblclick on iOS.
+  document.addEventListener("dblclick", stop, { passive: false });
+})();
+
+const saved = loadSaved();
+if (saved) {
+  basePxPerMm = saved.pxPerMm;
+  source = "saved";
+  // The width in use has to match the scale in use. Restoring one without the other made the
+  // stage report a screen width the circle was not drawn from, which is the exact confusion
+  // that took three rounds to untangle in the field.
+  devWidthMm = cssAcrossScreen() / basePxPerMm;
+}
+syncScale();
+addEventListener("resize", () => {
+  if ($("s-cal").classList.contains("on")) initCal();
+  if ($("s-measure").classList.contains("on")) drawMeasure();
+});
+applyFeatures();
+buildWheel();
+applyLang();
+// Web fonts change the wheel's metrics when they land, so re-assert the selection afterwards
+// rather than trusting a centring done against fallback text.
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(() => centerWheel(sizeIdx));
+}
+</script>

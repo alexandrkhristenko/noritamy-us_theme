@@ -1143,6 +1143,14 @@
                 "padding-block-end": 16
               },
               "blocks": {}
+            },
+            "ring_sizer_modal_com": {
+              "type": "ring-sizer-modal",
+              "name": "On-screen ring sizer",
+              "settings": {
+                "button_text": "Measure your ring size"
+              },
+              "blocks": {}
             }
           },
           "block_order": [
@@ -1154,6 +1162,7 @@
             "variant_picker_R3rGDr",
             "globo_product_options_app_block_hzGxnL",
             "size_guide_FY9Rkx",
+            "ring_sizer_modal_com",
             "buy_buttons_eYQEYi",
             "shipping_estimate_gLd9mN",
             "group_Q4eVWb",

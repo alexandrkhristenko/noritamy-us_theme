@@ -143,9 +143,9 @@
               <select
                 id="Option-{{ block.id }}-{{ forloop.index0 }}"
                 name="options[{{ product_option.name | escape }}]"
-                class="variant-option__select{% if product_option.name == 'Size' or product_option.name == 'Размер' or product_option.name == 'מידה' or product_option.name == 'גודל' %} js-size-select{% endif %}"
+                class="variant-option__select{% if product_option.name == 'Size' or product_option.name == 'Ring size' or product_option.name == 'Ring Size' or product_option.name == 'Размер' or product_option.name == 'מידה' or product_option.name == 'גודל' %} js-size-select{% endif %}"
               >
-                {%- if product_option.name == 'Size' or product_option.name == 'Размер' or product_option.name == 'מידה' or product_option.name == 'גודל' -%}
+                {%- if product_option.name == 'Size' or product_option.name == 'Ring size' or product_option.name == 'Ring Size' or product_option.name == 'Размер' or product_option.name == 'מידה' or product_option.name == 'גודל' -%}
                   <option value="" data-option-value-id="unselected" disabled hidden>Choose a size</option>
                 {%- endif -%}
                 {%- for product_option_value in product_option.values -%}

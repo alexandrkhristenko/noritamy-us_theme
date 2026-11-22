@@ -970,11 +970,18 @@
                             "padding-inline-end": 0
                           },
                           "blocks": {}
+                        },
+                        "ring_sizer_footer_link": {
+                          "type": "ring-sizer-footer-link",
+                          "name": "Ring sizer link",
+                          "settings": {},
+                          "blocks": {}
                         }
                       },
                       "block_order": [
                         "text_T9tn7c",
                         "text_4aUWzh",
+                        "ring_sizer_footer_link",
                         "text_bHVwWx",
                         "text_6P9nNL"
                       ]

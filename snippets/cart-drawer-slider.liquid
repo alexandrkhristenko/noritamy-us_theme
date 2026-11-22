@@ -22,11 +22,11 @@
                   <a href="{{ product.url }}" class="cart-drawer-slider__product-title">{{ product.title }}</a>
                   {%- if product.compare_at_price > product.price -%}
                     <div class="cart-drawer-slider__price">
-                      <span class="cart-drawer-slider__sale-price">{{ product.price | money }}</span>
-                      <s class="cart-drawer-slider__compare-price">{{ product.compare_at_price | money }}</s>
+                      <span class="cart-drawer-slider__sale-price">{{ product.price | money | replace: '.00', '' }}</span>
+                      <s class="cart-drawer-slider__compare-price">{{ product.compare_at_price | money | replace: '.00', '' }}</s>
                     </div>
                   {%- else -%}
-                    <div class="cart-drawer-slider__price">{{ product.price | money }}</div>
+                    <div class="cart-drawer-slider__price">{{ product.price | money | replace: '.00', '' }}</div>
                   {%- endif -%}
                 </div>
                 

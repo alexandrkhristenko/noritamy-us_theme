@@ -32,18 +32,18 @@
   # and if the currency code is enabled for product pages
   # Checks if product handle matches the closest product's handle (i.e. product page)
   if product.handle == closest.product.handle
-    assign price = price | money_with_currency
-    assign compare_at_price = compare_at_price | money_with_currency
+    assign price = price | money_with_currency | replace: '.00', ''
+    assign compare_at_price = compare_at_price | money_with_currency | replace: '.00', ''
 
     # Checks if product handle does not match the closest product's handle (i.e. product card)
     # and if the currency code is enabled for product cards
   elsif product.handle != closest.product.handle and settings.currency_code_enabled_product_cards
-    assign price = price | money_with_currency
-    assign compare_at_price = compare_at_price | money_with_currency
+    assign price = price | money_with_currency | replace: '.00', ''
+    assign compare_at_price = compare_at_price | money_with_currency | replace: '.00', ''
 
   else
-    assign price = price | money
-    assign compare_at_price = compare_at_price | money
+    assign price = price | money | replace: '.00', ''
+    assign compare_at_price = compare_at_price | money | replace: '.00', ''
   endif
 -%}
 

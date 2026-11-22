@@ -79,16 +79,16 @@
                   <div class="price" style="display: flex; gap: 8px;">
                     {%- if custom_compare_at_price != blank -%}
                       {%- assign custom_compare_at_price_cents = custom_compare_at_price | times: 100 | round -%}
-                      <span class="compare-at-price">{{ custom_compare_at_price_cents | money }}</span>
+                      <span class="compare-at-price">{{ custom_compare_at_price_cents | money | replace: '.00', '' }}</span>
                     {%- elsif product.compare_at_price > product.price -%}
-                      <span class="compare-at-price">{{ product.compare_at_price | money }}</span>
+                      <span class="compare-at-price">{{ product.compare_at_price | money | replace: '.00', '' }}</span>
                     {%- endif -%}
                     <span class="price-item">
                       {%- if custom_price != blank -%}
                         {%- assign custom_price_cents = custom_price | times: 100 | round -%}
-                        {{ custom_price_cents | money }}
+                        {{ custom_price_cents | money | replace: '.00', '' }}
                       {%- else -%}
-                        {{ product.price | money }}
+                        {{ product.price | money | replace: '.00', '' }}
                       {%- endif -%}
                     </span>
                   </div>

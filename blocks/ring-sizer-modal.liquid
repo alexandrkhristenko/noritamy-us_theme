@@ -1,0 +1,287 @@
+{% comment %}
+  Opens the on-screen ring sizer, under the product's size dropdown.
+
+  noritamy.com copy of the block on noritamy.co.il. Differences from the IL block:
+  - It sits in the default product template, so it decides by itself whether the product is a ring
+    (a Size / Ring size / Ring Size option, and a product type starting with "Ring" or values that
+    read as ring sizes). Belts, pendants and pant chains with a "Size" option get nothing.
+  - The tool runs on the US catalogue; UK and Australia get UK letters (store size guide scheme),
+    Canada gets Canadian coins. The country comes from the market: ?cc=<country>.
+  - The size the tool returns is matched to the dropdown by letter, US number or EU number,
+    because the UK market shows letters (translated option values) and a few products carry EU sizes.
+
+  ONE root element, and nothing of ours inside the theme's tree.
+
+  The theme re-renders the product details on every variant change. A first version of this
+  block emitted four siblings (a link, a full-screen overlay, a style and a script) and moved
+  the link up into the theme's own .size-guide-label-wrapper. Both broke that re-render: the
+  live product page threw "insertBefore: the node is not a child of this node" and the link
+  vanished. So the block now renders a single <div> carrying block.shopify_attributes, the
+  overlay is built once and parked on <body> where the theme never looks, and the click is
+  handled by one delegated listener that survives any number of re-renders.
+
+  The frame points at a theme ASSET, not at /pages/ring-sizer. Shopify answers every storefront
+  page with X-Frame-Options: DENY and frame-ancestors 'none', so a storefront page cannot be
+  framed even by its own domain. Theme assets are served from the CDN, which allows framing,
+  and a static file has no Liquid, so the store's own values ride the query string.
+
+  A frame rather than inline markup because the tool styles bare element selectors (header, h1,
+  select, button.primary) and would otherwise repaint the product page around it.
+{% endcomment %}
+
+{%- liquid
+  assign size_option = ''
+  assign is_ring = false
+  for opt in product.options_with_values
+    assign lo = opt.name | downcase
+    if lo == 'size' or lo == 'ring size'
+      assign size_option = opt.name
+      assign ptype = product.type | downcase
+      if lo == 'ring size' or ptype contains 'ring' and ptype != 'earrings' and ptype != 'earring'
+        assign is_ring = true
+      else
+        # a pure number in a ring range (US 1.5 to 13, EU 40 to 75) or a UK letter
+        assign v = opt.values.first | strip
+        assign n = v | plus: 0
+        assign n_str = n | append: ''
+        assign first_char = v | slice: 0
+        if n_str == v and n >= 1.5 and n <= 13
+          assign is_ring = true
+        elsif n_str == v and n >= 40 and n <= 75
+          assign is_ring = true
+        elsif v.size <= 2 and 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' contains first_char
+          assign is_ring = true
+        endif
+      endif
+    endif
+  endfor
+
+  # routes.root_url is "/" on the primary locale and "/he-il" on the others, with no trailing
+  # slash, so appending and then collapsing the double slash is the only join right in both.
+  assign rs_shop = routes.root_url | append: '/collections/rings' | replace: '//', '/'
+  assign rs_policy = shop.refund_policy.url | default: '/policies/refund-policy'
+
+  # The number the .com WhatsApp bubble dials (snippets/floating-btn.liquid).
+  assign rs_wa = '972544559091'
+  assign rs_cc = localization.country.iso_code
+
+  assign rs_bar = 'Ring size'
+-%}
+
+{%- if size_option != blank and is_ring -%}
+  <div
+    class="product-details__block rs-launch"
+    data-size-option="{{ size_option | escape }}"
+    data-src="{{ 'ring-sizer-app.html' | asset_url }}&embedded=1&store=us&cc={{ rs_cc }}&nolang=1&wa={{ rs_wa }}&shop={{ rs_shop | url_encode }}&policy={{ rs_policy | url_encode }}"
+    data-title="{{ rs_bar | escape }}"
+    hidden
+    {{ block.shopify_attributes }}
+  >
+    <button class="link link--text underlined-link rs-launch__btn" type="button">
+      {{- block.settings.button_text | default: 'Measure your ring size' -}}
+    </button>
+  </div>
+
+  <script>
+    (function () {
+      if (window.__ringSizerModal) return;
+      window.__ringSizerModal = true;
+
+      /* A computer screen cannot be calibrated: no model to name, no known width. The theme's
+         own size guide, a table and a video, is the right answer there, so this link only
+         appears on a handheld. It ships hidden so it never flashes on a desktop. */
+      function handheld() {
+        var coarse = window.matchMedia && window.matchMedia('(any-pointer: coarse)').matches;
+        var touch = (navigator.maxTouchPoints || 0) > 0;
+        return coarse && touch && Math.min(screen.width, screen.height) <= 520;
+      }
+      function reveal() {
+        if (!handheld()) return;
+        var all = document.querySelectorAll('.rs-launch[hidden]');
+        for (var i = 0; i < all.length; i++) all[i].hidden = false;
+      }
+      reveal();
+      /* The product details re-render on a variant change, and the fresh copy arrives hidden. */
+      new MutationObserver(reveal).observe(document.documentElement, { childList: true, subtree: true });
+
+      var style = document.createElement('style');
+      style.textContent =
+        '.rs-launch { display: block; margin: -4px 0 4px; }' +
+        '.rs-launch[hidden] { display: none; }' +
+        /* The theme's link styles are scoped to the variant picker, so outside it this button
+           rendered with the browser's default chrome: a grey 2px outset box. Say it plainly. */
+        '.rs-launch__btn { background: none; border: 0; padding: 0; font: inherit;' +
+        '  font-size: 12px; color: inherit; cursor: pointer; text-decoration: underline;' +
+        '  text-underline-offset: 3px; }' +
+        '.rs-overlay { position: fixed; inset: 0; z-index: 2147483000; display: flex;' +
+        '  flex-direction: column; background: #fff; }' +
+        '.rs-overlay[hidden] { display: none; }' +
+        '.rs-overlay__bar { flex: 0 0 44px; display: flex; align-items: center; gap: 10px;' +
+        '  padding: 0 12px; border-bottom: 1px solid #eae8e6; }' +
+        '.rs-overlay__close { background: none; border: 0; padding: 8px; line-height: 0;' +
+        '  color: #1e1f21; cursor: pointer; }' +
+        '.rs-overlay__title { font-size: 11px; letter-spacing: .1em; text-transform: uppercase;' +
+        '  color: rgba(30,31,33,.55); }' +
+        /* Full width is load-bearing, not cosmetic: the scale is derived from it. */
+        '.rs-overlay__frame { flex: 1; width: 100%; border: 0; display: block; }' +
+        'html.rs-open, body.rs-open { overflow: hidden; }';
+      document.head.appendChild(style);
+
+      /* Parked on <body>, outside anything the theme re-renders. */
+      var overlay = document.createElement('div');
+      overlay.className = 'rs-overlay';
+      overlay.hidden = true;
+      overlay.innerHTML =
+        '<div class="rs-overlay__bar">' +
+        '  <button type="button" class="rs-overlay__close" aria-label="close">' +
+        '    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor"' +
+        '      stroke-width="1.5"><path d="M1 13L13 1M1 1L13 13"/></svg>' +
+        '  </button><span class="rs-overlay__title"></span>' +
+        '</div><iframe class="rs-overlay__frame" title=""></iframe>';
+      document.body.appendChild(overlay);
+      var frame = overlay.querySelector('.rs-overlay__frame');
+      var sizeOption = '';
+
+      /* The screen, measured here and handed over. A cross-origin frame does not reliably
+         inherit the device it runs on: measured on this page, the frame saw an 800x600 screen
+         at dpr 1 while the page around it correctly saw 390x844 at dpr 3. Every millimetre the
+         tool draws is keyed on that geometry, so it has to come from the side that can see it. */
+      function openFrom(host) {
+        sizeOption = host.dataset.sizeOption || '';
+        overlay.querySelector('.rs-overlay__title').textContent = host.dataset.title || '';
+        frame.title = host.dataset.title || '';
+        if (!frame.getAttribute('src')) {
+          frame.setAttribute('src', host.dataset.src +
+            '&sw=' + Math.min(screen.width, screen.height) +
+            '&sh=' + Math.max(screen.width, screen.height) +
+            '&dpr=' + (Math.round(window.devicePixelRatio * 100) / 100) +
+            /* Our own layout width as well. The zoom test needs a layout width and a screen
+               width measured in the SAME space, and the frame's innerWidth is not in ours. */
+            '&lw=' + window.innerWidth);
+        }
+        overlay.hidden = false;
+        document.documentElement.classList.add('rs-open');
+        document.body.classList.add('rs-open');
+        hideFloaters();
+      }
+      function close() {
+        overlay.hidden = true;
+        document.documentElement.classList.remove('rs-open');
+        document.body.classList.remove('rs-open');
+        restoreFloaters();
+      }
+
+      /* Several app widgets park themselves at z-index 2147483647, the maximum, so no value can
+         outrank them: the accessibility launcher, the loyalty launcher and the wishlist anchor
+         all floated on top of the measuring circle. Rather than naming other people's classes,
+         hide every fixed element sitting directly on <body> for as long as the modal is open,
+         and put back exactly what was changed. A full-screen tool wants the screen. */
+      var floaters = [];
+      function hideFloaters() {
+        floaters = [];
+        var kids = document.body.children;
+        for (var i = 0; i < kids.length; i++) {
+          var el = kids[i];
+          if (el === overlay || el.tagName === 'SCRIPT' || el.tagName === 'STYLE') continue;
+          var pos = getComputedStyle(el).position;
+          if (pos !== 'fixed' && pos !== 'sticky') continue;
+          floaters.push([el, el.style.visibility]);
+          el.style.visibility = 'hidden';
+        }
+      }
+      function restoreFloaters() {
+        for (var i = 0; i < floaters.length; i++) floaters[i][0].style.visibility = floaters[i][1];
+        floaters = [];
+      }
+
+      /* Delegated, so a re-rendered button needs no rebinding. */
+      document.addEventListener('click', function (e) {
+        if (!e.target.closest) return;
+        var btn = e.target.closest('.rs-launch__btn');
+        if (btn) { e.preventDefault(); openFrom(btn.closest('.rs-launch')); return; }
+        if (e.target.closest('.rs-overlay__close')) close();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !overlay.hidden) close();
+      });
+
+      function sizeSelect() {
+        var byName = sizeOption && document.querySelector('select[name="options[' + sizeOption + ']"]');
+        if (byName) return byName;
+        /* Three different size option names are in use across the catalogue, so fall back to
+           any dropdown whose every value reads as a ring size. */
+        var all = document.querySelectorAll('select.variant-option__select, variant-picker select');
+        for (var i = 0; i < all.length; i++) {
+          var opts = Array.prototype.filter.call(all[i].options, function (o) { return o.value !== ''; });
+          var sizes = opts.filter(function (o) { var v = parseFloat(o.value); return (v >= 1.5 && v <= 13) || (v >= 38 && v <= 75) || /^[A-Z]½?$/.test(o.value); });
+          if (sizes.length >= 3 && sizes.length === opts.length) return all[i];
+        }
+        return null;
+      }
+
+      window.addEventListener('message', function (e) {
+        /* The source window, not the origin: the frame is served from the CDN under a sandbox
+           CSP, so its origin is opaque, but its identity as the window we created holds. */
+        if (e.source !== frame.contentWindow) return;
+        var d = e.data;
+        if (!d || d.source !== 'ringsizer' || d.type !== 'selected') return;
+
+        var sel = sizeSelect();
+        var picked = false;
+        if (sel) {
+          /* The tool answers in one scale (UK letter, or US number) and sends the other numbers
+             along. The dropdown may show a letter (UK market), a US number, or an EU number. */
+          var want = function (o) {
+            var v = o.value, n = parseFloat(v);
+            if (d.scale === 'UK' && v === String(d.size)) return true;
+            if (!isNaN(n) && n === parseFloat(d.us)) return true;
+            if (!isNaN(n) && n >= 38 && n === parseFloat(d.eu)) return true;
+            return false;
+          };
+          for (var i = 0; i < sel.options.length; i++) {
+            if (sel.options[i].value !== '' && want(sel.options[i])) {
+              sel.value = sel.options[i].value;
+              sel.dispatchEvent(new Event('change', { bubbles: true }));
+              picked = true;
+              break;
+            }
+          }
+        }
+        close();
+        if (sel && sel.scrollIntoView) sel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (!picked) {
+          /* Say so rather than close on the wrong size: the tool goes to EU 68, this ring may not. */
+          var note = document.getElementById('rs-note');
+          if (!note) {
+            note = document.createElement('div');
+            note.id = 'rs-note';
+            note.setAttribute('role', 'status');
+            note.style.cssText = 'position:fixed;left:16px;right:16px;bottom:16px;z-index:2147483000;' +
+              'padding:12px 14px;background:#fbf6f2;border-inline-start:2px solid #7d5449;' +
+              'color:#7d5449;font-size:12.5px;line-height:1.5;';
+            document.body.appendChild(note);
+            setTimeout(function () { if (note.parentNode) note.parentNode.removeChild(note); }, 9000);
+          }
+          /* TODO(copy): English text for "this size is not available on this piece" was not in the
+             IL theme; until Ben approves wording, show the measured size only. */
+          note.textContent = d.scale + ' ' + d.size;
+        }
+      });
+    })();
+  </script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "On-screen ring sizer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Measure your ring size"
+    }
+  ],
+  "presets": [{ "name": "On-screen ring sizer", "category": "t:categories.product" }]
+}
+{% endschema %}

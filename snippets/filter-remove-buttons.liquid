@@ -34,15 +34,15 @@
         {% endif %}
       >
         {%- if filter.min_value.value != null and filter.max_value.value != null %}
-          {{- filter.min_value.value | money -}}
+          {{- filter.min_value.value | money_without_trailing_zeros -}}
           –
-          {{- filter.max_value.value | money -}}
+          {{- filter.max_value.value | money_without_trailing_zeros -}}
         {%- elsif filter.min_value.value != null -%}
-          {{ filter.min_value.value | money }}–{{ filter.range_max | money }}
+          {{ filter.min_value.value | money_without_trailing_zeros }}–{{ filter.range_max | money_without_trailing_zeros }}
         {%- elsif filter.max_value.value != null -%}
-          {{- 0 | money -}}
+          {{- 0 | money_without_trailing_zeros -}}
           –
-          {{- filter.max_value.value | money -}}
+          {{- filter.max_value.value | money_without_trailing_zeros -}}
         {%- endif -%}
         <span class="svg-wrapper svg-wrapper--smaller">
           {{- 'icon-filters-close.svg' | inline_asset_content -}}
