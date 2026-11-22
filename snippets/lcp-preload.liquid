@@ -1,0 +1,36 @@
+{%- doc -%}
+  Preloads the phone LCP image of the product page from the top of <head>.
+
+  Shopify does not turn image_tag's `preload: true` into a Link header for images rendered in
+  sections (the headers are sent before sections render), and <head> carries ~200 KB of inline
+  app and platform scripts. So the parser only met the gallery's first <img> ~330 KB into the
+  document, and Lighthouse put ~3.5 s of "load delay" on the LCP image.
+
+  The link copies the srcset the gallery itself emits (product-media: image_url width 1946 and
+  its default widths), and is limited to phones, where the gallery is a full-width slideshow
+  (sizes 100vw) in every presentation. On desktop the layout depends on block settings this
+  layout cannot read, so nothing is preloaded there.
+{%- enddoc -%}
+
+{%- if template.name == 'product' and product -%}
+  {%- liquid
+    assign lcp_media = product.selected_or_first_available_variant.featured_media | default: product.featured_media
+    assign lcp_image = lcp_media.preview_image
+  -%}
+  {%- if lcp_image -%}
+    {%- capture lcp_tag -%}
+      {{- lcp_image | image_url: width: 1946 | image_tag: widths: '300, 450, 600, 750, 900, 1050, 1200, 1350, 1500, 1650, 1800, 1950, 2000, 2500, 3000, 3500, 4000, 5000', sizes: '100vw' -}}
+    {%- endcapture -%}
+    {%- assign lcp_srcset = lcp_tag | split: 'srcset="' | last | split: '"' | first -%}
+    {%- if lcp_srcset != blank and lcp_srcset != lcp_tag -%}
+      <link
+        rel="preload"
+        as="image"
+        imagesrcset="{{ lcp_srcset }}"
+        imagesizes="100vw"
+        media="(max-width: 749px)"
+        fetchpriority="high"
+      >
+    {%- endif -%}
+  {%- endif -%}
+{%- endif -%}

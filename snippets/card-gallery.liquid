@@ -28,9 +28,33 @@
   {% assign image_sizes = sizes_attribute | strip %}
 {% elsif section.settings.columns and section.settings.layout_type != 'editorial' %}
   {% assign viewport_width = 100.0 | divided_by: section.settings.columns %}
-  {% assign sizes_attribute = '(min-width: 750px) [viewport_width]vw, 100vw'
+  {% comment %}
+    Phones show mobile_columns cards per row (2 in every product list here), so a card is
+    100vw / mobile_columns wide there, not 100vw.
+  {% endcomment %}
+  {% assign mobile_viewport_width = 100 %}
+  {% assign mobile_columns = section.settings.mobile_columns | plus: 0 %}
+  {% if mobile_columns > 1 %}
+    {% assign mobile_viewport_width = 100 | divided_by: mobile_columns %}
+  {% endif %}
+  {% assign sizes_attribute = '(min-width: 750px) [viewport_width]vw, [mobile_viewport_width]vw'
     | replace: '[viewport_width]', viewport_width
+    | replace: '[mobile_viewport_width]', mobile_viewport_width
   %}
+  {% comment %}
+    A page-width section stops growing at the page width (narrow 90rem / normal 120rem /
+    wide 150rem), so above that the card is a fixed px width; [n]vw kept growing with the
+    viewport and a 340px card on a 1728px screen fetched the 1100px file.
+  {% endcomment %}
+  {% unless section.settings.section_width == 'full-width' %}
+    {% case settings.page_width %}
+      {% when 'wide' %}{% assign card_page_px = 2400 %}
+      {% when 'normal' %}{% assign card_page_px = 1920 %}
+      {% else %}{% assign card_page_px = 1440 %}
+    {% endcase %}
+    {% assign card_cap_px = card_page_px | divided_by: section.settings.columns | ceil %}
+    {% assign sizes_attribute = '(min-width: ' | append: card_page_px | append: 'px) ' | append: card_cap_px | append: 'px, ' | append: sizes_attribute %}
+  {% endunless %}
   {% assign image_sizes = sizes_attribute | strip %}
 {% endif %}
 
