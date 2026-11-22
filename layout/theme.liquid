@@ -188,7 +188,7 @@
           if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
           else fn();
         }
-        var STRICT = /^(GB|AT|BE|BG|HR|CY|CZ|DK|EE|FI|FR|DE|GR|HU|IE|IT|LV|LT|LU|MT|NL|PL|PT|RO|SK|SI|ES|SE|IS|LI|NO|CH)/;
+        var STRICT = /^(GB|AT|BE|BG|HR|CY|CZ|DK|EE|FI|FR|DE|GR|HU|IE|IT|LV|LT|LU|MT|NL|PL|PT|RO|SK|SI|ES|SE|IS|LI|NO|CH|CA)/;
         // Triple Whale is an app embed, so the theme cannot wrap it. Its snippet skips initialising when
         // localStorage holds the key below, and it accepts TriplePixel('trackingConsent', bool). The
         // snippet renders after this script, so the flag is set synchronously here: from the visitor's
@@ -210,12 +210,41 @@
             if (typeof window.TriplePixel === 'function') window.TriplePixel('trackingConsent', !!on);
           } catch (e) {}
         }
+        // Klaviyo only follows Shopify's cookie banner for UK/EU/Swiss visitors, so in every STRICT
+        // region its tracking is switched off with the __kla_off cookie until marketing consent is given.
+        function klaviyoAllowed(strict, marketing) {
+          if (strict && !marketing) {
+            document.cookie = '__kla_off=true; path=/; max-age=31536000; SameSite=Lax';
+          } else if (document.cookie.indexOf('__kla_off=') !== -1) {
+            document.cookie = '__kla_off=; path=/; max-age=0; SameSite=Lax';
+          }
+        }
+        // Microsoft Clarity loads from an app embed, outside this loader. Its queue is created here so the
+        // consent signal reaches Clarity whenever it starts.
+        window.clarity =
+          window.clarity ||
+          function () {
+            (window.clarity.q = window.clarity.q || []).push(arguments);
+          };
+        function clarityConsent(analytics, marketing) {
+          try {
+            window.clarity('consentv2', {
+              analytics_Storage: analytics ? 'granted' : 'denied',
+              ad_Storage: marketing ? 'granted' : 'denied',
+            });
+          } catch (e) {}
+        }
         (function () {
           var saved = null;
           try {
             saved = JSON.parse(localStorage.getItem(CHOICE) || 'null');
           } catch (e) {}
-          triplePixelAllowed(saved ? !!saved.m : !STRICT.test({{ localization.country.iso_code | json }}));
+          var strict = STRICT.test({{ localization.country.iso_code | json }});
+          var analytics = saved ? !!saved.a : !strict;
+          var marketing = saved ? !!saved.m : !strict;
+          triplePixelAllowed(marketing);
+          klaviyoAllowed(strict, marketing);
+          clarityConsent(analytics, marketing);
         })();
         function apply() {
           var cp = window.Shopify && window.Shopify.customerPrivacy;
@@ -235,6 +264,8 @@
             localStorage.setItem(CHOICE, JSON.stringify({ a: analytics, m: marketing }));
           } catch (e) {}
           triplePixelAllowed(marketing);
+          klaviyoAllowed(strict, marketing);
+          clarityConsent(analytics, marketing);
           if (analytics || marketing) once('gtm', loadGTM);
           if (analytics) {
             afterParse(function () {
@@ -285,9 +316,12 @@
     >
       {% section 'breadcrumps' %}
       {%- comment -%}
-        UK market only: tie the store-wide policies to the UK Consumer Terms, which prevail for UK consumers.
+        UK, Canada and Australia markets: tie the store-wide policies to the market's consumer terms,
+        which prevail for consumers there.
       {%- endcomment -%}
-      {%- if request.page_type == 'policy' and localization.country.iso_code == 'GB' -%}
+      {%- assign legal_country = localization.country.iso_code -%}
+      {%- assign legal_markets = 'GB,CA,AU' | split: ',' -%}
+      {%- if request.page_type == 'policy' and legal_markets contains legal_country -%}
         {%- liquid
           assign uk_root = routes.root_url
           if uk_root == '/'
@@ -296,10 +330,26 @@
         -%}
         <div class="uk-policy-notice">
           <p>
-            <strong>Customers in the United Kingdom:</strong> our
-            <a href="{{ uk_root }}/pages/uk-consumer-terms">UK Consumer Terms</a> also apply to your order and prevail
-            where they differ from this policy. See also
-            <a href="{{ uk_root }}/pages/uk-cancellations">Cancellations &amp; returns (UK)</a>.
+            {%- case legal_country -%}
+              {%- when 'GB' -%}
+                <strong>Customers in the United Kingdom:</strong> our
+                <a href="{{ uk_root }}/pages/uk-consumer-terms">UK Consumer Terms</a> also apply to your order and prevail
+                where they differ from this policy. See also
+                <a href="{{ uk_root }}/pages/uk-cancellations">Cancellations &amp; returns (UK)</a>.
+              {%- when 'CA' -%}
+                <strong>Customers in Canada:</strong> our
+                <a href="{{ uk_root }}/pages/ca-consumer-terms">Canadian Consumer Terms</a> also apply to your order and
+                prevail where they differ from this policy.
+                {%- if pages['ca-privacy-notice'].id != blank %}
+                  See also our <a href="{{ uk_root }}/pages/ca-privacy-notice">Privacy Notice for Canada</a>.
+                {%- endif -%}
+              {%- when 'AU' -%}
+                <strong>Customers in Australia:</strong> our
+                <a href="{{ uk_root }}/pages/au-consumer-terms">Australian Consumer Terms</a> also apply to your order and
+                prevail where they differ from this policy. They include your rights under the Australian Consumer Law and
+                our 1 Year Warranty. See also our
+                <a href="{{ uk_root }}/pages/au-privacy-notice">Privacy Notice for Australia</a>.
+            {%- endcase -%}
           </p>
         </div>
         <style>

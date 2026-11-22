@@ -32,21 +32,41 @@
   </div>
 
   {%- comment -%}
-    UK-only consumer information (Consumer Contracts Regulations / PECR). Rendered only for the
-    UK market, so other countries see the footer unchanged.
+    Market-only consumer information: UK (Consumer Contracts Regulations / PECR), Canada and Australia
+    (consumer terms and privacy notices). Rendered only for those markets, so other countries see the
+    footer unchanged. The Canada privacy notice link shows only once that page is published.
   {%- endcomment -%}
-  {%- if localization.country.iso_code == 'GB' -%}
+  {%- assign legal_country = localization.country.iso_code -%}
+  {%- assign legal_markets = 'GB,CA,AU' | split: ',' -%}
+  {%- if legal_markets contains legal_country -%}
     {%- liquid
       assign root = routes.root_url
       if root == '/'
         assign root = ''
       endif
     -%}
-    <nav class="footer-uk-links" aria-label="Information for UK customers">
-      <a href="{{ root }}/pages/uk-consumer-terms">UK consumer terms</a>
-      <a href="{{ root }}/pages/uk-cancellations">Cancellations &amp; returns (UK)</a>
-      <a href="{{ root }}/pages/cookie-policy">Cookie policy</a>
-    </nav>
+    {%- case legal_country -%}
+      {%- when 'GB' -%}
+        <nav class="footer-uk-links" aria-label="Information for UK customers">
+          <a href="{{ root }}/pages/uk-consumer-terms">UK consumer terms</a>
+          <a href="{{ root }}/pages/uk-cancellations">Cancellations &amp; returns (UK)</a>
+          <a href="{{ root }}/pages/cookie-policy">Cookie policy</a>
+        </nav>
+      {%- when 'CA' -%}
+        <nav class="footer-uk-links" aria-label="Information for customers in Canada">
+          <a href="{{ root }}/pages/ca-consumer-terms">Canadian consumer terms</a>
+          {%- if pages['ca-privacy-notice'].id != blank %}
+            <a href="{{ root }}/pages/ca-privacy-notice">Privacy notice (Canada)</a>
+          {%- endif %}
+          <a href="{{ root }}/pages/cookie-policy">Cookie policy</a>
+        </nav>
+      {%- when 'AU' -%}
+        <nav class="footer-uk-links" aria-label="Information for customers in Australia">
+          <a href="{{ root }}/pages/au-consumer-terms">Australian consumer terms</a>
+          <a href="{{ root }}/pages/au-privacy-notice">Privacy notice (Australia)</a>
+          <a href="{{ root }}/pages/cookie-policy">Cookie policy</a>
+        </nav>
+    {%- endcase -%}
     <style>
       .footer-uk-links {
         position: relative;
