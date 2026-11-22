@@ -40,17 +40,35 @@
       if lo == 'ring size' or ptype contains 'ring' and ptype != 'earrings' and ptype != 'earring'
         assign is_ring = true
       else
-        # a pure number in a ring range (US 1.5 to 13, EU 40 to 75) or a UK letter
+        # a pure number in a ring range (US 1.5 to 13, EU 40 to 75), or UK letters
         assign v = opt.values.first | strip
         assign n = v | plus: 0
         assign n_str = n | append: ''
-        assign first_char = v | slice: 0
         if n_str == v and n >= 1.5 and n <= 13
           assign is_ring = true
         elsif n_str == v and n >= 40 and n <= 75
           assign is_ring = true
-        elsif v.size <= 2 and 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' contains first_char
-          assign is_ring = true
+        else
+          # UK letters only when EVERY value is a single letter (optionally with ½) and at least
+          # one of them is not S, M or L, so apparel sizes (S/M/L, XS, XL) never read as rings.
+          assign all_letters = true
+          assign beyond_sml = false
+          for val in opt.values
+            assign letter = val | strip | remove: '½'
+            if letter.size != 1
+              assign all_letters = false
+            else
+              unless 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' contains letter
+                assign all_letters = false
+              endunless
+              unless 'SML' contains letter
+                assign beyond_sml = true
+              endunless
+            endif
+          endfor
+          if all_letters and beyond_sml
+            assign is_ring = true
+          endif
         endif
       endif
     endif
@@ -95,14 +113,23 @@
         var touch = (navigator.maxTouchPoints || 0) > 0;
         return coarse && touch && Math.min(screen.width, screen.height) <= 520;
       }
+      var isHandheld = handheld();
+      var revealQueued = false;
       function reveal() {
-        if (!handheld()) return;
+        revealQueued = false;
         var all = document.querySelectorAll('.rs-launch[hidden]');
         for (var i = 0; i < all.length; i++) all[i].hidden = false;
       }
-      reveal();
-      /* The product details re-render on a variant change, and the fresh copy arrives hidden. */
-      new MutationObserver(reveal).observe(document.documentElement, { childList: true, subtree: true });
+      if (isHandheld) {
+        reveal();
+        /* The product details re-render on a variant change, and the fresh copy arrives hidden.
+           Only phones watch for that, and a burst of mutations is folded into one check per frame. */
+        new MutationObserver(function () {
+          if (revealQueued) return;
+          revealQueued = true;
+          requestAnimationFrame(reveal);
+        }).observe(document.documentElement, { childList: true, subtree: true });
+      }
 
       var style = document.createElement('style');
       style.textContent =
