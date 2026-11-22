@@ -19,7 +19,7 @@
           "name": "Countdown announcement",
           "settings": {
             "end_date": "2026-11-27 23:59",
-            "text": "<strong>BLACK FRIDAY ENDS NOV 27. DON'T WAIT</strong>",
+            "text": "<strong>BLACK FRIDAY ENDS NOV 27 DON'T WAIT</strong>",
             "link": "shopify://collections/best-sellers",
             "font": "var(--font-body--family)",
             "font_size": "0.875rem",
