@@ -1478,6 +1478,12 @@
         "default": "body"
       },
       {
+        "type": "text",
+        "id": "badge_multibuy_text",
+        "label": "Multi-buy badge",
+        "info": "Shown under the sale badge on every product except the free gift, e.g. \"+ Extra 5% off 2+\". The discount itself is the automatic discount in Shopify admin. Leave empty to hide."
+      },
+      {
         "type": "select",
         "id": "badge_text_transform",
         "label": "t:settings.text_case",
