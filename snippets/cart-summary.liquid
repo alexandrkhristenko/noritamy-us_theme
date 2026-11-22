@@ -14,7 +14,7 @@
             cart-level ones, so subtotal − listed discounts = total. original_total_price also
             counted the gift at full price, which made the numbers not add up.
           {%- endcomment -%}
-          {{- cart.items_subtotal_price | money -}}
+          {{- cart.items_subtotal_price | money | replace: '.00', '' -}}
         </span>
       </span>
       <div class="cart__summary-discounts">
@@ -30,7 +30,7 @@
                 {{ discount.title | escape }}
               </span>
               <span class="cart__discount-value cart-secondary-typography"
-                >-{{ discount.total_allocated_amount | money -}}
+                >-{{ discount.total_allocated_amount | money | replace: '.00', '' -}}
               </span>
             </li>
           {%- endfor -%}
@@ -53,9 +53,9 @@
 
   {%- liquid
     if settings.currency_code_enabled_cart_total
-      assign total_price = cart.total_price | money_with_currency
+      assign total_price = cart.total_price | money_with_currency | replace: '.00', ''
     else
-      assign total_price = cart.total_price | money
+      assign total_price = cart.total_price | money | replace: '.00', ''
     endif
   -%}
 

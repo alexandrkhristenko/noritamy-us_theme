@@ -671,7 +671,7 @@
       "custom_css": [],
       "name": "t:names.products_carousel",
       "settings": {
-        "collection": "new-homepage",
+        "collection": "new-1",
         "layout_type": "carousel",
         "carousel_on_mobile": false,
         "max_products": 4,

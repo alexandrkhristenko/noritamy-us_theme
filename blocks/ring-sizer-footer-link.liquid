@@ -1,0 +1,66 @@
+{% comment %}
+  The ring sizer, in the footer's Support column, next to the size guide it complements.
+
+  noritamy.com copy of the IL block: English only, and it renders nothing until a page with the
+  handle "ring-sizer" exists (template "ring-sizer"), so the footer never links to a 404.
+
+  A custom block rather than one more of the theme's `text` blocks, for two reasons.
+
+  The footer's text blocks hold English in the template and render Hebrew on the storefront
+  through Shopify's stored translations. A new text block has no translation, so it would have
+  shown "Measure your ring size" in the middle of a Hebrew column. This picks its own language.
+
+  And phones only, the same rule as the other two entry points. A monitor cannot be calibrated,
+  so on a desktop the link would lead to a page whose only message is "open this on your phone".
+  The size guide link directly above it is the right answer there and stays for everyone. The
+  block ships hidden so a desktop never sees it flash.
+
+  One root element, with the style and the script inside it. The theme wraps each block in its
+  own container, and keeping everything in one node means the block behaves like any other.
+{% endcomment %}
+
+{%- liquid
+  # routes.root_url is "/" on the primary locale and "/he-il" on the others, with no trailing
+  # slash, so appending and then collapsing the double slash is the only join right in both.
+  assign rs_url = routes.root_url | append: '/pages/ring-sizer' | replace: '//', '/'
+  assign rs_text = 'Measure your ring size'
+  assign rs_page = pages['ring-sizer']
+-%}
+
+{%- if rs_page.url != blank or request.design_mode -%}
+<div class="rs-footer-link" hidden {{ block.shopify_attributes }}>
+  <p><a href="{{ rs_url }}" title="{{ rs_text | escape }}">{{ rs_text }}</a></p>
+
+  <style>
+    .rs-footer-link[hidden] { display: none !important; }
+    .rs-footer-link p { margin: 0; }
+    /* 14px to sit level with the links above and below it. The theme renders those through a
+       generated per-block class that a custom block cannot reuse, and the column itself
+       inherits 17px, so the size has to be stated rather than inherited. */
+    .rs-footer-link a { font-size: 14px; line-height: 1.5; }
+  </style>
+
+  <script>
+    (function () {
+      /* The same three signals the product page and the guide page use, so no entry point can
+         disagree with another about what counts as a phone: a coarse pointer AND a touch
+         digitiser AND a short edge of phone proportions. A touchscreen laptop clears the first
+         two and fails the third, and a desktop browser narrowed to a phone width still reports
+         the real screen. */
+      var coarse = window.matchMedia && window.matchMedia('(any-pointer: coarse)').matches;
+      var touch = (navigator.maxTouchPoints || 0) > 0;
+      if (!(coarse && touch && Math.min(screen.width, screen.height) <= 520)) return;
+      var all = document.querySelectorAll('.rs-footer-link[hidden]');
+      for (var i = 0; i < all.length; i++) all[i].hidden = false;
+    })();
+  </script>
+</div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Ring sizer link",
+  "settings": [],
+  "presets": [{ "name": "Ring sizer link" }]
+}
+{% endschema %}

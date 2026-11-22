@@ -50,7 +50,7 @@
             role="caption"
           >
             {{ 'content.cart_total' | t }}
-            <span>{{ cart.total_price | money_with_currency }}</span>
+            <span>{{ cart.total_price | money_with_currency | replace: '.00', '' }}</span>
           </caption>
 
           <thead
@@ -265,13 +265,13 @@
                   <div>
                     {% if item.original_price != display_final_price %}
                       <span class="visually-hidden">{{ 'content.price_sale' | t }}</span>
-                      <span style="color: #d11212; font-weight: 600;">{{ display_final_price | money }}</span>
+                      <span style="color: #d11212; font-weight: 600;">{{ display_final_price | money | replace: '.00', '' }}</span>
                       <span class="visually-hidden">{{ 'content.price_regular' | t }}</span>
                       <s class="compare-at-price">
                         {% if item.variant.compare_at_price > item.original_price %}
-                          {{ item.variant.compare_at_price | money }}
+                          {{ item.variant.compare_at_price | money | replace: '.00', '' }}
                         {% else %}
-                         <span > {{ item.original_price | money }}</span>
+                         <span > {{ item.original_price | money | replace: '.00', '' }}</span>
                         {% endif %}
                       </s>
                     {% else %}
@@ -281,11 +281,11 @@
                         <span class="visually-hidden">{{ 'content.price' | t }}</span>
                       {% endif %}
 
-                      <span>{{ item.original_price | money }}</span>
+                      <span>{{ item.original_price | money | replace: '.00', '' }}</span>
 
                       {% if item.variant.compare_at_price > item.original_price %}
                         <span class="visually-hidden">{{ 'content.price_regular' | t }}</span>
-                        <s class="compare-at-price">{{ item.variant.compare_at_price | money }}</s>
+                        <s class="compare-at-price">{{ item.variant.compare_at_price | money | replace: '.00', '' }}</s>
                       {% endif %}
                     {% endif %}
                   </div>

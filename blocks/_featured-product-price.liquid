@@ -4,9 +4,9 @@
   assign product = closest.product
 
   if settings.currency_code_enabled_product_cards
-    assign price_min = product.price_min | money_with_currency
+    assign price_min = product.price_min | money_with_currency | replace: '.00', ''
   else
-    assign price_min = product.price_min | money
+    assign price_min = product.price_min | money | replace: '.00', ''
   endif
 
   if product.price_varies
